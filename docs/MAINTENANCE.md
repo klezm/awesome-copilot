@@ -87,6 +87,7 @@ For content to be automatically detected:
   ---
   mode: 'agent'
   description: 'Create a README.md file for the project'
+  tags: []
   ---
   ```
 
@@ -99,6 +100,7 @@ For content to be automatically detected:
   ---
   description: 'Documentation and content creation standards'
   applyTo: '**/*.md'
+  tags: []
   ---
   ```
 
@@ -111,6 +113,7 @@ For content to be automatically detected:
   ---
   description: 'Debug your application to find and fix a bug'
   tools: ['codebase', 'readFiles', 'editFiles']
+  tags: []
   ---
   ```
 
