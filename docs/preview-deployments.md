@@ -10,29 +10,29 @@ When you create a pull request, a unified GitHub Actions workflow automatically 
 
 ### Unified GitHub Actions Workflow
 
-The deployment process is handled by the `.github/workflows/deploy-pages.yml` workflow:
+The deployment process is handled by the `.github/workflows/deploy-pages.yml` workflow with three separate jobs:
 
 1. **Trigger**: Runs on every push to `main` branch and on all pull requests
-2. **Single Build Process**: Executes the standard build commands once:
+2. **Build Job**: Executes the standard build commands once:
    ```bash
    npm run build
    npm run build:website
    ```
-3. **Conditional Deployment**: 
-   - **GitHub Pages**: Deploys to production when merging to `main` branch
-   - **Vercel**: Deploys preview URLs for all pull requests (if Vercel secrets are configured)
-4. **Preview URLs**: Posts Vercel preview URLs as comments on pull requests
-5. **Automatic Updates**: Every new push triggers fresh deployments
+3. **Deploy-Vercel Job**: Runs independently to handle Vercel deployments (if Vercel secrets are configured)
+4. **Deploy-Pages Job**: Runs independently to deploy to GitHub Pages (when merging to `main` branch)
+5. **Preview URLs**: Posts Vercel preview URLs as comments on pull requests
+6. **Automatic Updates**: Every new push triggers fresh deployments
 
 ### Benefits of Unified Workflow
 
-This unified approach provides several advantages:
+This unified approach with separate build and deployment jobs provides several advantages:
 
 - **Efficiency**: Single build process serves both deployment targets
+- **Separation of Concerns**: Build, Vercel deployment, and GitHub Pages deployment run as independent jobs
 - **Consistency**: Same build artifacts used for both GitHub Pages and Vercel
-- **Resource Optimization**: Reduces CI/CD time and resource usage
+- **Resource Optimization**: Reduces CI/CD time and resource usage while maintaining modularity
 - **Flexibility**: Vercel previews are optional - workflow works even without Vercel secrets
-- **Maintainability**: Single workflow file to manage instead of multiple
+- **Maintainability**: Clear separation between build and deployment responsibilities
 
 ### Vercel Configuration
 
@@ -79,9 +79,9 @@ https://awesome-copilot-{unique-hash}.vercel.app
 ### Workflow Status
 
 You can monitor deployment status in several ways:
-- **PR Checks**: Look for the "Deploy Website" check in the PR
-- **Actions Tab**: View detailed logs in the repository's Actions tab
-- **PR Comments**: The workflow posts Vercel preview URLs and status updates
+- **PR Checks**: Look for the "Deploy Website" check with three separate jobs (build, deploy-vercel, deploy-pages) in the PR
+- **Actions Tab**: View detailed logs for each job in the repository's Actions tab  
+- **PR Comments**: The deploy-vercel job posts Vercel preview URLs and status updates
 
 ## For Maintainers
 
@@ -104,7 +104,7 @@ For Vercel preview deployments, configure these GitHub repository secrets:
    - Found in your Vercel project settings
    - Or in the `.vercel/project.json` file after linking
 
-**Note**: The workflow checks for the presence of `VERCEL_TOKEN` and only runs Vercel deployment steps if it's available. This allows for flexible configuration where some forks or environments may not need Vercel previews.
+**Note**: The workflow checks for the presence of `VERCEL_TOKEN` and only runs the deploy-vercel job if it's available. This allows for flexible configuration where some forks or environments may not need Vercel previews.
 
 ### Setting Up Secrets
 
