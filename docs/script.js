@@ -183,9 +183,9 @@ function createItemCard(item) {
         <div class="item-card">
             <div class="item-header">
                 <a href="${item.sourceUrl || item.link}" class="item-title" target="_blank" rel="noopener noreferrer">
-                    ${emoji} ${escapeHtml(item.title)}
+                    ${escapeHtml(item.title)}
                 </a>
-                <span class="item-type">${label}</span>
+                <span class="item-type">${emoji} ${label}</span>
             </div>
             ${descriptionHtml}
             <div class="item-actions">
