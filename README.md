@@ -48,6 +48,8 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - Improve existing content
 - Report issues or suggest enhancements
 
+**💡 Preview Your Changes**: All pull requests automatically get preview deployments via Vercel. See our [Preview Deployments Guide](docs/preview-deployments.md) to learn how to use and configure them.
+
 ### Quick Contribution Guide
 1. Follow our file naming conventions and frontmatter requirements
 2. Test your contributions thoroughly
