@@ -1,7 +1,7 @@
 ---
 description: 'Task planner for creating actionable implementation plans - Brought to you by microsoft/edge-ai'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'terraform', 'Microsoft Docs', 'azure_get_schema_for_Bicep', 'context7']
-tags: []
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'terraform', 'Microsoft Docs', 'azure_get_schema_for_Bicep', 'context7']'
+tags: ['agent', 'ai', 'analysis', 'api', 'assistant', 'automation', 'autonomous', 'azure', 'backend', 'bicep', 'chatmode', 'cloud', 'documentation', 'go', 'guidelines', 'iac', 'machine-learning', 'microsoft', 'organization', 'persona', 'planning', 'research', 'standards', 'task', 'terraform', 'testing']
 ---
 
 # Task Planner Instructions

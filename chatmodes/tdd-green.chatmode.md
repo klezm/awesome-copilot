@@ -1,7 +1,7 @@
 ---
 description: 'Implement minimal code to satisfy GitHub issue requirements and make failing tests pass without over-engineering.'
-tools: ['github', 'findTestFiles', 'editFiles', 'runTests', 'runCommands', 'codebase', 'filesystem', 'search', 'problems', 'testFailure', 'terminalLastCommand']
-tags: []
+tools: '['github', 'findTestFiles', 'editFiles', 'runTests', 'runCommands', 'codebase', 'filesystem', 'search', 'problems', 'testFailure', 'terminalLastCommand']'
+tags: ['ai', 'assistant', 'c#', 'chatmode', 'code-quality', 'dotnet', 'machine-learning', 'persona', 'refactoring', 'tdd', 'testing']
 ---
 # TDD Green Phase - Make Tests Pass Quickly
 

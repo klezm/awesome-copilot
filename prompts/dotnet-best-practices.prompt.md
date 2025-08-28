@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Ensure .NET/C# code meets best practices for the solution/project.'
-tags: []
+tags: ['agent', 'ai', 'architecture', 'async', 'automation', 'autonomous', 'c#', 'concurrency', 'database', 'design', 'documentation', 'dotnet', 'i18n', 'localization', 'logging', 'machine-learning', 'mstest', 'optimization', 'owasp', 'performance', 'prompt', 'security', 'task', 'testing']
 ---
 # .NET/C# Best Practices
 

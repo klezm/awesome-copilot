@@ -1,7 +1,7 @@
 ---
 description: 'Playwright test generation instructions'
 applyTo: '**'
-tags: []
+tags: ['a11y', 'accessibility', 'administration', 'ai', 'async', 'backend', 'concurrency', 'database', 'e2e', 'go', 'guidelines', 'instructions', 'machine-learning', 'playwright', 'standards', 'testing', 'typescript', 'web']
 ---
 
 ## Test Writing Guidelines

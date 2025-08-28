@@ -1,7 +1,7 @@
 ---
 applyTo: '*'
 description: 'The most comprehensive, practical, and engineer-authored performance optimization instructions for all languages, frameworks, and stacks. Covers frontend, backend, and database best practices with actionable guidance, scenario-based checklists, troubleshooting, and pro tips.'
-tags: []
+tags: ['a11y', 'accessibility', 'ai', 'angular', 'api', 'architecture', 'async', 'automation', 'azure', 'backend', 'caching', 'cloud', 'concurrency', 'database', 'design', 'frontend', 'go', 'guidelines', 'instructions', 'java', 'javascript', 'logging', 'machine-learning', 'memory-management', 'microsoft', 'mobile', 'monitoring', 'nodejs', 'observability', 'optimization', 'owasp', 'performance', 'python', 'react', 'rust', 'security', 'sql', 'standards', 'systems', 'task', 'testing', 'typescript', 'ui', 'vue', 'web']
 ---
 
 # Performance Optimization Best Practices

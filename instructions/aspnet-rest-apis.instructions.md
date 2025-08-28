@@ -1,7 +1,7 @@
 ---
 description: 'Guidelines for building REST APIs with ASP.NET'
 applyTo: '**/*.cs, **/*.json'
-tags: []
+tags: ['ai', 'api', 'architecture', 'async', 'azure', 'backend', 'caching', 'ci-cd', 'cloud', 'concurrency', 'containerization', 'database', 'deployment', 'design', 'devops', 'docker', 'documentation', 'go', 'guidelines', 'instructions', 'logging', 'machine-learning', 'memory-management', 'microsoft', 'monitoring', 'observability', 'optimization', 'performance', 'sql', 'standards', 'testing', 'web']
 ---
 
 # ASP.NET REST API Development

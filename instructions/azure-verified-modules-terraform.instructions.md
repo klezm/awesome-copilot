@@ -1,7 +1,7 @@
 ---
 description: ' Azure Verified Modules (AVM) and Terraform'
 applyTo: '**/*.terraform, **/*.tf, **/*.tfvars, **/*.tfstate, **/*.tflint.hcl, **/*.tf.json, **/*.tfvars.json'
-tags: []
+tags: ['agent', 'ai', 'autonomous', 'azure', 'bicep', 'cloud', 'deployment', 'devops', 'documentation', 'guidelines', 'iac', 'instructions', 'machine-learning', 'microsoft', 'standards', 'terraform', 'testing']
 ---
 
 # Azure Verified Modules (AVM) Terraform

@@ -1,8 +1,8 @@
 ---
 mode: 'agent'
 description: 'Update an existing specification file for the solution, optimized for Generative AI consumption based on new requirements or updates to any existing code.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
-tags: []
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']'
+tags: ['agent', 'ai', 'api', 'architecture', 'automation', 'autonomous', 'backend', 'c#', 'design', 'documentation', 'go', 'machine-learning', 'mstest', 'optimization', 'owasp', 'performance', 'prompt', 'security', 'task', 'testing']
 ---
 # Update Specification
 

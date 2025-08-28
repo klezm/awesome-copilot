@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Prompt for creating Product Requirements Documents (PRDs) for new features, based on an Epic.'
-tags: []
+tags: ['a11y', 'accessibility', 'agent', 'ai', 'architecture', 'automation', 'autonomous', 'backend', 'design', 'go', 'machine-learning', 'optimization', 'owasp', 'performance', 'prompt', 'security', 'task']
 ---
 
 # Feature PRD Prompt

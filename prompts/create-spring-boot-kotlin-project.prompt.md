@@ -1,8 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'findTestFiles', 'problems', 'runCommands', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'testFailure', 'usages']
+tools: '['changes', 'codebase', 'editFiles', 'findTestFiles', 'problems', 'runCommands', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'testFailure', 'usages']'
 description: 'Create Spring Boot Kotlin project skeleton'
-tags: []
+tags: ['agent', 'ai', 'api', 'automation', 'autonomous', 'backend', 'containerization', 'database', 'docker', 'frontend', 'go', 'java', 'junit', 'kotlin', 'machine-learning', 'prompt', 'react', 'sql', 'task', 'testing', 'typescript', 'web']
 ---
 
 # Create Spring Boot Kotlin project prompt

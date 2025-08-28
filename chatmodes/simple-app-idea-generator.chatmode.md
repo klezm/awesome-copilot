@@ -1,7 +1,7 @@
 ---
 description: 'Brainstorm and develop new application ideas through fun, interactive questioning until ready for specification creation.'
-tools: ['changes', 'codebase', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'search', 'searchResults', 'usages', 'microsoft.docs.mcp', 'websearch']
-tags: []
+tools: '['changes', 'codebase', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'search', 'searchResults', 'usages', 'microsoft.docs.mcp', 'websearch']'
+tags: ['ai', 'assistant', 'backend', 'chatmode', 'desktop', 'go', 'guidelines', 'machine-learning', 'mobile', 'persona', 'rust', 'standards', 'systems', 'web']
 ---
 # Idea Generator mode instructions
 

@@ -1,7 +1,7 @@
 ---
 description: 'Guidelines for generating modern Terraform code for Azure'
 applyTo: '**/*.tf'
-tags: []
+tags: ['ai', 'api', 'architecture', 'azure', 'backend', 'cloud', 'design', 'documentation', 'guidelines', 'iac', 'instructions', 'machine-learning', 'microsoft', 'standards', 'terraform', 'testing']
 ---
 
 ## 1. Use Latest Terraform and Providers

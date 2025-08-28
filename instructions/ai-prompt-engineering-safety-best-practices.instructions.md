@@ -1,7 +1,7 @@
 ---
-applyTo: ['*']
-description: "Comprehensive best practices for AI prompt engineering, safety frameworks, bias mitigation, and responsible AI usage for Copilot and LLMs."
-tags: []
+applyTo: '['*']'
+description: 'Comprehensive best practices for AI prompt engineering, safety frameworks, bias mitigation, and responsible AI usage for Copilot and LLMs.'
+tags: ['administration', 'ai', 'api', 'architecture', 'automation', 'aws', 'azure', 'backend', 'c#', 'cloud', 'database', 'design', 'documentation', 'frontend', 'go', 'guidelines', 'instructions', 'java', 'javascript', 'logging', 'machine-learning', 'memory-management', 'microsoft', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'prompt-engineering', 'python', 'rust', 'security', 'standards', 'systems', 'task', 'testing', 'tunit', 'typescript']
 ---
 
 # AI Prompt Engineering & Safety Best Practices

@@ -1,7 +1,7 @@
 ---
 description: 'Best practices for Azure DevOps Pipeline YAML files'
 applyTo: '**/azure-pipelines.yml, **/azure-pipelines*.yml, **/*.pipeline.yml'
-tags: []
+tags: ['administration', 'agent', 'ai', 'autonomous', 'azure', 'bicep', 'c#', 'caching', 'ci-cd', 'cloud', 'containerization', 'database', 'deployment', 'devops', 'docker', 'guidelines', 'iac', 'instructions', 'java', 'junit', 'logging', 'machine-learning', 'microsoft', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'security', 'standards', 'terraform', 'testing', 'tunit', 'web']
 ---
 
 # Azure DevOps Pipeline YAML Best Practices

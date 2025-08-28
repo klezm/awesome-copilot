@@ -1,7 +1,7 @@
 ---
 description: 'Guidelines for localizing markdown documents'
 applyTo: '**/*.md'
-tags: []
+tags: ['ai', 'guidelines', 'i18n', 'instructions', 'localization', 'machine-learning', 'standards']
 ---
 
 # Guidance for Localization

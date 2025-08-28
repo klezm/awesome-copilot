@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Prompt for creating detailed feature implementation plans, following Epoch monorepo structure.'
-tags: []
+tags: ['agent', 'ai', 'api', 'architecture', 'automation', 'autonomous', 'backend', 'caching', 'containerization', 'database', 'deployment', 'design', 'devops', 'docker', 'documentation', 'frontend', 'go', 'machine-learning', 'optimization', 'owasp', 'performance', 'prompt', 'react', 'security', 'task', 'typescript', 'ui']
 ---
 
 # Feature Implementation Plan Prompt

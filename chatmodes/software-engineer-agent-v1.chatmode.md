@@ -1,7 +1,7 @@
 ---
 description: 'Expert-level software engineering agent. Deliver production-ready, maintainable code. Execute systematically and specification-driven. Document comprehensively. Operate autonomously and adaptively.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github']
-tags: []
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github']'
+tags: ['agent', 'ai', 'api', 'architecture', 'assistant', 'autonomous', 'backend', 'chatmode', 'design', 'documentation', 'go', 'guidelines', 'machine-learning', 'optimization', 'owasp', 'performance', 'persona', 'security', 'standards', 'testing']
 ---
 # Software Engineer Agent v1
 

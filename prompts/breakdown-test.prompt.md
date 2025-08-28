@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Test Planning and Quality Assurance prompt that generates comprehensive test strategies, task breakdowns, and quality validation plans for GitHub projects.'
-tags: []
+tags: ['a11y', 'accessibility', 'administration', 'agent', 'ai', 'api', 'architecture', 'automation', 'autonomous', 'backend', 'c#', 'database', 'design', 'documentation', 'e2e', 'frontend', 'go', 'machine-learning', 'mobile', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'playwright', 'prompt', 'security', 'task', 'testing', 'tunit', 'ui']
 ---
 
 # Test Planning & Quality Assurance Prompt

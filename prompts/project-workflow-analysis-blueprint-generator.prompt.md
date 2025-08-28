@@ -1,9 +1,7 @@
 ---
-
 description: 'Comprehensive technology-agnostic prompt generator for documenting end-to-end application workflows. Automatically detects project architecture patterns, technology stacks, and data flow patterns to generate detailed implementation blueprints covering entry points, service layers, data access, error handling, and testing approaches across multiple technologies including .NET, Java/Spring, React, and microservices architectures.'
-
 mode: 'agent'
-tags: []
+tags: ['agent', 'ai', 'angular', 'api', 'architecture', 'async', 'automation', 'autonomous', 'backend', 'concurrency', 'database', 'design', 'documentation', 'frontend', 'guidelines', 'java', 'logging', 'machine-learning', 'optimization', 'performance', 'prompt', 'python', 'react', 'sql', 'standards', 'task', 'testing', 'typescript', 'ui', 'web']
 ---
 # Project Workflow Documentation Generator
 

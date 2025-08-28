@@ -1,7 +1,7 @@
 ---
 description: 'Angular-specific coding standards and best practices'
 applyTo: '**/*.ts, **/*.html, **/*.scss, **/*.css'
-tags: []
+tags: ['a11y', 'accessibility', 'administration', 'ai', 'angular', 'api', 'architecture', 'async', 'backend', 'caching', 'concurrency', 'database', 'design', 'e2e', 'frontend', 'guidelines', 'instructions', 'machine-learning', 'optimization', 'owasp', 'performance', 'playwright', 'react', 'security', 'standards', 'testing', 'typescript']
 ---
 
 # Angular Development Instructions

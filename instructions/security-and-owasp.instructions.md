@@ -1,7 +1,7 @@
 ---
 applyTo: '*'
-description: "Comprehensive secure coding instructions for all languages and frameworks, based on OWASP Top 10 and industry best practices."
-tags: []
+description: 'Comprehensive secure coding instructions for all languages and frameworks, based on OWASP Top 10 and industry best practices.'
+tags: ['ai', 'api', 'aws', 'backend', 'cloud', 'database', 'frontend', 'go', 'guidelines', 'instructions', 'java', 'javascript', 'machine-learning', 'owasp', 'python', 'rust', 'security', 'sql', 'standards', 'systems', 'testing', 'ui', 'web']
 ---
 # Secure Coding and OWASP Guidelines
 

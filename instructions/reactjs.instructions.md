@@ -1,7 +1,7 @@
 ---
 description: 'ReactJS development standards and best practices'
 applyTo: '**/*.jsx, **/*.tsx, **/*.js, **/*.ts, **/*.css, **/*.scss'
-tags: []
+tags: ['a11y', 'accessibility', 'ai', 'api', 'architecture', 'async', 'backend', 'caching', 'concurrency', 'debugging', 'deployment', 'design', 'devops', 'documentation', 'frontend', 'guidelines', 'instructions', 'javascript', 'jest', 'machine-learning', 'memory-management', 'mobile', 'optimization', 'owasp', 'performance', 'react', 'security', 'standards', 'testing', 'troubleshooting', 'typescript', 'web']
 ---
 
 # ReactJS Development Instructions

@@ -1,7 +1,7 @@
 ---
 description: 'Guidelines for building C# applications'
 applyTo: '**/*.cs'
-tags: []
+tags: ['ai', 'api', 'async', 'azure', 'backend', 'c#', 'caching', 'ci-cd', 'cloud', 'concurrency', 'containerization', 'database', 'deployment', 'devops', 'docker', 'documentation', 'dotnet', 'go', 'guidelines', 'instructions', 'logging', 'machine-learning', 'memory-management', 'microsoft', 'monitoring', 'observability', 'optimization', 'performance', 'rust', 'sql', 'standards', 'systems', 'testing']
 ---
 
 # C# Development

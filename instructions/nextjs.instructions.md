@@ -1,6 +1,6 @@
 ---
 applyTo: '**'
-tags: []
+tags: ['a11y', 'accessibility', 'ai', 'api', 'async', 'backend', 'concurrency', 'documentation', 'e2e', 'frontend', 'fullstack', 'go', 'guidelines', 'instructions', 'javascript', 'jest', 'machine-learning', 'nextjs', 'optimization', 'owasp', 'performance', 'playwright', 'react', 'security', 'standards', 'testing', 'typescript', 'web']
 ---
 
 # Next.js Best Practices for LLMs (2025)

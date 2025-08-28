@@ -1,7 +1,7 @@
 ---
 description: 'Challenge assumptions and encourage critical thinking to ensure the best possible solution and outcomes.'
-tools: ['codebase', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'problems', 'search', 'searchResults', 'usages']
-tags: []
+tools: '['codebase', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'problems', 'search', 'searchResults', 'usages']'
+tags: ['ai', 'assistant', 'aws', 'backend', 'chatmode', 'cloud', 'go', 'guidelines', 'machine-learning', 'persona', 'standards', 'testing']
 ---
 # Critical thinking mode instructions
 

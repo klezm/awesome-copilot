@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure resource health, diagnose issues from logs and telemetry, and create a remediation plan for identified problems.'
-tags: []
+tags: ['agent', 'ai', 'api', 'architecture', 'automation', 'autonomous', 'azure', 'backend', 'c#', 'cloud', 'database', 'deployment', 'design', 'devops', 'documentation', 'frontend', 'go', 'machine-learning', 'memory-management', 'microsoft', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'prompt', 'react', 'security', 'sql', 'task', 'testing', 'tunit', 'typescript', 'web']
 ---
 
 # Azure Resource Health & Issue Diagnosis

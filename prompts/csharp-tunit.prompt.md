@@ -1,8 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'problems', 'search']
+tools: '['changes', 'codebase', 'editFiles', 'problems', 'search']'
 description: 'Get best practices for TUnit unit testing, including data-driven tests'
-tags: []
+tags: ['agent', 'ai', 'async', 'automation', 'autonomous', 'backend', 'c#', 'concurrency', 'dotnet', 'go', 'machine-learning', 'nunit', 'optimization', 'performance', 'prompt', 'task', 'testing', 'tunit', 'xunit']
 ---
 
 # TUnit Best Practices

@@ -1,7 +1,7 @@
 ---
 description: 'Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']
-tags: []
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']'
+tags: ['ai', 'api', 'assistant', 'backend', 'chatmode', 'cleanup', 'code-quality', 'deployment', 'devops', 'documentation', 'machine-learning', 'maintenance', 'optimization', 'owasp', 'performance', 'persona', 'refactoring', 'security', 'testing']
 ---
 # Universal Janitor
 

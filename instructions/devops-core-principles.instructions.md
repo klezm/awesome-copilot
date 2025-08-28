@@ -1,7 +1,7 @@
 ---
 applyTo: '*'
 description: 'Foundational instructions covering core DevOps principles, culture (CALMS), and key metrics (DORA) to guide GitHub Copilot in understanding and promoting effective software delivery.'
-tags: []
+tags: ['a11y', 'accessibility', 'administration', 'ai', 'api', 'architecture', 'automation', 'backend', 'c#', 'caching', 'ci-cd', 'code-quality', 'database', 'debugging', 'deployment', 'design', 'devops', 'documentation', 'go', 'guidelines', 'iac', 'instructions', 'logging', 'machine-learning', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'refactoring', 'rust', 'security', 'standards', 'systems', 'task', 'terraform', 'testing', 'troubleshooting', 'tunit']
 ---
 
 # DevOps Core Principles

@@ -1,7 +1,7 @@
 ---
 description: 'Expert assistance for Joyride Workspace automation - REPL-driven and user space ClojureScript automation within specific VS Code workspaces'
 applyTo: '.joyride/**/*.*'
-tags: []
+tags: ['agent', 'ai', 'api', 'autonomous', 'backend', 'clojure', 'functional', 'go', 'guidelines', 'instructions', 'machine-learning', 'standards', 'testing']
 ---
 
 # Joyride Workspace Automation Assistant

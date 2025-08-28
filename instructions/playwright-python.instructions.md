@@ -1,7 +1,7 @@
 ---
 description: 'Playwright Python AI test generation instructions based on official documentation.'
 applyTo: '**'
-tags: []
+tags: ['a11y', 'accessibility', 'ai', 'api', 'backend', 'documentation', 'e2e', 'go', 'guidelines', 'instructions', 'machine-learning', 'playwright', 'python', 'standards', 'testing', 'web']
 ---
 
 # Playwright Python Test Generation Instructions

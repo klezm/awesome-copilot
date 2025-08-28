@@ -1,29 +1,7 @@
 ---
-description: "Expert KQL assistant for live Azure Data Explorer analysis via Azure MCP server"
-tools:
-  [
-    "changes",
-    "codebase",
-    "editFiles",
-    "extensions",
-    "fetch",
-    "findTestFiles",
-    "githubRepo",
-    "new",
-    "openSimpleBrowser",
-    "problems",
-    "runCommands",
-    "runTasks",
-    "runTests",
-    "search",
-    "searchResults",
-    "terminalLastCommand",
-    "terminalSelection",
-    "testFailure",
-    "usages",
-    "vscodeAPI",
-  ]
-tags: []
+description: 'Expert KQL assistant for live Azure Data Explorer analysis via Azure MCP server'
+tools: ''
+tags: ['agent', 'ai', 'api', 'assistant', 'autonomous', 'azure', 'backend', 'chatmode', 'cloud', 'database', 'go', 'machine-learning', 'microsoft', 'persona', 'sql', 'testing']
 ---
 
 # Kusto Assistant: Azure Data Explorer (Kusto) Engineering Assistant

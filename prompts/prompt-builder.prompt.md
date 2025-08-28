@@ -1,8 +1,8 @@
 ---
 mode: 'agent'
-tools: ['codebase', 'editFiles', 'search']
+tools: '['codebase', 'editFiles', 'search']'
 description: 'Guide users through creating high-quality GitHub Copilot prompts with proper structure, tools, and best practices.'
-tags: []
+tags: ['agent', 'ai', 'api', 'architecture', 'automation', 'autonomous', 'backend', 'c#', 'code-quality', 'design', 'documentation', 'dotnet', 'e2e', 'frontend', 'go', 'guidelines', 'machine-learning', 'performance', 'playwright', 'prompt', 'react', 'refactoring', 'standards', 'task', 'testing', 'typescript', 'xunit']
 ---
 
 # Professional Prompt Builder

@@ -1,7 +1,7 @@
 ---
 description: 'Technology-agnostic blueprint generator for creating comprehensive copilot-instructions.md files that guide GitHub Copilot to produce code consistent with project standards, architecture patterns, and exact technology versions by analyzing existing codebase patterns and avoiding assumptions.'
 mode: 'agent'
-tags: []
+tags: ['a11y', 'accessibility', 'agent', 'ai', 'angular', 'api', 'architecture', 'async', 'automation', 'autonomous', 'backend', 'c#', 'caching', 'code-quality', 'concurrency', 'design', 'documentation', 'dotnet', 'frontend', 'guidelines', 'java', 'javascript', 'logging', 'machine-learning', 'memory-management', 'optimization', 'owasp', 'performance', 'prompt', 'python', 'react', 'refactoring', 'security', 'standards', 'task', 'tdd', 'testing', 'typescript']
 ---
 
 # Copilot Instructions Blueprint Generator

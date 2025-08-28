@@ -1,7 +1,7 @@
 ---
 description: 'Authoring recommendations for creating YAML based image definition files for use with Microsoft Dev Box Team Customizations'
 applyTo: '**/*.yaml'
-tags: []
+tags: ['agent', 'ai', 'api', 'automation', 'autonomous', 'azure', 'backend', 'cloud', 'database', 'desktop', 'documentation', 'guidelines', 'instructions', 'machine-learning', 'microsoft', 'optimization', 'organization', 'owasp', 'performance', 'planning', 'powershell', 'rust', 'scripting', 'security', 'standards', 'systems', 'task', 'testing', 'web']
 ---
 
 # Dev Box image definitions

@@ -1,7 +1,7 @@
 ---
 applyTo: '**/*.{cs,ts,java}'
-description: Enforces Object Calisthenics principles for business domain code to ensure clean, maintainable, and robust code
-tags: []
+description: 'Enforces Object Calisthenics principles for business domain code to ensure clean, maintainable, and robust code'
+tags: ['ai', 'api', 'backend', 'c#', 'dotnet', 'go', 'guidelines', 'instructions', 'java', 'machine-learning', 'standards', 'tdd', 'testing']
 ---
 # Object Calisthenics Rules
 

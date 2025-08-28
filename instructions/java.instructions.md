@@ -1,7 +1,7 @@
 ---
 description: 'Guidelines for building Java base applications'
 applyTo: '**/*.java'
-tags: []
+tags: ['ai', 'api', 'automation', 'backend', 'code-quality', 'go', 'guidelines', 'instructions', 'java', 'machine-learning', 'optimization', 'performance', 'refactoring', 'standards', 'task', 'testing']
 ---
 
 # Java Development

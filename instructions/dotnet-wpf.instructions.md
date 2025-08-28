@@ -1,7 +1,7 @@
 ---
 description: '.NET WPF component and application patterns'
 applyTo: '**/*.xaml, **/*.cs'
-tags: []
+tags: ['ai', 'async', 'automation', 'backend', 'c#', 'concurrency', 'desktop', 'dotnet', 'go', 'guidelines', 'instructions', 'machine-learning', 'optimization', 'performance', 'standards', 'task', 'testing', 'wpf']
 ---
 
 ## Summary

@@ -1,8 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'problems', 'search']
+tools: '['changes', 'codebase', 'editFiles', 'problems', 'search']'
 description: 'Get best practices for developing applications with Spring Boot and Kotlin.'
-tags: []
+tags: ['agent', 'ai', 'api', 'async', 'automation', 'autonomous', 'aws', 'backend', 'cloud', 'concurrency', 'database', 'frontend', 'go', 'java', 'junit', 'kotlin', 'logging', 'machine-learning', 'optimization', 'performance', 'prompt', 'react', 'springboot', 'task', 'testing', 'typescript', 'web']
 ---
 
 # Spring Boot with Kotlin Best Practices

@@ -1,7 +1,7 @@
 ---
 description: 'Transform this Python script into a polished, beginner-friendly project by refactoring the code, adding clear instructional comments, and generating a complete markdown tutorial.'
 mode: 'agent'
-tags: []
+tags: ['agent', 'ai', 'automation', 'autonomous', 'backend', 'code-quality', 'guidelines', 'machine-learning', 'prompt', 'python', 'refactoring', 'standards', 'task']
 ---
 
 Transform this Python script into a polished, beginner-friendly project by refactoring the code, adding clear instructional comments, and generating a complete markdown tutorial.

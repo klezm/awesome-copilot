@@ -1,8 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'problems']
+tools: '['changes', 'codebase', 'editFiles', 'problems']'
 description: 'Ensure that C# types are documented with XML comments and follow best practices for documentation.'
-tags: []
+tags: ['agent', 'ai', 'automation', 'autonomous', 'c#', 'documentation', 'dotnet', 'machine-learning', 'prompt', 'task']
 ---
 
 # C# Documentation Best Practices

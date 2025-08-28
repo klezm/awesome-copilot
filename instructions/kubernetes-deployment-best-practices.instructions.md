@@ -1,7 +1,7 @@
 ---
 applyTo: '*'
 description: 'Comprehensive best practices for deploying and managing applications on Kubernetes. Covers Pods, Deployments, Services, Ingress, ConfigMaps, Secrets, health checks, resource limits, scaling, and security contexts.'
-tags: []
+tags: ['administration', 'agent', 'ai', 'api', 'autonomous', 'aws', 'azure', 'backend', 'cloud', 'database', 'deployment', 'devops', 'guidelines', 'instructions', 'kubernetes', 'logging', 'machine-learning', 'memory-management', 'microsoft', 'monitoring', 'observability', 'optimization', 'orchestration', 'owasp', 'performance', 'rust', 'security', 'standards', 'systems', 'testing', 'web']
 ---
 
 # Kubernetes Deployment Best Practices

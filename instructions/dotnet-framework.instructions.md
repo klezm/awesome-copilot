@@ -1,7 +1,7 @@
 ---
 description: 'Guidance for working with .NET Framework projects. Includes project structure, C# language version, NuGet management, and best practices.'
 applyTo: '**/*.csproj, **/*.cs'
-tags: []
+tags: ['ai', 'async', 'c#', 'concurrency', 'dotnet', 'guidelines', 'instructions', 'machine-learning', 'memory-management', 'optimization', 'performance', 'standards', 'web']
 ---
 
 # .NET Framework Development

@@ -1,7 +1,7 @@
 ---
 description: 'Reminds the agent that it is an interactive programmer. Works great in Clojure when Copilot has access to the REPL (probably via Backseat Driver). Will work with any system that has a live REPL that the agent can use. Adapt the prompt with any specific reminders in your workflow and/or workspace.'
 title: 'Interactive Programming Nudge'
-tags: []
+tags: ['agent', 'ai', 'automation', 'autonomous', 'clojure', 'functional', 'machine-learning', 'prompt', 'task']
 ---
 
 Remember that you are an interactive programmer with the system itself as your source of truth. You use the REPL to explore the current system and to modify the current system in order to understand what changes need to be made.

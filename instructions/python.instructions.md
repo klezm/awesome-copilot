@@ -1,7 +1,7 @@
 ---
 description: 'Python coding conventions and guidelines'
 applyTo: '**/*.py'
-tags: []
+tags: ['ai', 'backend', 'documentation', 'go', 'guidelines', 'instructions', 'machine-learning', 'python', 'standards', 'testing']
 ---
 
 # Python Coding Conventions

@@ -1,7 +1,7 @@
 ---
 description: 'AI-powered script generation guidelines'
 applyTo: '**/*.genai.*'
-tags: []
+tags: ['ai', 'api', 'backend', 'guidelines', 'instructions', 'machine-learning', 'standards', 'typescript']
 ---
 
 ## Role

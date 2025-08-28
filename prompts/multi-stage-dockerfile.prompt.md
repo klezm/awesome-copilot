@@ -1,8 +1,8 @@
 ---
 mode: 'agent'
-tools: ['codebase']
+tools: '['codebase']'
 description: 'Create optimized multi-stage Dockerfiles for any language or framework'
-tags: []
+tags: ['agent', 'ai', 'automation', 'autonomous', 'backend', 'caching', 'containerization', 'docker', 'go', 'guidelines', 'machine-learning', 'optimization', 'owasp', 'performance', 'prompt', 'python', 'security', 'standards', 'task', 'testing']
 ---
 
 Your goal is to help me create efficient multi-stage Dockerfiles that follow best practices, resulting in smaller, more secure container images.

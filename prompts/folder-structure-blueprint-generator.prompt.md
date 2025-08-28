@@ -1,7 +1,7 @@
 ---
 description: 'Comprehensive technology-agnostic prompt for analyzing and documenting project folder structures. Auto-detects project types (.NET, Java, React, Angular, Python, Node.js, Flutter), generates detailed blueprints with visualization options, naming conventions, file placement patterns, and extension templates for maintaining consistent code organization across diverse technology stacks.'
 mode: 'agent'
-tags: []
+tags: ['agent', 'ai', 'angular', 'api', 'architecture', 'automation', 'autonomous', 'backend', 'code-quality', 'containerization', 'dart', 'deployment', 'design', 'devops', 'docker', 'documentation', 'flutter', 'frontend', 'go', 'i18n', 'java', 'javascript', 'localization', 'machine-learning', 'mobile', 'prompt', 'python', 'react', 'refactoring', 'task', 'testing', 'typescript', 'ui', 'web']
 ---
 
 # Project Folder Structure Blueprint Generator

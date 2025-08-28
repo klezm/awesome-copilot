@@ -1,7 +1,7 @@
 ---
 description: 'Expert assistance for Joyride User Script projects - REPL-driven ClojureScript and user space automation of VS Code'
 applyTo: 'scripts/**/*.cljs,src/**/*.cljs,deps.edn,.joyride/**/*.cljs'
-tags: []
+tags: ['agent', 'ai', 'api', 'autonomous', 'backend', 'clojure', 'functional', 'go', 'guidelines', 'instructions', 'machine-learning', 'standards', 'testing']
 ---
 
 # Joyride User Script Project Assistant

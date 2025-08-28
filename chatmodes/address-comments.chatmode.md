@@ -1,31 +1,7 @@
 ---
-description: "Address PR comments"
-tools:
-  [
-    "changes",
-    "codebase",
-    "editFiles",
-    "extensions",
-    "fetch",
-    "findTestFiles",
-    "githubRepo",
-    "new",
-    "openSimpleBrowser",
-    "problems",
-    "runCommands",
-    "runTasks",
-    "runTests",
-    "search",
-    "searchResults",
-    "terminalLastCommand",
-    "terminalSelection",
-    "testFailure",
-    "usages",
-    "vscodeAPI",
-    "microsoft.docs.mcp",
-    "github",
-  ]
-tags: []
+description: 'Address PR comments'
+tools: ''
+tags: ['ai', 'api', 'assistant', 'backend', 'c#', 'chatmode', 'machine-learning', 'persona', 'testing', 'tunit']
 ---
 
 # Universal PR Comment Addresser

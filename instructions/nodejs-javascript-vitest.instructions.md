@@ -1,7 +1,7 @@
 ---
-description: "Guidelines for writing Node.js and JavaScript code with Vitest testing"
+description: 'Guidelines for writing Node.js and JavaScript code with Vitest testing'
 applyTo: '**/*.js, **/*.mjs, **/*.cjs'
-tags: []
+tags: ['ai', 'async', 'backend', 'concurrency', 'documentation', 'frontend', 'guidelines', 'instructions', 'java', 'javascript', 'machine-learning', 'nodejs', 'standards', 'testing', 'vitest']
 ---
 
 # Code Generation Guidelines

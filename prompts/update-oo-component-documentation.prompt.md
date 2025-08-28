@@ -1,8 +1,8 @@
 ---
 mode: 'agent'
 description: 'Update existing object-oriented component documentation following industry best practices and architectural documentation standards.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
-tags: []
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']'
+tags: ['agent', 'ai', 'api', 'architecture', 'async', 'automation', 'autonomous', 'backend', 'c#', 'concurrency', 'database', 'design', 'documentation', 'dotnet', 'frontend', 'go', 'guidelines', 'java', 'javascript', 'machine-learning', 'optimization', 'owasp', 'performance', 'prompt', 'python', 'security', 'standards', 'task', 'testing', 'typescript']
 ---
 # Update Standard OO Component Documentation
 

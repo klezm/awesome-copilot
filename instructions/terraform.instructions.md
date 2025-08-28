@@ -1,7 +1,7 @@
 ---
 description: 'Terraform Conventions and Guidelines'
 applyTo: '**/*.tf'
-tags: []
+tags: ['ai', 'api', 'aws', 'backend', 'cloud', 'deployment', 'devops', 'documentation', 'guidelines', 'iac', 'instructions', 'machine-learning', 'owasp', 'security', 'standards', 'terraform', 'testing']
 ---
 
 # Terraform Conventions

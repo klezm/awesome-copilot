@@ -1,9 +1,9 @@
 ---
 description: 'Accessibility mode.'
-model: GPT-4.1
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
+model: 'GPT-4.1'
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']'
 title: 'Accessibility mode'
-tags: []
+tags: ['a11y', 'accessibility', 'agent', 'ai', 'api', 'assistant', 'autonomous', 'backend', 'chatmode', 'frontend', 'guidelines', 'java', 'javascript', 'machine-learning', 'persona', 'react', 'standards', 'testing', 'typescript', 'web']
 ---
 
 ## ⚠️ Accessibility is a Priority in This Project

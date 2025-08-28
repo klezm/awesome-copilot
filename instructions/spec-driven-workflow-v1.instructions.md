@@ -1,7 +1,7 @@
 ---
 description: 'Specification-Driven Workflow v1 provides a structured approach to software development, ensuring that requirements are clearly defined, designs are meticulously planned, and implementations are thoroughly documented and validated.'
 applyTo: '**'
-tags: []
+tags: ['agent', 'ai', 'api', 'architecture', 'autonomous', 'backend', 'code-quality', 'database', 'deployment', 'design', 'devops', 'documentation', 'go', 'guidelines', 'instructions', 'machine-learning', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'refactoring', 'security', 'standards', 'testing']
 ---
 # Spec Driven Workflow v1
 

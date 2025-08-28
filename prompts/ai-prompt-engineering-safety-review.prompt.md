@@ -1,7 +1,7 @@
 ---
-description: "Comprehensive AI prompt engineering safety review and improvement prompt. Analyzes prompts for safety, bias, security vulnerabilities, and effectiveness while providing detailed improvement recommendations with extensive frameworks, testing methodologies, and educational content."
+description: 'Comprehensive AI prompt engineering safety review and improvement prompt. Analyzes prompts for safety, bias, security vulnerabilities, and effectiveness while providing detailed improvement recommendations with extensive frameworks, testing methodologies, and educational content.'
 mode: 'agent'
-tags: []
+tags: ['agent', 'ai', 'automation', 'autonomous', 'backend', 'documentation', 'go', 'guidelines', 'machine-learning', 'optimization', 'owasp', 'performance', 'prompt', 'prompt-engineering', 'security', 'standards', 'task', 'testing']
 ---
 
 # AI Prompt Engineering Safety Review & Improvement

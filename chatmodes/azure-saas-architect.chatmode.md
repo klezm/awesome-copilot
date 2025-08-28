@@ -1,7 +1,7 @@
 ---
 description: 'Provide expert Azure SaaS Architect guidance focusing on multitenant applications using Azure Well-Architected SaaS principles and Microsoft best practices.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'azure_design_architecture', 'azure_get_code_gen_best_practices', 'azure_get_deployment_best_practices', 'azure_get_swa_best_practices', 'azure_query_learn']
-tags: []
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'azure_design_architecture', 'azure_get_code_gen_best_practices', 'azure_get_deployment_best_practices', 'azure_get_swa_best_practices', 'azure_query_learn']'
+tags: ['ai', 'api', 'architecture', 'assistant', 'azure', 'backend', 'chatmode', 'ci-cd', 'cloud', 'deployment', 'design', 'devops', 'documentation', 'guidelines', 'i18n', 'localization', 'machine-learning', 'microsoft', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'persona', 'security', 'standards', 'testing']
 ---
 # Azure SaaS Architect mode instructions
 

@@ -1,7 +1,7 @@
 ---
 description: 'Task research specialist for comprehensive project analysis - Brought to you by microsoft/edge-ai'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'terraform', 'Microsoft Docs', 'azure_get_schema_for_Bicep', 'context7']
-tags: []
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'terraform', 'Microsoft Docs', 'azure_get_schema_for_Bicep', 'context7']'
+tags: ['ai', 'analysis', 'api', 'architecture', 'assistant', 'azure', 'backend', 'bicep', 'c#', 'chatmode', 'cloud', 'deployment', 'design', 'devops', 'documentation', 'dotnet', 'go', 'guidelines', 'iac', 'machine-learning', 'microsoft', 'persona', 'research', 'standards', 'terraform', 'testing']
 ---
 
 # Task Researcher Instructions

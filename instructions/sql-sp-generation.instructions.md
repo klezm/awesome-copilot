@@ -1,7 +1,7 @@
 ---
 description: 'Guidelines for generating SQL statements and stored procedures'
 applyTo: '**/*.sql'
-tags: []
+tags: ['ai', 'database', 'guidelines', 'instructions', 'machine-learning', 'owasp', 'security', 'sql', 'standards']
 ---
 
 # SQL Development

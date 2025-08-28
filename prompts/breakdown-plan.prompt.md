@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Issue Planning and Automation prompt that generates comprehensive project plans with Epic > Feature > Story/Enabler > Test hierarchy, dependencies, priorities, and automated tracking.'
-tags: []
+tags: ['a11y', 'accessibility', 'agent', 'ai', 'api', 'architecture', 'automation', 'autonomous', 'backend', 'ci-cd', 'database', 'design', 'devops', 'documentation', 'frontend', 'go', 'machine-learning', 'monitoring', 'observability', 'optimization', 'performance', 'prompt', 'task', 'testing', 'ui']
 ---
 
 # GitHub Issue Planning & Project Automation Prompt

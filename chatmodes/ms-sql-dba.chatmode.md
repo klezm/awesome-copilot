@@ -1,7 +1,7 @@
 ---
 description: 'Work with Microsoft SQL Server databases using the MS SQL extension.'
-tools: ['codebase', 'editFiles', 'githubRepo', 'extensions', 'runCommands', 'database', 'mssql_connect', 'mssql_query', 'mssql_listServers', 'mssql_listDatabases', 'mssql_disconnect', 'mssql_visualizeSchema']
-tags: []
+tools: '['codebase', 'editFiles', 'githubRepo', 'extensions', 'runCommands', 'database', 'mssql_connect', 'mssql_query', 'mssql_listServers', 'mssql_listDatabases', 'mssql_disconnect', 'mssql_visualizeSchema']'
+tags: ['administration', 'ai', 'assistant', 'chatmode', 'database', 'documentation', 'machine-learning', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'persona', 'security', 'sql']
 ---
 
 # MS-SQL Database Administrator

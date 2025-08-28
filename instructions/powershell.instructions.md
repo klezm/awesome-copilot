@@ -1,7 +1,7 @@
 ---
 applyTo: '**/*.ps1,**/*.psm1'
 description: 'PowerShell cmdlet and scripting best practices based on Microsoft guidelines'
-tags: []
+tags: ['ai', 'documentation', 'guidelines', 'instructions', 'machine-learning', 'powershell', 'scripting', 'standards', 'testing']
 ---
 
 # PowerShell Cmdlet Development Guidelines

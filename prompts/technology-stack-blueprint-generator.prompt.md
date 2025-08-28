@@ -1,7 +1,7 @@
 ---
 description: 'Comprehensive technology stack blueprint generator that analyzes codebases to create detailed architectural documentation. Automatically detects technology stacks, programming languages, and implementation patterns across multiple platforms (.NET, Java, JavaScript, React, Python). Generates configurable blueprints with version information, licensing details, usage patterns, coding conventions, and visual diagrams. Provides implementation-ready templates and maintains architectural consistency for guided development.'
 mode: 'agent'
-tags: []
+tags: ['agent', 'ai', 'angular', 'api', 'architecture', 'automation', 'autonomous', 'backend', 'deployment', 'design', 'devops', 'documentation', 'frontend', 'go', 'java', 'javascript', 'logging', 'machine-learning', 'monitoring', 'observability', 'performance', 'prompt', 'python', 'react', 'task', 'testing', 'typescript', 'ui', 'web']
 ---
 
 # Comprehensive Technology Stack Blueprint Generator

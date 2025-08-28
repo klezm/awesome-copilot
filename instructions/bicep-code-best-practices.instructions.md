@@ -1,7 +1,7 @@
 ---
 description: 'Infrastructure as Code with Bicep'
 applyTo: '**/*.bicep'
-tags: []
+tags: ['ai', 'api', 'azure', 'backend', 'bicep', 'deployment', 'devops', 'documentation', 'guidelines', 'iac', 'instructions', 'machine-learning', 'owasp', 'security', 'standards', 'testing']
 ---
 
 ## Naming Conventions
