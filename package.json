@@ -5,6 +5,7 @@
   "main": "update-readme.js",
   "scripts": {
     "build": "node update-readme.js",
+    "build:website": "node scripts/build-website.js",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "contributors:check": "all-contributors check"

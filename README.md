@@ -15,6 +15,18 @@ This repository provides a comprehensive toolkit for enhancing GitHub Copilot wi
 - **[![Awesome Instructions](https://img.shields.io/badge/Awesome-Instructions-blue?logo=githubcopilot)](README.instructions.md)** - Comprehensive coding standards and best practices that apply to specific file patterns or entire projects
 - **[![Awesome Chat Modes](https://img.shields.io/badge/Awesome-Chat_Modes-blue?logo=githubcopilot)](README.chatmodes.md)** - Specialized AI personas and conversation modes for different roles and contexts
 
+## 🌐 Interactive Explorer
+
+**[![Explore Online](https://img.shields.io/badge/🌐_Explore-Interactive_Site-blue?style=for-the-badge)](https://klezm.github.io/awesome-copilot/)**
+
+Discover and explore all available prompts, instructions, and chat modes through our interactive web interface featuring:
+
+- 🔍 **Smart Search** - Find content across titles and descriptions
+- 🏷️ **Type Filtering** - Filter by prompts, instructions, or chat modes  
+- 📱 **Responsive Design** - Works perfectly on desktop and mobile
+- ♿ **Accessibility** - Full keyboard navigation and screen reader support
+- 🚀 **One-Click Install** - Direct VS Code installation links
+
 ## 🔧 How to Use
 
 ### 🎯 Prompts

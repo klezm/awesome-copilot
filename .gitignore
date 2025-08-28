@@ -4,3 +4,7 @@ Copilot-Processing.md
 
 # macOS system files
 .DS_Store
+
+# Generated files for GitHub Pages
+docs/data.json
+docs/index.html
