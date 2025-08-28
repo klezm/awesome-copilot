@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build && npm run build:website",
+  "outputDirectory": "docs",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "docs" }
+    }
+  ],
+  "routes": [
+    { "src": "(.*)", "dest": "/$1" }
+  ]
+}
