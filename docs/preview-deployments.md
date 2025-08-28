@@ -1,26 +1,38 @@
 # PR Preview Deployments
 
-This document explains how pull request preview deployments work in this repository using GitHub Actions and Vercel CLI.
+This document explains how pull request preview deployments work in this repository using GitHub Actions with dual deployment targets.
 
 ## Overview
 
-When you create a pull request, a GitHub Actions workflow automatically deploys your changes to Vercel, creating a preview deployment that allows reviewers and contributors to see live versions of changes before merging. This improves collaboration and review speed by making changes easily accessible.
+When you create a pull request, a unified GitHub Actions workflow automatically builds your changes and conditionally deploys them to both GitHub Pages (for production) and Vercel (for preview deployments). This approach provides preview URLs for reviewers while maintaining the existing GitHub Pages deployment for the main site.
 
 ## How It Works
 
-### GitHub Actions Workflow
+### Unified GitHub Actions Workflow
 
-The deployment process is handled by the `.github/workflows/deploy-vercel.yml` workflow:
+The deployment process is handled by the `.github/workflows/deploy-pages.yml` workflow:
 
 1. **Trigger**: Runs on every push to `main` branch and on all pull requests
-2. **Build Process**: Executes the standard build commands:
+2. **Single Build Process**: Executes the standard build commands once:
    ```bash
    npm run build
    npm run build:website
    ```
-3. **Vercel Deployment**: Uses Vercel CLI to deploy the built site
-4. **Preview URLs**: Posts preview URLs as comments on pull requests
-5. **Automatic Updates**: Every new push triggers a fresh deployment
+3. **Conditional Deployment**: 
+   - **GitHub Pages**: Deploys to production when merging to `main` branch
+   - **Vercel**: Deploys preview URLs for all pull requests (if Vercel secrets are configured)
+4. **Preview URLs**: Posts Vercel preview URLs as comments on pull requests
+5. **Automatic Updates**: Every new push triggers fresh deployments
+
+### Benefits of Unified Workflow
+
+This unified approach provides several advantages:
+
+- **Efficiency**: Single build process serves both deployment targets
+- **Consistency**: Same build artifacts used for both GitHub Pages and Vercel
+- **Resource Optimization**: Reduces CI/CD time and resource usage
+- **Flexibility**: Vercel previews are optional - workflow works even without Vercel secrets
+- **Maintainability**: Single workflow file to manage instead of multiple
 
 ### Vercel Configuration
 
@@ -67,15 +79,17 @@ https://awesome-copilot-{unique-hash}.vercel.app
 ### Workflow Status
 
 You can monitor deployment status in several ways:
-- **PR Checks**: Look for the "Deploy to Vercel" check in the PR
+- **PR Checks**: Look for the "Deploy Website" check in the PR
 - **Actions Tab**: View detailed logs in the repository's Actions tab
-- **PR Comments**: The workflow posts status updates and preview URLs
+- **PR Comments**: The workflow posts Vercel preview URLs and status updates
 
 ## For Maintainers
 
-### Required Secrets
+### Required Secrets (Optional for Vercel)
 
-The workflow requires these GitHub repository secrets to be configured:
+The workflow has built-in support for Vercel preview deployments, but it's **optional**. If Vercel secrets are not configured, the workflow will still run successfully and deploy to GitHub Pages.
+
+For Vercel preview deployments, configure these GitHub repository secrets:
 
 1. **`VERCEL_TOKEN`**: Personal access token from Vercel
    - Go to [Vercel Account Settings](https://vercel.com/account/tokens)
@@ -89,6 +103,8 @@ The workflow requires these GitHub repository secrets to be configured:
 3. **`VERCEL_PROJECT_ID`**: The project ID for this repository
    - Found in your Vercel project settings
    - Or in the `.vercel/project.json` file after linking
+
+**Note**: The workflow checks for the presence of `VERCEL_TOKEN` and only runs Vercel deployment steps if it's available. This allows for flexible configuration where some forks or environments may not need Vercel previews.
 
 ### Setting Up Secrets
 
@@ -146,12 +162,13 @@ Common issues and solutions:
 
 ### Workflow Customization
 
-The workflow can be customized by editing `.github/workflows/deploy-vercel.yml`:
+The workflow can be customized by editing `.github/workflows/deploy-pages.yml`:
 
 - **Build Commands**: Modify the build steps if your process changes
 - **Environment Variables**: Add additional environment variables as needed
 - **Deployment Conditions**: Adjust when deployments are triggered
 - **Comment Format**: Customize the preview URL comment format
+- **Platform Configuration**: Enable/disable GitHub Pages or Vercel deployments
 
 ## Security Considerations
 

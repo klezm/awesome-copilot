@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages
+name: Deploy Website
 
 on:
   push:
@@ -17,14 +17,21 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  pull-requests: write
 
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      should-deploy-pages: ${{ steps.check-deploy.outputs.should-deploy-pages }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,22 +50,92 @@ jobs:
           npm run build
           npm run build:website
 
+      - name: Check deployment conditions
+        id: check-deploy
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" || "${{ github.event.inputs.force-deploy }}" == "true" ]]; then
+            echo "should-deploy-pages=true" >> $GITHUB_OUTPUT
+          else
+            echo "should-deploy-pages=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup Pages
+        if: steps.check-deploy.outputs.should-deploy-pages == 'true'
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
+      - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
-        if: github.ref == 'refs/heads/main' || github.event.inputs.force-deploy == 'true'
+        if: steps.check-deploy.outputs.should-deploy-pages == 'true'
         with:
           path: './docs'
 
-  deploy:
+      # Vercel deployment steps
+      - name: Install Vercel CLI
+        if: secrets.VERCEL_TOKEN != ''
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        if: secrets.VERCEL_TOKEN != ''
+        run: vercel pull --yes --environment=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'production' || 'preview' }} --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts for Vercel
+        if: secrets.VERCEL_TOKEN != ''
+        run: vercel build ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel
+        if: secrets.VERCEL_TOKEN != ''
+        id: deploy-vercel
+        run: |
+          url=$(vercel deploy --prebuilt ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$url" >> $GITHUB_OUTPUT
+
+      - name: Comment PR with Vercel preview URL
+        if: github.event_name == 'pull_request' && secrets.VERCEL_TOKEN != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Preview deployment')
+            );
+
+            const body = `## Preview deployment
+
+            ✅ **Preview deployed successfully!**
+
+            🔗 **Preview URL:** ${{ steps.deploy-vercel.outputs.url }}
+
+            This preview will be updated automatically when you push new commits to this PR.`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+  deploy-pages:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' || github.event.inputs.force-deploy == 'true'
+    if: needs.build.outputs.should-deploy-pages == 'true'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
