@@ -12,27 +12,16 @@ const AKA_INSTALL_URLS = {
 
 // Repository info - dynamically determined
 function getRepositoryInfo() {
-  // First try to get from git remote
-  try {
-    const { execSync } = require('child_process');
-    const remoteUrl = execSync('git remote get-url origin', { 
-      encoding: 'utf8',
-      cwd: __dirname 
-    }).trim();
-    
-    const match = remoteUrl.match(/github\.com[\/:]([^\/]+)\/([^\/]+)/);
-    if (match) {
-      const repo = match[2].replace(/\.git$/, '');
-      return {
-        owner: match[1],
-        repo: repo,
-        baseUrl: `https://github.com/${match[1]}/${repo}`
-      };
-    }
-  } catch (error) {
-    console.warn("Could not get git remote:", error.message);
+  // First try GitHub Actions environment variables
+  if (process.env.GITHUB_REPOSITORY) {
+    const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+    return {
+      owner: owner,
+      repo: repo,
+      baseUrl: `https://github.com/${owner}/${repo}`
+    };
   }
-
+  
   // Fallback to package.json
   const packageJsonPath = path.join(__dirname, "..", "package.json");
   if (fs.existsSync(packageJsonPath)) {
@@ -54,6 +43,27 @@ function getRepositoryInfo() {
     } catch (error) {
       console.warn("Could not parse package.json:", error.message);
     }
+  }
+
+  // Fallback to git remote (for local development)
+  try {
+    const { execSync } = require('child_process');
+    const remoteUrl = execSync('git remote get-url origin', { 
+      encoding: 'utf8',
+      cwd: __dirname 
+    }).trim();
+    
+    const match = remoteUrl.match(/github\.com[\/:]([^\/]+)\/([^\/]+)/);
+    if (match) {
+      const repo = match[2].replace(/\.git$/, '');
+      return {
+        owner: match[1],
+        repo: repo,
+        baseUrl: `https://github.com/${match[1]}/${repo}`
+      };
+    }
+  } catch (error) {
+    console.warn("Could not get git remote:", error.message);
   }
   
   // Final fallback to github/awesome-copilot
@@ -291,17 +301,10 @@ try {
   writeFileIfChanged(path.join(docsDir, "data.json"), jsonContent);
   
   // Update HTML template with dynamic repository links
-  const templatePath = path.join(docsDir, "index.html");
-  if (fs.existsSync(templatePath)) {
-    // Create a backup of the original template if it doesn't exist
-    const backupPath = path.join(docsDir, "index.template.html");
-    if (!fs.existsSync(backupPath)) {
-      fs.copyFileSync(templatePath, backupPath);
-      console.log("Created template backup: index.template.html");
-    }
-    
-    updateHtmlTemplate(backupPath, templatePath, repoInfo);
-  }
+  const templatePath = path.join(docsDir, "index.template.html");
+  const outputPath = path.join(docsDir, "index.html");
+  
+  updateHtmlTemplate(templatePath, outputPath, repoInfo);
   
   // Generate summary stats
   const totalCount = jsonData.prompts.length + jsonData.instructions.length + jsonData.chatmodes.length;
