@@ -2,6 +2,7 @@
 mode: 'agent'
 tools: ['changes', 'codebase', 'editFiles', 'findTestFiles', 'problems', 'runCommands', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'testFailure', 'usages']
 description: 'Create Spring Boot Kotlin project skeleton'
+tags: []
 ---
 
 # Create Spring Boot Kotlin project prompt

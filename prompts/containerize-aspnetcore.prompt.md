@@ -2,6 +2,7 @@
 mode: 'agent'
 tools: ['codebase', 'editFiles', 'terminalCommand']
 description: 'Containerize an ASP.NET Core project by creating Dockerfile and .dockerfile files customized for the project.'
+tags: []
 ---
 
 # ASP.NET Core Docker Containerization Prompt

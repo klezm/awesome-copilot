@@ -1,6 +1,7 @@
 ---
 description: 'Guidelines for building Spring Boot base applications'
 applyTo: '**/*.java, **/*.kt'
+tags: []
 ---
 
 # Spring Boot Development

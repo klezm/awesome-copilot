@@ -1,6 +1,7 @@
 ---
 description: 'VueJS 3 development standards and best practices with Composition API and TypeScript'
 applyTo: '**/*.vue, **/*.ts, **/*.js, **/*.scss'
+tags: []
 ---
 
 # VueJS 3 Development Instructions

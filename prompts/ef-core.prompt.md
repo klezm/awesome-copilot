@@ -2,6 +2,7 @@
 mode: 'agent'
 tools: ['changes', 'codebase', 'editFiles', 'problems', 'runCommands']
 description: 'Get best practices for Entity Framework Core'
+tags: []
 ---
 
 # Entity Framework Core Best Practices

@@ -1,7 +1,8 @@
 ---
 applyTo: '**/*.ps1,**/*.psm1'
 description: 'PowerShell cmdlet and scripting best practices based on Microsoft guidelines'
----  
+tags: []
+---
 
 # PowerShell Cmdlet Development Guidelines
 

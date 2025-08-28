@@ -1,6 +1,7 @@
 ---
 description: 'Ruby on Rails coding conventions and guidelines'
 applyTo: '**/*.rb'
+tags: []
 ---
 
 # Ruby on Rails

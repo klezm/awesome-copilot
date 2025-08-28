@@ -2,6 +2,7 @@
 mode: 'agent'
 tools: ['changes', 'codebase', 'editFiles', 'problems']
 description: 'Get best practices for C# async programming'
+tags: []
 ---
 
 # C# Async Programming Best Practices

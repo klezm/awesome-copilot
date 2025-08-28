@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Prompt for creating the high-level technical architecture for an Epic, based on a Product Requirements Document.'
+tags: []
 ---
 
 # Epic Architecture Specification Prompt

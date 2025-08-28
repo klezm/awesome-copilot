@@ -1,6 +1,7 @@
 ---
 description: 'Rust programming language coding conventions and best practices'
 applyTo: '**/*.rs'
+tags: []
 ---
 
 # Rust Coding Conventions and Best Practices

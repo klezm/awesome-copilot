@@ -1,6 +1,7 @@
 ---
 description: 'Terraform Conventions and Guidelines'
 applyTo: '**/*.tf'
+tags: []
 ---
 
 # Terraform Conventions

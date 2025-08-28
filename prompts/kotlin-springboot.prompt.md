@@ -2,6 +2,7 @@
 mode: 'agent'
 tools: ['changes', 'codebase', 'editFiles', 'problems', 'search']
 description: 'Get best practices for developing applications with Spring Boot and Kotlin.'
+tags: []
 ---
 
 # Spring Boot with Kotlin Best Practices

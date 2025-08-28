@@ -2,6 +2,7 @@
 description: 'Have the agent update the clojure-memory.instructions.md file with mistakes it just made, or lessons learned. Also consider installing the default clojure-memory.instructions.md'
 # mode: intentionally left out, because currently VS Code resets custom chatmodes if the prompt specifies a mode
 title: 'Clojure Memory Updater'
+tags: []
 ---
 
 # Clojure Memory Updater

@@ -1,6 +1,7 @@
 ---
 description: 'Generate an implementation plan for new features or refactoring existing code.'
 tools: ['codebase', 'usages', 'vscodeAPI', 'think', 'problems', 'changes', 'testFailure', 'terminalSelection', 'terminalLastCommand', 'openSimpleBrowser', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'extensions', 'editFiles', 'runNotebooks', 'search', 'new', 'runCommands', 'runTasks']
+tags: []
 ---
 # Implementation Plan Generation Mode
 

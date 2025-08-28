@@ -1,5 +1,6 @@
 ---
 applyTo: '**'
+tags: []
 ---
 
 # Next.js Best Practices for LLMs (2025)

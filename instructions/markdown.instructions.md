@@ -1,6 +1,7 @@
 ---
 description: 'Documentation and content creation standards'
 applyTo: '**/*.md'
+tags: []
 ---
 
 ## Markdown Content Rules

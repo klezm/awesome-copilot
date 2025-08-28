@@ -1,6 +1,7 @@
 ---
 description: 'Best practices for Azure DevOps Pipeline YAML files'
 applyTo: '**/azure-pipelines.yml, **/azure-pipelines*.yml, **/*.pipeline.yml'
+tags: []
 ---
 
 # Azure DevOps Pipeline YAML Best Practices

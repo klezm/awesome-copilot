@@ -1,6 +1,7 @@
 ---
 applyTo: "**"
 description: 'Instructions for customizing GitHub Copilot behavior for MS-SQL DBA chat mode.'
+tags: []
 ---
 
 # MS-SQL DBA Chat Mode Instructions

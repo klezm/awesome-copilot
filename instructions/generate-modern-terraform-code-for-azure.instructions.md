@@ -1,6 +1,7 @@
 ---
 description: 'Guidelines for generating modern Terraform code for Azure'
 applyTo: '**/*.tf'
+tags: []
 ---
 
 ## 1. Use Latest Terraform and Providers

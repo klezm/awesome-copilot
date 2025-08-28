@@ -1,6 +1,7 @@
 ---
 applyTo: '**/*.{cs,ts,java}'
 description: Enforces Object Calisthenics principles for business domain code to ensure clean, maintainable, and robust code
+tags: []
 ---
 # Object Calisthenics Rules
 

@@ -1,6 +1,7 @@
 ---
 description: 'TypeScript patterns for Azure Functions'
 applyTo: '**/*.ts, **/*.js, **/*.json'
+tags: []
 ---
 
 ## Guidance for Code Generation

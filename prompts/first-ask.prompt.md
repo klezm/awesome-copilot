@@ -1,5 +1,6 @@
 ---
 description: 'Interactive, input-tool powered, task refinement workflow: interrogates scope, deliverables, constraints before carrying out the task; Requires the Joyride extension.'
+tags: []
 ---
 
 # Act Informed: First understand together with the human, then do

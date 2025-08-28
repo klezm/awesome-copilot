@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Ensure .NET/C# code meets best practices for the solution/project.'
+tags: []
 ---
 # .NET/C# Best Practices
 

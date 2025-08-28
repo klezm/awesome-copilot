@@ -1,6 +1,7 @@
 ---
 description: '.NET MAUI component and application patterns'
 applyTo: '**/*.xaml, **/*.cs'
+tags: []
 ---
 
 # .NET MAUI

@@ -1,6 +1,7 @@
 ---
 description: 'Python coding conventions and guidelines'
 applyTo: '**/*.py'
+tags: []
 ---
 
 # Python Coding Conventions

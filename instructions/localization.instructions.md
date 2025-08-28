@@ -1,6 +1,7 @@
 ---
 description: 'Guidelines for localizing markdown documents'
 applyTo: '**/*.md'
+tags: []
 ---
 
 # Guidance for Localization

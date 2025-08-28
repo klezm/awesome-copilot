@@ -1,6 +1,7 @@
 ---
 description: 'Infrastructure as Code with Bicep'
 applyTo: '**/*.bicep'
+tags: []
 ---
 
 ## Naming Conventions

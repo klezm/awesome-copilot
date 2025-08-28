@@ -1,6 +1,7 @@
 ---
 description: 'Instructions for writing Dart and Flutter code following the official recommendations.'
 applyTo: '**/*.dart'
+tags: []
 ---
 
 # Dart and Flutter

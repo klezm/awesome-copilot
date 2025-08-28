@@ -1,6 +1,7 @@
 ---
 description: 'Provide principal-level software engineering guidance with focus on engineering excellence, technical leadership, and pragmatic implementation.'
 tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github']
+tags: []
 ---
 # Principal software engineer mode instructions
 

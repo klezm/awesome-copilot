@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure resource health, diagnose issues from logs and telemetry, and create a remediation plan for identified problems.'
+tags: []
 ---
 
 # Azure Resource Health & Issue Diagnosis

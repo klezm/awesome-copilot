@@ -1,6 +1,7 @@
 ---
 description: 'Things agents tend to forget or get wrong when they are working with Clojure projects.'
 applyTo: '**/*.clj*,**/*.bb'
+tags: []
 ---
 
 # Clojure Memory

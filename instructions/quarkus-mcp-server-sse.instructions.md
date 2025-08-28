@@ -1,6 +1,7 @@
 ---
 applyTo: '*'
 description: 'Quarkus and MCP Server with HTTP SSE transport development standards and instructions'
+tags: []
 ---
 # Quarkus MCP Server
 

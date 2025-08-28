@@ -1,6 +1,7 @@
 ---
 description: 'Activate your personal Microsoft/Azure tutor - learn through guided discovery, not just answers.'
 tools: ['microsoft_docs_search', 'microsoft_docs_fetch']
+tags: []
 ---
 
 # Microsoft Study and Learn Chat Mode

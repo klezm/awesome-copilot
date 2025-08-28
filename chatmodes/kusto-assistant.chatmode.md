@@ -23,6 +23,7 @@ tools:
     "usages",
     "vscodeAPI",
   ]
+tags: []
 ---
 
 # Kusto Assistant: Azure Data Explorer (Kusto) Engineering Assistant

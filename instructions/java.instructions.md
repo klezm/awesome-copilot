@@ -1,6 +1,7 @@
 ---
 description: 'Guidelines for building Java base applications'
 applyTo: '**/*.java'
+tags: []
 ---
 
 # Java Development

@@ -1,6 +1,7 @@
 ---
 model: GPT-4.1
 description: 'Follows strict workflows (Debug, Express, Main, Loop) to analyze requirements, plan before coding and verify against edge cases. Self-corrects and favors simple, maintainable solutions.'
+tags: []
 ---
 
 # Blueprint Mode v30

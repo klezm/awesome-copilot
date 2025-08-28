@@ -3,6 +3,7 @@ description: '4.1 voidBeast_GPT41Enhanced 1.0 : a advanced autonomous developer 
 '
 tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'readCellOutput', 'runCommands', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'updateUserPreferences', 'usages', 'vscodeAPI']
 
+tags: []
 ---
 
 ---

@@ -1,6 +1,7 @@
 ---
 description: 'Guidelines for building C# applications'
 applyTo: '**/*.cs'
+tags: []
 ---
 
 # C# Development

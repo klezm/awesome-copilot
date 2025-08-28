@@ -1,6 +1,7 @@
 ---
 description: '.NET WPF component and application patterns'
 applyTo: '**/*.xaml, **/*.cs'
+tags: []
 ---
 
 ## Summary

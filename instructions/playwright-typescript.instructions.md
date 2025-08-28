@@ -1,6 +1,7 @@
 ---
 description: 'Playwright test generation instructions'
 applyTo: '**'
+tags: []
 ---
 
 ## Test Writing Guidelines

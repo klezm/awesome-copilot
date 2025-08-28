@@ -1,6 +1,7 @@
 ---
 description: 'Angular-specific coding standards and best practices'
 applyTo: '**/*.ts, **/*.html, **/*.scss, **/*.css'
+tags: []
 ---
 
 # Angular Development Instructions
