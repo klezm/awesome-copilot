@@ -423,6 +423,109 @@ function writeFileIfChanged(filePath, content) {
   console.log(`${path.basename(filePath)} ${exists ? "updated" : "created"} successfully!`);
 }
 
+/**
+ * Generate JSON data for the website
+ */
+function generateJsonData(promptsDir, instructionsDir, chatmodesDir) {
+  const data = {
+    prompts: [],
+    instructions: [],
+    chatmodes: []
+  };
+
+  // Process prompts
+  if (fs.existsSync(promptsDir)) {
+    const promptFiles = fs
+      .readdirSync(promptsDir)
+      .filter((file) => file.endsWith(".prompt.md"))
+      .sort();
+
+    for (const file of promptFiles) {
+      const filePath = path.join(promptsDir, file);
+      const title = extractTitle(filePath);
+      const description = extractDescription(filePath);
+      const link = `prompts/${file}`;
+      
+      // Create install URLs using the aka.ms URLs
+      const repoUrl = `${repoBaseUrl}/${link}`;
+      const vscodeUrl = `${AKA_INSTALL_URLS.prompt}?url=${encodeURIComponent(`vscode:chat-prompt/install?url=${repoUrl}`)}`;
+      const insidersUrl = `${AKA_INSTALL_URLS.prompt}?url=${encodeURIComponent(`vscode-insiders:chat-prompt/install?url=${repoUrl}`)}`;
+
+      data.prompts.push({
+        title,
+        description: description || "",
+        file,
+        link,
+        type: "prompts",
+        vscodeUrl,
+        insidersUrl
+      });
+    }
+  }
+
+  // Process instructions
+  if (fs.existsSync(instructionsDir)) {
+    const instructionFiles = fs
+      .readdirSync(instructionsDir)
+      .filter((file) => file.endsWith(".md"))
+      .sort();
+
+    for (const file of instructionFiles) {
+      const filePath = path.join(instructionsDir, file);
+      const title = extractTitle(filePath);
+      const description = extractDescription(filePath);
+      const link = `instructions/${file}`;
+      
+      // Create install URLs using the aka.ms URLs
+      const repoUrl = `${repoBaseUrl}/${link}`;
+      const vscodeUrl = `${AKA_INSTALL_URLS.instructions}?url=${encodeURIComponent(`vscode:chat-instructions/install?url=${repoUrl}`)}`;
+      const insidersUrl = `${AKA_INSTALL_URLS.instructions}?url=${encodeURIComponent(`vscode-insiders:chat-instructions/install?url=${repoUrl}`)}`;
+
+      data.instructions.push({
+        title,
+        description: description || "",
+        file,
+        link,
+        type: "instructions",
+        vscodeUrl,
+        insidersUrl
+      });
+    }
+  }
+
+  // Process chat modes
+  if (fs.existsSync(chatmodesDir)) {
+    const chatmodeFiles = fs
+      .readdirSync(chatmodesDir)
+      .filter((file) => file.endsWith(".chatmode.md"))
+      .sort();
+
+    for (const file of chatmodeFiles) {
+      const filePath = path.join(chatmodesDir, file);
+      const title = extractTitle(filePath);
+      const description = extractDescription(filePath);
+      const link = `chatmodes/${file}`;
+      
+      // Create install URLs using the aka.ms URLs
+      const repoUrl = `${repoBaseUrl}/${link}`;
+      const vscodeUrl = `${AKA_INSTALL_URLS.mode}?url=${encodeURIComponent(`vscode:chat-mode/install?url=${repoUrl}`)}`;
+      const insidersUrl = `${AKA_INSTALL_URLS.mode}?url=${encodeURIComponent(`vscode-insiders:chat-mode/install?url=${repoUrl}`)}`;
+
+      data.chatmodes.push({
+        title,
+        description: description || "",
+        file,
+        link,
+        type: "chatmodes",
+        vscodeUrl,
+        insidersUrl
+      });
+    }
+  }
+
+  return data;
+}
+
 // Build per-category README content using existing generators, upgrading headings to H1
 function buildCategoryReadme(sectionBuilder, dirPath, headerLine, usageLine) {
   const section = sectionBuilder(dirPath);
@@ -441,6 +544,7 @@ try {
   const instructionsDir = path.join(__dirname, "instructions");
   const promptsDir = path.join(__dirname, "prompts");
   const chatmodesDir = path.join(__dirname, "chatmodes");
+  const docsDir = path.join(__dirname, "docs");
 
   // Compose headers for standalone files by converting section headers to H1
   const instructionsHeader = TEMPLATES.instructionsSection.replace(/^##\s/m, "# ");
@@ -470,6 +574,24 @@ try {
   writeFileIfChanged(path.join(__dirname, "README.instructions.md"), instructionsReadme);
   writeFileIfChanged(path.join(__dirname, "README.prompts.md"), promptsReadme);
   writeFileIfChanged(path.join(__dirname, "README.chatmodes.md"), chatmodesReadme);
+
+  // Generate JSON data for website
+  console.log("Generating JSON data for website...");
+  const jsonData = generateJsonData(promptsDir, instructionsDir, chatmodesDir);
+  
+  // Ensure docs directory exists
+  if (!fs.existsSync(docsDir)) {
+    fs.mkdirSync(docsDir, { recursive: true });
+  }
+  
+  // Write JSON data file
+  const jsonContent = JSON.stringify(jsonData, null, 2);
+  writeFileIfChanged(path.join(docsDir, "data.json"), jsonContent);
+  
+  // Generate summary stats
+  const totalCount = jsonData.prompts.length + jsonData.instructions.length + jsonData.chatmodes.length;
+  console.log(`Generated data for ${totalCount} items: ${jsonData.prompts.length} prompts, ${jsonData.instructions.length} instructions, ${jsonData.chatmodes.length} chat modes`);
+  
 } catch (error) {
   console.error(`Error generating category README files: ${error.message}`);
   process.exit(1);
