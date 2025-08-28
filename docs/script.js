@@ -170,16 +170,22 @@ function createItemCard(item) {
         ? `<p class="item-description">${escapeHtml(item.description)}</p>`
         : '';
     
-    const typeLabel = item.type === 'chatmodes' ? 'Chat Mode' : 
-                     item.type === 'instructions' ? 'Instruction' : 'Prompt';
+    // Get the appropriate emoji and label for each type
+    const typeInfo = {
+        'chatmodes': { emoji: '💭', label: 'Chat Mode' },
+        'instructions': { emoji: '📋', label: 'Instruction' },
+        'prompts': { emoji: '🎯', label: 'Prompt' }
+    };
+    
+    const { emoji, label } = typeInfo[item.type] || { emoji: '', label: 'Unknown' };
     
     return `
         <div class="item-card">
             <div class="item-header">
-                <a href="${item.link}" class="item-title" target="_blank" rel="noopener noreferrer">
-                    ${escapeHtml(item.title)}
+                <a href="${item.sourceUrl || item.link}" class="item-title" target="_blank" rel="noopener noreferrer">
+                    ${emoji} ${escapeHtml(item.title)}
                 </a>
-                <span class="item-type">${typeLabel}</span>
+                <span class="item-type">${label}</span>
             </div>
             ${descriptionHtml}
             <div class="item-actions">
@@ -193,7 +199,7 @@ function createItemCard(item) {
                         <img src="https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white" alt="VS Code Insiders Install" />
                     </span>
                 </a>
-                <a href="${item.link}" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                <a href="${item.sourceUrl || item.link}" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
                     View Source
                 </a>
             </div>

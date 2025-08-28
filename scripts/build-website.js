@@ -5,9 +5,9 @@ const path = require("path");
 
 // Base URLs for aka.ms redirects - these are used in the main script
 const AKA_INSTALL_URLS = {
-  prompt: "https://aka.ms/ghcp-prompt-install",
-  instructions: "https://aka.ms/ghcp-instructions-install", 
-  mode: "https://aka.ms/ghcp-mode-install"
+  prompt: "https://aka.ms/awesome-copilot/install/prompt",
+  instructions: "https://aka.ms/awesome-copilot/install/instructions", 
+  mode: "https://aka.ms/awesome-copilot/install/chatmode"
 };
 
 // Repository info - dynamically determined
@@ -160,14 +160,16 @@ function generateJsonData(promptsDir, instructionsDir, chatmodesDir, repoInfo) {
       
       // Create install URLs using the aka.ms URLs
       const repoUrl = `${repoBaseUrl}/${link}`;
-      const vscodeUrl = `${AKA_INSTALL_URLS.prompt}?url=${encodeURIComponent(`vscode:chat-prompt/install?url=${repoUrl}`)}`;
-      const insidersUrl = `${AKA_INSTALL_URLS.prompt}?url=${encodeURIComponent(`vscode-insiders:chat-prompt/install?url=${repoUrl}`)}`;
+      const rawUrl = `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/main/${link}`;
+      const vscodeUrl = `${AKA_INSTALL_URLS.prompt}?url=${encodeURIComponent(`vscode:chat-prompt/install?url=${rawUrl}`)}`;
+      const insidersUrl = `${AKA_INSTALL_URLS.prompt}?url=${encodeURIComponent(`vscode-insiders:chat-prompt/install?url=${rawUrl}`)}`;
 
       data.prompts.push({
         title,
         description: description || "",
         file,
         link,
+        sourceUrl: repoUrl,
         type: "prompts",
         vscodeUrl,
         insidersUrl
@@ -190,14 +192,16 @@ function generateJsonData(promptsDir, instructionsDir, chatmodesDir, repoInfo) {
       
       // Create install URLs using the aka.ms URLs
       const repoUrl = `${repoBaseUrl}/${link}`;
-      const vscodeUrl = `${AKA_INSTALL_URLS.instructions}?url=${encodeURIComponent(`vscode:chat-instructions/install?url=${repoUrl}`)}`;
-      const insidersUrl = `${AKA_INSTALL_URLS.instructions}?url=${encodeURIComponent(`vscode-insiders:chat-instructions/install?url=${repoUrl}`)}`;
+      const rawUrl = `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/main/${link}`;
+      const vscodeUrl = `${AKA_INSTALL_URLS.instructions}?url=${encodeURIComponent(`vscode:chat-instructions/install?url=${rawUrl}`)}`;
+      const insidersUrl = `${AKA_INSTALL_URLS.instructions}?url=${encodeURIComponent(`vscode-insiders:chat-instructions/install?url=${rawUrl}`)}`;
 
       data.instructions.push({
         title,
         description: description || "",
         file,
         link,
+        sourceUrl: repoUrl,
         type: "instructions",
         vscodeUrl,
         insidersUrl
@@ -220,14 +224,16 @@ function generateJsonData(promptsDir, instructionsDir, chatmodesDir, repoInfo) {
       
       // Create install URLs using the aka.ms URLs
       const repoUrl = `${repoBaseUrl}/${link}`;
-      const vscodeUrl = `${AKA_INSTALL_URLS.mode}?url=${encodeURIComponent(`vscode:chat-mode/install?url=${repoUrl}`)}`;
-      const insidersUrl = `${AKA_INSTALL_URLS.mode}?url=${encodeURIComponent(`vscode-insiders:chat-mode/install?url=${repoUrl}`)}`;
+      const rawUrl = `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/main/${link}`;
+      const vscodeUrl = `${AKA_INSTALL_URLS.mode}?url=${encodeURIComponent(`vscode:chat-mode/install?url=${rawUrl}`)}`;
+      const insidersUrl = `${AKA_INSTALL_URLS.mode}?url=${encodeURIComponent(`vscode-insiders:chat-mode/install?url=${rawUrl}`)}`;
 
       data.chatmodes.push({
         title,
         description: description || "",
         file,
         link,
+        sourceUrl: repoUrl,
         type: "chatmodes",
         vscodeUrl,
         insidersUrl
