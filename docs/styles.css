@@ -642,8 +642,6 @@ footer a:hover {
     border-radius: 6px;
     margin: 0;
     padding: 1rem;
-    overflow: auto;
-    height: 100%;
     font-family: 'SF Mono', Monaco, 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
     font-size: 0.875rem;
     line-height: 1.45;
