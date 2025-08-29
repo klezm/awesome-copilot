@@ -641,6 +641,49 @@ footer a:hover {
     display: none !important;
 }
 
+/* ULTRA-AGGRESSIVE frontmatter hiding - additional patterns */
+#modal-content [data-frontmatter-hidden],
+#modal-content .frontmatter-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Hide any elements that contain frontmatter-like patterns */
+#modal-content p:contains("description: '"),
+#modal-content p:contains("mode: '"),
+#modal-content p:contains("title: '"),
+#modal-content p:contains("author: '"),
+#modal-content p:contains("tools: '"),
+#modal-content p:contains("model: '"),
+#modal-content p:contains("applyTo: '") {
+    display: none !important;
+}
+
+/* Hide unquoted frontmatter patterns */
+#modal-content p:contains("description: agent"),
+#modal-content p:contains("mode: agent"),
+#modal-content p:contains("mode: ask") {
+    display: none !important;
+}
+
+/* Hide YAML frontmatter delimiters */
+#modal-content p:contains("---") {
+    display: none !important;
+}
+
+/* Hide pre/code blocks containing frontmatter */
+#modal-content pre:contains("description: '"),
+#modal-content pre:contains("mode: '"),
+#modal-content pre:contains("title: '"),
+#modal-content code:contains("description: '"),
+#modal-content code:contains("mode: '"),
+#modal-content code:contains("title: '") {
+    display: none !important;
+}
+
 /* Show only when explicitly marked as frontmatter container */
 .frontmatter-container p:contains("description:"),
 .frontmatter-container p:contains("mode:"),
