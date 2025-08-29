@@ -301,6 +301,50 @@
             letter-spacing: 0.5px;
         }
         
+        /* Collapsible Styles */
+        .hidden-previews {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .hidden-previews.expanded {
+            max-height: 2000px; /* Large enough to accommodate content */
+            transition: max-height 0.3s ease-in;
+        }
+        
+        .show-more-button {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            color: #656d76;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+        }
+        
+        .show-more-button:hover {
+            background: #e6e8ea;
+            border-color: #8b949e;
+            color: #24292f;
+        }
+        
+        .show-more-button .icon {
+            transition: transform 0.2s ease;
+        }
+        
+        .show-more-button.expanded .icon {
+            transform: rotate(180deg);
+        }
+        
         /* No Previews State */
         .no-previews {
             text-align: center;
@@ -473,6 +517,18 @@
                 border-color: #6e7681;
             }
             
+            .show-more-button {
+                background-color: #21262d;
+                border-color: #30363d;
+                color: #8b949e;
+            }
+            
+            .show-more-button:hover {
+                background-color: #30363d;
+                border-color: #6e7681;
+                color: #e6edf3;
+            }
+            
             @keyframes pulse {
                 0% {
                     box-shadow: 0 0 0 0 rgba(59, 185, 80, 0.7), 0 0 0 1px #30363d;
@@ -580,6 +636,55 @@
                 .sort((a, b) => b.latestTimestamp - a.latestTimestamp);
         }
         
+        function createPreviewItem(preview, index) {
+            const item = document.createElement('div');
+            item.className = `preview-item ${index === 0 ? 'latest' : 'older'}`;
+            
+            const info = document.createElement('div');
+            info.className = 'preview-info';
+            
+            const date = document.createElement('div');
+            date.className = 'preview-date';
+            date.textContent = formatDate(preview.timestamp);
+            
+            const age = document.createElement('div');
+            age.className = 'preview-age';
+            age.textContent = formatRelativeTime(preview.timestamp);
+            
+            info.appendChild(date);
+            info.appendChild(age);
+            
+            const actions = document.createElement('div');
+            actions.className = 'preview-actions';
+            
+            if (index === 0) {
+                const badge = document.createElement('span');
+                badge.className = 'latest-badge';
+                badge.textContent = 'Latest';
+                actions.appendChild(badge);
+            }
+            
+            const githubLink = document.createElement('a');
+            githubLink.className = 'github-link';
+            githubLink.href = `https://github.com/REPO_OWNER/REPO_NAME/tree/gh-pages/previews/${preview.name}`;
+            githubLink.title = 'View source files on GitHub';
+            githubLink.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>`;
+            
+            actions.appendChild(githubLink);
+            
+            const link = document.createElement('a');
+            link.className = `preview-link ${index === 0 ? 'latest' : ''}`;
+            link.href = preview.url;
+            link.innerHTML = `View Preview <span>→</span>`;
+            
+            actions.appendChild(link);
+            
+            item.appendChild(info);
+            item.appendChild(actions);
+            
+            return item;
+        }
+        
         function renderPreviews() {
             const container = document.getElementById('preview-list');
             const statsElement = document.getElementById('stats-text');
@@ -608,8 +713,6 @@
                 const title = document.createElement('a');
                 title.className = 'pr-title';
                 title.href = `https://github.com/REPO_OWNER/REPO_NAME/pull/${group.prNumber}`;
-                title.target = '_blank';
-                title.rel = 'noopener noreferrer';
                 title.innerHTML = `<span>📋</span> Pull Request #${group.prNumber}`;
                 
                 const meta = document.createElement('div');
@@ -631,58 +734,56 @@
                 const timeline = document.createElement('div');
                 timeline.className = 'preview-timeline';
                 
-                group.previews.forEach((preview, index) => {
-                    const item = document.createElement('div');
-                    item.className = `preview-item ${index === 0 ? 'latest' : 'older'}`;
-                    
-                    const info = document.createElement('div');
-                    info.className = 'preview-info';
-                    
-                    const date = document.createElement('div');
-                    date.className = 'preview-date';
-                    date.textContent = formatDate(preview.timestamp);
-                    
-                    const age = document.createElement('div');
-                    age.className = 'preview-age';
-                    age.textContent = formatRelativeTime(preview.timestamp);
-                    
-                    info.appendChild(date);
-                    info.appendChild(age);
-                    
-                    const actions = document.createElement('div');
-                    actions.className = 'preview-actions';
-                    
-                    if (index === 0) {
-                        const badge = document.createElement('span');
-                        badge.className = 'latest-badge';
-                        badge.textContent = 'Latest';
-                        actions.appendChild(badge);
-                    }
-                    
-                    const githubLink = document.createElement('a');
-                    githubLink.className = 'github-link';
-                    githubLink.href = `https://github.com/REPO_OWNER/REPO_NAME/tree/gh-pages/previews/${preview.name}`;
-                    githubLink.target = '_blank';
-                    githubLink.rel = 'noopener noreferrer';
-                    githubLink.title = 'View source files on GitHub';
-                    githubLink.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>`;
-                    
-                    actions.appendChild(githubLink);
-                    
-                    const link = document.createElement('a');
-                    link.className = `preview-link ${index === 0 ? 'latest' : ''}`;
-                    link.href = preview.url;
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    link.innerHTML = `View Preview <span>→</span>`;
-                    
-                    actions.appendChild(link);
-                    
-                    item.appendChild(info);
-                    item.appendChild(actions);
-                    
+                // Show only first 5 previews initially
+                const visiblePreviews = group.previews.slice(0, 5);
+                const hiddenPreviews = group.previews.slice(5);
+                
+                // Render visible previews
+                visiblePreviews.forEach((preview, index) => {
+                    const item = createPreviewItem(preview, index);
                     timeline.appendChild(item);
                 });
+                
+                // Create collapsible section for hidden previews if any
+                if (hiddenPreviews.length > 0) {
+                    const showMoreButton = document.createElement('button');
+                    showMoreButton.className = 'show-more-button';
+                    showMoreButton.innerHTML = `
+                        <span>Show ${hiddenPreviews.length} older preview${hiddenPreviews.length === 1 ? '' : 's'}</span>
+                        <span class="icon">▼</span>
+                    `;
+                    
+                    const hiddenContainer = document.createElement('div');
+                    hiddenContainer.className = 'hidden-previews';
+                    
+                    hiddenPreviews.forEach((preview, index) => {
+                        const item = createPreviewItem(preview, index + 5);
+                        hiddenContainer.appendChild(item);
+                    });
+                    
+                    showMoreButton.addEventListener('click', () => {
+                        const isExpanded = hiddenContainer.classList.contains('expanded');
+                        
+                        if (isExpanded) {
+                            hiddenContainer.classList.remove('expanded');
+                            showMoreButton.classList.remove('expanded');
+                            showMoreButton.innerHTML = `
+                                <span>Show ${hiddenPreviews.length} older preview${hiddenPreviews.length === 1 ? '' : 's'}</span>
+                                <span class="icon">▼</span>
+                            `;
+                        } else {
+                            hiddenContainer.classList.add('expanded');
+                            showMoreButton.classList.add('expanded');
+                            showMoreButton.innerHTML = `
+                                <span>Hide ${hiddenPreviews.length} older preview${hiddenPreviews.length === 1 ? '' : 's'}</span>
+                                <span class="icon">▼</span>
+                            `;
+                        }
+                    });
+                    
+                    timeline.appendChild(showMoreButton);
+                    timeline.appendChild(hiddenContainer);
+                }
                 
                 prGroup.appendChild(header);
                 prGroup.appendChild(timeline);
