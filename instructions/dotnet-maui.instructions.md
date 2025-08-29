@@ -1,6 +1,7 @@
 ---
 description: '.NET MAUI component and application patterns'
 applyTo: '**/*.xaml, **/*.cs'
+tags: ['administration', 'ai', 'api', 'async', 'backend', 'c#', 'caching', 'concurrency', 'database', 'debugging', 'documentation', 'dotnet', 'guidelines', 'instructions', 'logging', 'machine-learning', 'maui', 'memory-management', 'mobile', 'mstest', 'nunit', 'optimization', 'owasp', 'performance', 'security', 'sql', 'standards', 'testing', 'troubleshooting', 'web', 'xunit']
 ---
 
 # .NET MAUI

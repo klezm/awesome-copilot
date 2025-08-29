@@ -1,6 +1,7 @@
 ---
 description: 'Provide principal-level software engineering guidance with focus on engineering excellence, technical leadership, and pragmatic implementation.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github']
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github']'
+tags: ['administration', 'ai', 'api', 'architecture', 'assistant', 'backend', 'c#', 'chatmode', 'database', 'design', 'documentation', 'go', 'guidance', 'guidelines', 'learning', 'machine-learning', 'optimization', 'owasp', 'performance', 'persona', 'security', 'standards', 'testing', 'tunit']
 ---
 # Principal software engineer mode instructions
 

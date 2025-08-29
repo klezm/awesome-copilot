@@ -1,6 +1,7 @@
 ---
 applyTo: '**/Dockerfile,**/Dockerfile.*,**/*.dockerfile,**/docker-compose*.yml,**/docker-compose*.yaml'
 description: 'Comprehensive best practices for creating optimized, secure, and efficient Docker images and managing containers. Covers multi-stage builds, image layer optimization, security scanning, and runtime best practices.'
+tags: ['administration', 'ai', 'api', 'architecture', 'backend', 'caching', 'ci-cd', 'containerization', 'database', 'debugging', 'deployment', 'design', 'devops', 'docker', 'documentation', 'frontend', 'go', 'guidelines', 'instructions', 'java', 'javascript', 'kubernetes', 'logging', 'machine-learning', 'memory-management', 'monitoring', 'nodejs', 'observability', 'optimization', 'orchestration', 'owasp', 'performance', 'python', 'rust', 'security', 'sql', 'standards', 'systems', 'testing', 'troubleshooting', 'ui', 'web']
 ---
 
 # Containerization & Docker Best Practices

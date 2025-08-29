@@ -1,6 +1,7 @@
 ---
 description: 'Guidelines for building Spring Boot base applications'
 applyTo: '**/*.java, **/*.kt'
+tags: ['ai', 'backend', 'database', 'go', 'guidelines', 'instructions', 'java', 'logging', 'machine-learning', 'owasp', 'security', 'springboot', 'sql', 'standards', 'testing']
 ---
 
 # Spring Boot Development

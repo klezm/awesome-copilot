@@ -1,6 +1,7 @@
 ---
 description: 'Create, update, refactor, explain or work with code using the .NET version of Semantic Kernel.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']'
+tags: ['agent', 'ai', 'api', 'assistant', 'async', 'autonomous', 'azure', 'backend', 'chatmode', 'cloud', 'concurrency', 'documentation', 'guidelines', 'logging', 'machine-learning', 'memory-management', 'microsoft', 'persona', 'standards', 'testing']
 ---
 # Semantic Kernel .NET mode instructions
 

@@ -1,6 +1,7 @@
 ---
 description: 'Expert prompt engineering and validation system for creating high-quality prompts - Brought to you by microsoft/edge-ai'
-tools: ['codebase', 'editFiles', 'fetch', 'githubRepo', 'problems', 'runCommands', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'usages', 'terraform', 'Microsoft Docs', 'context7']
+tools: '['codebase', 'editFiles', 'fetch', 'githubRepo', 'problems', 'runCommands', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'usages', 'terraform', 'Microsoft Docs', 'context7']'
+tags: ['administration', 'ai', 'api', 'assistant', 'automation', 'backend', 'c#', 'chatmode', 'database', 'deployment', 'devops', 'documentation', 'dotnet', 'frontend', 'go', 'guidelines', 'iac', 'machine-learning', 'persona', 'python', 'react', 'standards', 'task', 'terraform', 'testing', 'tunit', 'typescript', 'web']
 ---
 
 # Prompt Builder Instructions

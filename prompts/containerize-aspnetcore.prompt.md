@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['codebase', 'editFiles', 'terminalCommand']
+tools: '['codebase', 'editFiles', 'terminalCommand']'
 description: 'Containerize an ASP.NET Core project by creating Dockerfile and .dockerfile files customized for the project.'
+tags: ['agent', 'ai', 'automation', 'autonomous', 'azure', 'caching', 'cloud', 'containerization', 'docker', 'documentation', 'guidelines', 'machine-learning', 'microsoft', 'optimization', 'owasp', 'performance', 'prompt', 'security', 'standards', 'task', 'testing']
 ---
 
 # ASP.NET Core Docker Containerization Prompt

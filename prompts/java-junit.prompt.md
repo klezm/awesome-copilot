@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'problems', 'search']
+tools: '['changes', 'codebase', 'editFiles', 'problems', 'search']'
 description: 'Get best practices for JUnit 5 unit testing, including data-driven tests'
+tags: ['agent', 'ai', 'api', 'automation', 'autonomous', 'backend', 'go', 'java', 'junit', 'machine-learning', 'prompt', 'task', 'testing']
 ---
 
 # JUnit 5+ Best Practices

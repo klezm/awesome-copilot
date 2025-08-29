@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes','codebase', 'editFiles', 'findTestFiles', 'search', 'writeTest']
+tools: '['changes','codebase', 'editFiles', 'findTestFiles', 'search', 'writeTest']'
 description: 'Add new language to a Next.js + next-intl application'
+tags: ['agent', 'automation', 'autonomous', 'backend', 'go', 'prompt', 'task', 'testing']
 ---
 
 This is a guide to add a new language to a Next.js project using next-intl for internationalization,

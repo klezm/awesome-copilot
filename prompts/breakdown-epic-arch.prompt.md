@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Prompt for creating the high-level technical architecture for an Epic, based on a Product Requirements Document.'
+tags: ['agent', 'ai', 'api', 'architecture', 'async', 'automation', 'autonomous', 'backend', 'caching', 'concurrency', 'containerization', 'database', 'deployment', 'design', 'devops', 'docker', 'go', 'machine-learning', 'mobile', 'prompt', 'sql', 'task', 'typescript', 'web']
 ---
 
 # Epic Architecture Specification Prompt

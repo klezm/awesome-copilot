@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Review the C#/.NET code for design pattern implementation and suggest improvements.'
+tags: ['agent', 'ai', 'api', 'architecture', 'async', 'automation', 'autonomous', 'backend', 'c#', 'concurrency', 'database', 'design', 'documentation', 'dotnet', 'go', 'logging', 'machine-learning', 'optimization', 'owasp', 'performance', 'prompt', 'security', 'task', 'testing', 'tunit']
 ---
 # .NET/C# Design Pattern Review
 

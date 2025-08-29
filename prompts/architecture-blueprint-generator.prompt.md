@@ -1,6 +1,7 @@
 ---
 description: 'Comprehensive project architecture blueprint generator that analyzes codebases to create detailed architectural documentation. Automatically detects technology stacks and architectural patterns, generates visual diagrams, documents implementation patterns, and provides extensible blueprints for maintaining architectural consistency and guiding new development.'
 mode: 'agent'
+tags: ['agent', 'ai', 'angular', 'api', 'architecture', 'async', 'automation', 'autonomous', 'backend', 'caching', 'concurrency', 'dart', 'deployment', 'design', 'devops', 'documentation', 'flutter', 'frontend', 'go', 'java', 'logging', 'machine-learning', 'mobile', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'prompt', 'python', 'react', 'security', 'task', 'testing', 'typescript']
 ---
 
 # Comprehensive Project Architecture Blueprint Generator

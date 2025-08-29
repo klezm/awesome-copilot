@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
 description: 'Create GitHub Issues from implementation plan phases using feature_request.yml or chore_request.yml templates.'
-tools: ['codebase', 'search', 'github', 'create_issue', 'search_issues', 'update_issue']
+tools: '['codebase', 'search', 'github', 'create_issue', 'search_issues', 'update_issue']'
+tags: ['agent', 'ai', 'automation', 'autonomous', 'machine-learning', 'prompt', 'task']
 ---
 # Create GitHub Issue from Implementation Plan
 

@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
 description: 'Generate a comprehensive repository summary and narrative story from commit history'
-tools: ['changes', 'codebase', 'editFiles', 'githubRepo', 'runCommands', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection']
+tools: '['changes', 'codebase', 'editFiles', 'githubRepo', 'runCommands', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection']'
+tags: ['agent', 'ai', 'architecture', 'automation', 'autonomous', 'backend', 'code-quality', 'deployment', 'design', 'devops', 'documentation', 'go', 'guidelines', 'machine-learning', 'prompt', 'refactoring', 'standards', 'task', 'testing']
 ---
 
 

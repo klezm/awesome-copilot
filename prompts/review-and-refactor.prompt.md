@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Review and refactor code in your project according to defined instructions'
+tags: ['agent', 'ai', 'automation', 'autonomous', 'code-quality', 'guidelines', 'machine-learning', 'prompt', 'refactoring', 'standards', 'task', 'testing']
 ---
 
 ## Role

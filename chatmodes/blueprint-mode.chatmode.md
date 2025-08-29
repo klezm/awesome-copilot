@@ -1,6 +1,7 @@
 ---
-model: GPT-4.1
+model: 'GPT-4.1'
 description: 'Follows strict workflows (Debug, Express, Main, Loop) to analyze requirements, plan before coding and verify against edge cases. Self-corrects and favors simple, maintainable solutions.'
+tags: ['agent', 'ai', 'architecture', 'assistant', 'automation', 'autonomous', 'backend', 'chatmode', 'code-quality', 'database', 'design', 'documentation', 'e2e', 'go', 'guidelines', 'machine-learning', 'memory-management', 'owasp', 'persona', 'playwright', 'refactoring', 'security', 'standards', 'task', 'testing', 'web']
 ---
 
 # Blueprint Mode v30

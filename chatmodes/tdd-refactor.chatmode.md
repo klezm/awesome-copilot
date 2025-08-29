@@ -1,6 +1,7 @@
 ---
 description: 'Improve code quality, apply security best practices, and enhance design whilst maintaining green tests and GitHub issue compliance.'
-tools: ['github', 'findTestFiles', 'editFiles', 'runTests', 'runCommands', 'codebase', 'filesystem', 'search', 'problems', 'testFailure', 'terminalLastCommand']
+tools: '['github', 'findTestFiles', 'editFiles', 'runTests', 'runCommands', 'codebase', 'filesystem', 'search', 'problems', 'testFailure', 'terminalLastCommand']'
+tags: ['ai', 'architecture', 'assistant', 'async', 'azure', 'c#', 'caching', 'chatmode', 'cloud', 'code-quality', 'concurrency', 'database', 'design', 'documentation', 'dotnet', 'logging', 'machine-learning', 'memory-management', 'microsoft', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'persona', 'refactoring', 'security', 'sql', 'tdd', 'testing', 'web']
 ---
 # TDD Refactor Phase - Improve Quality & Security
 

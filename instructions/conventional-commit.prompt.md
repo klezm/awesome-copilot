@@ -1,6 +1,7 @@
 ---
 description: 'Prompt and workflow for generating conventional commit messages using a structured XML format. Guides users to create standardized, descriptive commit messages in line with the Conventional Commits specification, including instructions, examples, and validation.'
-tools: ['run_in_terminal', 'get_terminal_output']
+tools: '['run_in_terminal', 'get_terminal_output']'
+tags: ['ai', 'automation', 'guidelines', 'machine-learning', 'optimization', 'performance', 'prompt', 'standards', 'task', 'testing']
 ---
 
 ### Instructions

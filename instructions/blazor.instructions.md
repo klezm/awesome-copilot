@@ -1,6 +1,7 @@
 ---
 description: 'Blazor component and application patterns'
 applyTo: '**/*.razor, **/*.razor.cs, **/*.razor.css'
+tags: ['administration', 'ai', 'api', 'async', 'backend', 'blazor', 'c#', 'caching', 'concurrency', 'database', 'debugging', 'documentation', 'dotnet', 'frontend', 'guidelines', 'instructions', 'logging', 'machine-learning', 'memory-management', 'mstest', 'nunit', 'optimization', 'owasp', 'performance', 'security', 'sql', 'standards', 'testing', 'troubleshooting', 'web', 'xunit']
 ---
 
 ## Blazor Code Style and Structure

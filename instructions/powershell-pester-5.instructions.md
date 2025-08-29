@@ -1,6 +1,7 @@
 ---
 applyTo: '**/*.Tests.ps1'
 description: 'PowerShell Pester testing best practices based on Pester v5 conventions'
+tags: ['ai', 'c#', 'guidelines', 'instructions', 'machine-learning', 'nunit', 'pester', 'powershell', 'scripting', 'standards', 'testing']
 ---
 
 # PowerShell Pester v5 Testing Guidelines

@@ -1,6 +1,7 @@
 ---
 description: 'Things agents tend to forget or get wrong when they are working with Clojure projects.'
 applyTo: '**/*.clj*,**/*.bb'
+tags: ['agent', 'ai', 'automation', 'autonomous', 'backend', 'clojure', 'functional', 'go', 'guidelines', 'instructions', 'machine-learning', 'memory-management', 'standards', 'task']
 ---
 
 # Clojure Memory

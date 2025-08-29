@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
 description: 'Create a formal specification for an existing GitHub Actions CI/CD workflow, optimized for AI consumption and workflow maintenance.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runInTerminal2', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github', 'Microsoft Docs']
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runInTerminal2', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github', 'Microsoft Docs']'
+tags: ['agent', 'ai', 'api', 'automation', 'autonomous', 'backend', 'ci-cd', 'deployment', 'devops', 'documentation', 'github-actions', 'go', 'guidelines', 'machine-learning', 'memory-management', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'prompt', 'security', 'standards', 'task', 'testing']
 ---
 # Create GitHub Actions Workflow Specification
 

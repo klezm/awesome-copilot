@@ -1,6 +1,7 @@
 ---
 description: 'Instructions for writing Go code following idiomatic Go practices and community standards'
 applyTo: '**/*.go,**/go.mod,**/go.sum'
+tags: ['ai', 'api', 'architecture', 'backend', 'database', 'debugging', 'design', 'documentation', 'go', 'guidelines', 'instructions', 'machine-learning', 'memory-management', 'optimization', 'owasp', 'performance', 'security', 'sql', 'standards', 'testing', 'troubleshooting']
 ---
 
 # Go Development Instructions

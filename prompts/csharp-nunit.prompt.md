@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'problems', 'search']
+tools: '['changes', 'codebase', 'editFiles', 'problems', 'search']'
 description: 'Get best practices for NUnit unit testing, including data-driven tests'
+tags: ['agent', 'ai', 'async', 'automation', 'autonomous', 'backend', 'c#', 'concurrency', 'dotnet', 'go', 'machine-learning', 'nunit', 'prompt', 'task', 'testing']
 ---
 
 # NUnit Best Practices

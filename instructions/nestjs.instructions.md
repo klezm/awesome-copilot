@@ -1,6 +1,7 @@
 ---
 applyTo: '**/*.ts, **/*.js, **/*.json, **/*.spec.ts, **/*.e2e-spec.ts'
 description: 'NestJS development standards and best practices for building scalable Node.js server-side applications'
+tags: ['ai', 'api', 'architecture', 'async', 'backend', 'caching', 'concurrency', 'database', 'design', 'go', 'guidelines', 'instructions', 'javascript', 'jest', 'logging', 'machine-learning', 'memory-management', 'nestjs', 'nodejs', 'optimization', 'owasp', 'performance', 'security', 'standards', 'testing', 'typescript']
 ---
 
 # NestJS Development Best Practices

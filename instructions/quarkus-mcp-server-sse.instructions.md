@@ -1,6 +1,7 @@
 ---
 applyTo: '*'
 description: 'Quarkus and MCP Server with HTTP SSE transport development standards and instructions'
+tags: ['ai', 'architecture', 'backend', 'design', 'guidelines', 'instructions', 'java', 'machine-learning', 'quarkus', 'standards', 'testing']
 ---
 # Quarkus MCP Server
 

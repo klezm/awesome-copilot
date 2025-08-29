@@ -1,6 +1,7 @@
 ---
-description: "DDD and .NET architecture guidelines"
+description: 'DDD and .NET architecture guidelines'
 applyTo: '**/*.cs,**/*.csproj,**/Program.cs,**/*.razor'
+tags: ['ai', 'architecture', 'async', 'backend', 'c#', 'caching', 'concurrency', 'database', 'design', 'documentation', 'dotnet', 'go', 'guidelines', 'instructions', 'logging', 'machine-learning', 'memory-management', 'optimization', 'owasp', 'performance', 'security', 'standards', 'testing']
 ---
 
 # DDD Systems & .NET Guidelines

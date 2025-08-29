@@ -1,6 +1,7 @@
 ---
 description: 'VueJS 3 development standards and best practices with Composition API and TypeScript'
 applyTo: '**/*.vue, **/*.ts, **/*.js, **/*.scss'
+tags: ['a11y', 'accessibility', 'ai', 'api', 'architecture', 'async', 'backend', 'concurrency', 'debugging', 'design', 'e2e', 'frontend', 'go', 'guidelines', 'instructions', 'javascript', 'jest', 'machine-learning', 'mobile', 'optimization', 'owasp', 'performance', 'playwright', 'react', 'security', 'standards', 'testing', 'troubleshooting', 'typescript', 'vue', 'web']
 ---
 
 # VueJS 3 Development Instructions

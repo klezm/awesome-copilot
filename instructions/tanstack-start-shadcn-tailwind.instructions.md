@@ -1,6 +1,7 @@
 ---
 description: 'Guidelines for building TanStack Start applications'
 applyTo: '**/*.ts, **/*.tsx, **/*.js, **/*.jsx, **/*.css, **/*.scss, **/*.json'
+tags: ['a11y', 'accessibility', 'ai', 'api', 'async', 'backend', 'concurrency', 'frontend', 'go', 'guidelines', 'instructions', 'machine-learning', 'react', 'standards', 'tanstack', 'testing', 'typescript']
 ---
 
 # TanStack Start with Shadcn/ui Development Guide

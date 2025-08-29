@@ -1,6 +1,7 @@
 ---
 description: 'Documentation and content creation standards'
 applyTo: '**/*.md'
+tags: ['a11y', 'accessibility', 'ai', 'backend', 'c#', 'documentation', 'dotnet', 'go', 'guidelines', 'instructions', 'machine-learning', 'standards']
 ---
 
 ## Markdown Content Rules

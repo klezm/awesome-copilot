@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'problems']
+tools: '['changes', 'codebase', 'editFiles', 'problems']'
 description: 'Get best practices for C# async programming'
+tags: ['agent', 'ai', 'api', 'async', 'automation', 'autonomous', 'backend', 'c#', 'concurrency', 'dotnet', 'go', 'machine-learning', 'optimization', 'performance', 'prompt', 'task']
 ---
 
 # C# Async Programming Best Practices

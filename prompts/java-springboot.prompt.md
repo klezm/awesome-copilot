@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'problems', 'search']
+tools: '['changes', 'codebase', 'editFiles', 'problems', 'search']'
 description: 'Get best practices for developing applications with Spring Boot.'
+tags: ['agent', 'ai', 'api', 'automation', 'autonomous', 'aws', 'backend', 'cloud', 'database', 'go', 'java', 'junit', 'logging', 'machine-learning', 'optimization', 'owasp', 'performance', 'prompt', 'security', 'springboot', 'sql', 'task', 'testing', 'web']
 ---
 
 # Spring Boot Best Practices

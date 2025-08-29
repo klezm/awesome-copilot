@@ -1,6 +1,7 @@
 ---
 description: 'Provide expert React frontend engineering guidance using modern TypeScript and design patterns.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp']
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp']'
+tags: ['a11y', 'accessibility', 'ai', 'api', 'architecture', 'assistant', 'backend', 'chatmode', 'design', 'e2e', 'frontend', 'go', 'guidelines', 'java', 'javascript', 'jest', 'machine-learning', 'optimization', 'performance', 'persona', 'playwright', 'react', 'standards', 'testing', 'typescript', 'ui', 'web']
 ---
 # Expert React Frontend Engineer Mode Instructions
 

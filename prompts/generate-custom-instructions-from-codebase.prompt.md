@@ -1,6 +1,7 @@
 ---
 description: 'Migration and code evolution instructions generator for GitHub Copilot. Analyzes differences between two project versions (branches, commits, or releases) to create precise instructions allowing Copilot to maintain consistency during technology migrations, major refactoring, or framework version upgrades.'
 mode: 'agent'
+tags: ['administration', 'agent', 'ai', 'angular', 'api', 'architecture', 'automation', 'autonomous', 'backend', 'code-quality', 'database', 'design', 'documentation', 'frontend', 'guidelines', 'machine-learning', 'monitoring', 'observability', 'optimization', 'owasp', 'performance', 'prompt', 'react', 'refactoring', 'security', 'sql', 'standards', 'task', 'testing', 'typescript']
 ---
 
 # Migration and Code Evolution Instructions Generator

@@ -1,6 +1,7 @@
 ---
 description: 'Ruby on Rails coding conventions and guidelines'
 applyTo: '**/*.rb'
+tags: ['a11y', 'accessibility', 'ai', 'api', 'backend', 'caching', 'database', 'debugging', 'e2e', 'frontend', 'guidelines', 'instructions', 'java', 'javascript', 'machine-learning', 'memory-management', 'playwright', 'ruby', 'sql', 'standards', 'testing', 'troubleshooting', 'ui', 'web']
 ---
 
 # Ruby on Rails

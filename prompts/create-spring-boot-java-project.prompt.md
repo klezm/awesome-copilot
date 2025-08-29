@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'findTestFiles', 'problems', 'runCommands', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'testFailure', 'usages']
+tools: '['changes', 'codebase', 'editFiles', 'findTestFiles', 'problems', 'runCommands', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'testFailure', 'usages']'
 description: 'Create Spring Boot Java project skeleton'
+tags: ['agent', 'ai', 'api', 'automation', 'autonomous', 'backend', 'containerization', 'database', 'docker', 'go', 'java', 'junit', 'machine-learning', 'prompt', 'sql', 'task', 'testing', 'web']
 ---
 
 # Create Spring Boot Java project prompt

@@ -1,6 +1,7 @@
 ---
 description: 'Help mentor the engineer by providing guidance and support.'
-tools: ['codebase', 'fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']
+tools: '['codebase', 'fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']'
+tags: ['ai', 'assistant', 'backend', 'chatmode', 'documentation', 'go', 'guidance', 'guidelines', 'learning', 'machine-learning', 'persona', 'rust', 'standards', 'systems', 'testing']
 ---
 # Mentor mode instructions
 

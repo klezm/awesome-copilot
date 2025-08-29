@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'problems', 'search']
+tools: '['changes', 'codebase', 'editFiles', 'problems', 'search']'
 description: 'Get best practices for MSTest unit testing, including data-driven tests'
+tags: ['agent', 'ai', 'automation', 'autonomous', 'backend', 'c#', 'dotnet', 'go', 'machine-learning', 'mstest', 'prompt', 'task', 'testing']
 ---
 
 # MSTest Best Practices

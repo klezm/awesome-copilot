@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles', 'problems', 'runCommands']
+tools: '['changes', 'codebase', 'editFiles', 'problems', 'runCommands']'
 description: 'Get best practices for Entity Framework Core'
+tags: ['agent', 'ai', 'api', 'automation', 'autonomous', 'backend', 'c#', 'database', 'deployment', 'devops', 'ef-core', 'go', 'machine-learning', 'memory-management', 'optimization', 'orm', 'owasp', 'performance', 'prompt', 'security', 'sql', 'task', 'testing', 'web']
 ---
 
 # Entity Framework Core Best Practices

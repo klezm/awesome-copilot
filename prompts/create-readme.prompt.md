@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Create a README.md file for the project'
+tags: ['agent', 'ai', 'automation', 'autonomous', 'azure', 'backend', 'cloud', 'frontend', 'go', 'java', 'javascript', 'machine-learning', 'microsoft', 'prompt', 'task']
 ---
 
 ## Role

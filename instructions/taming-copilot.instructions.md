@@ -1,6 +1,7 @@
 ---
 applyTo: '**'
 description: 'Prevent Copilot from wreaking havoc across your codebase, keeping it under control.'
+tags: ['ai', 'api', 'architecture', 'backend', 'code-quality', 'design', 'documentation', 'go', 'guidelines', 'instructions', 'machine-learning', 'performance', 'refactoring', 'standards', 'testing']
 ---
 
 ## Core Directives & Hierarchy

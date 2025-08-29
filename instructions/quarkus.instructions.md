@@ -1,6 +1,7 @@
 ---
 applyTo: '*'
 description: 'Quarkus development standards and instructions'
+tags: ['ai', 'api', 'architecture', 'backend', 'database', 'design', 'documentation', 'guidelines', 'instructions', 'java', 'junit', 'logging', 'machine-learning', 'optimization', 'owasp', 'performance', 'quarkus', 'security', 'standards', 'testing']
 ---
 
 - Instructions for high-quality Quarkus applications with Java 17 or later.

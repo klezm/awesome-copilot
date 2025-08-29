@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
 description: 'Suggest relevant GitHub Copilot chatmode files from the awesome-copilot repository based on current repository context and chat history, avoiding duplicates with existing chatmodes in this repository.'
-tools: ['changes', 'codebase', 'editFiles', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github']
+tools: '['changes', 'codebase', 'editFiles', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github']'
+tags: ['agent', 'ai', 'api', 'architecture', 'assistant', 'automation', 'autonomous', 'azure', 'backend', 'cloud', 'code-review', 'debugging', 'design', 'documentation', 'frontend', 'guidelines', 'machine-learning', 'microsoft', 'persona', 'prompt', 'quality', 'react', 'standards', 'task', 'testing', 'troubleshooting', 'typescript', 'web']
 ---
 
 # Suggest Awesome GitHub Copilot Chatmodes

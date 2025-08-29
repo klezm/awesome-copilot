@@ -1,6 +1,7 @@
 ---
 description: 'Instructions for writing Dart and Flutter code following the official recommendations.'
 applyTo: '**/*.dart'
+tags: ['ai', 'api', 'architecture', 'async', 'backend', 'code-quality', 'concurrency', 'dart', 'database', 'design', 'documentation', 'flutter', 'frontend', 'go', 'guidelines', 'instructions', 'java', 'javascript', 'machine-learning', 'mobile', 'refactoring', 'standards', 'testing']
 ---
 
 # Dart and Flutter

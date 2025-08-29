@@ -1,6 +1,7 @@
 ---
 description: 'Microsoft Learn Contributor chatmode for editing and writing Microsoft Learn documentation following Microsoft Writing Style Guide and authoring best practices.'
-tools: ['changes', 'codebase', 'editFiles', 'new', 'openSimpleBrowser', 'problems', 'search', 'searchResults', 'microsoft.docs.mcp']
+tools: '['changes', 'codebase', 'editFiles', 'new', 'openSimpleBrowser', 'problems', 'search', 'searchResults', 'microsoft.docs.mcp']'
+tags: ['a11y', 'accessibility', 'administration', 'ai', 'api', 'architecture', 'assistant', 'automation', 'azure', 'backend', 'c#', 'chatmode', 'cloud', 'database', 'design', 'documentation', 'go', 'guidance', 'guidelines', 'learning', 'machine-learning', 'microsoft', 'persona', 'standards', 'task', 'testing', 'tunit', 'web']
 ---
 
 # Microsoft Learn Contributor

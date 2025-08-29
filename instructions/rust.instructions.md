@@ -1,6 +1,7 @@
 ---
 description: 'Rust programming language coding conventions and best practices'
 applyTo: '**/*.rs'
+tags: ['ai', 'api', 'async', 'backend', 'concurrency', 'documentation', 'go', 'guidelines', 'instructions', 'machine-learning', 'memory-management', 'optimization', 'performance', 'rust', 'standards', 'systems', 'testing']
 ---
 
 # Rust Coding Conventions and Best Practices

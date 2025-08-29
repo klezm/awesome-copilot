@@ -1,5 +1,6 @@
 ---
 applyTo: '**'
+tags: ['ai', 'api', 'architecture', 'automation', 'backend', 'database', 'deployment', 'design', 'devops', 'documentation', 'frontend', 'go', 'guidelines', 'instructions', 'machine-learning', 'memory-management', 'optimization', 'performance', 'standards', 'task', 'testing', 'ui']
 ---
 Coding standards, domain knowledge, and preferences that AI should follow.
 

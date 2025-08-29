@@ -1,7 +1,8 @@
 ---
 mode: 'agent'
-tools: ['githubRepo', 'github', 'get_issue', 'get_issue_comments', 'get_me', 'list_issues']
+tools: '['githubRepo', 'github', 'get_issue', 'get_issue_comments', 'get_me', 'list_issues']'
 description: 'List my issues in the current repository'
+tags: ['agent', 'automation', 'autonomous', 'prompt', 'task']
 ---
 
 Search the current repo (using #githubRepo for the repo info) and list any issues you find (using #list_issues) that are assigned to me.

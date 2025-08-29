@@ -1,6 +1,7 @@
 ---
 description: 'Next.js + Tailwind development standards and instructions'
 applyTo: '**/*.tsx, **/*.ts, **/*.jsx, **/*.js, **/*.css'
+tags: ['ai', 'api', 'architecture', 'backend', 'database', 'design', 'frontend', 'fullstack', 'guidelines', 'instructions', 'machine-learning', 'nextjs', 'optimization', 'owasp', 'performance', 'react', 'security', 'standards', 'testing', 'typescript']
 ---
 
 # Next.js + Tailwind Development Instructions

@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Prompt for creating an Epic Product Requirements Document (PRD) for a new epic. This PRD will be used as input for generating a technical architecture specification.'
+tags: ['a11y', 'accessibility', 'agent', 'ai', 'architecture', 'automation', 'autonomous', 'backend', 'design', 'go', 'machine-learning', 'optimization', 'owasp', 'performance', 'prompt', 'security', 'task']
 ---
 
 # Epic Product Requirements Document (PRD) Prompt

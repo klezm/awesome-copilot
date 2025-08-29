@@ -1,6 +1,7 @@
 ---
 applyTo: '**'
 description: 'Gilfoyle-style code review instructions that channel the sardonic technical supremacy of Silicon Valley''s most arrogant systems architect.'
+tags: ['administration', 'ai', 'architecture', 'backend', 'code-review', 'database', 'design', 'go', 'guidelines', 'instructions', 'machine-learning', 'memory-management', 'optimization', 'owasp', 'performance', 'quality', 'security', 'standards', 'testing']
 ---
 
 # Gilfoyle Code Review Instructions

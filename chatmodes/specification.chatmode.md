@@ -1,6 +1,7 @@
 ---
 description: 'Generate or update specification documents for new or existing functionality.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']
+tools: '['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']'
+tags: ['ai', 'api', 'architecture', 'assistant', 'backend', 'c#', 'chatmode', 'design', 'documentation', 'go', 'guidelines', 'machine-learning', 'mstest', 'optimization', 'owasp', 'performance', 'persona', 'security', 'standards', 'testing']
 ---
 # Specification mode instructions
 

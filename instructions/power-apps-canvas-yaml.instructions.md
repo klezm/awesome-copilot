@@ -1,6 +1,7 @@
 ---
 description: 'Comprehensive guide for working with Power Apps Canvas Apps YAML structure based on Microsoft Power Apps YAML schema v3.0. Covers Power Fx formulas, control structures, data types, and source control best practices.'
 applyTo: '**/*.{yaml,yml,md,pa.yaml}'
+tags: ['ai', 'backend', 'documentation', 'go', 'guidelines', 'instructions', 'machine-learning', 'memory-management', 'optimization', 'performance', 'powershell', 'scripting', 'standards', 'testing']
 ---
 
 # Power Apps Canvas Apps YAML Structure Guide

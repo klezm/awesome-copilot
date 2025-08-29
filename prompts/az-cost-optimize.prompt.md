@@ -1,6 +1,7 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure resources used in the app (IaC files and/or resources in a target rg) and optimize costs - creating GitHub issues for identified optimizations.'
+tags: ['a11y', 'accessibility', 'agent', 'ai', 'architecture', 'automation', 'autonomous', 'azure', 'backend', 'bicep', 'c#', 'cloud', 'database', 'deployment', 'design', 'devops', 'documentation', 'go', 'iac', 'machine-learning', 'memory-management', 'microsoft', 'monitoring', 'observability', 'optimization', 'performance', 'prompt', 'sql', 'task', 'testing', 'tunit', 'web']
 ---
 
 # Azure Cost Optimize

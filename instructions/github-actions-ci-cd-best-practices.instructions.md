@@ -1,6 +1,7 @@
 ---
 applyTo: '.github/workflows/*.yml'
 description: 'Comprehensive guide for building robust, secure, and efficient CI/CD pipelines using GitHub Actions. Covers workflow structure, jobs, steps, environment variables, secret management, caching, matrix strategies, testing, and deployment strategies.'
+tags: ['administration', 'ai', 'api', 'architecture', 'aws', 'azure', 'backend', 'c#', 'caching', 'ci-cd', 'cloud', 'containerization', 'database', 'debugging', 'deployment', 'design', 'devops', 'docker', 'documentation', 'e2e', 'github-actions', 'go', 'guidelines', 'instructions', 'java', 'javascript', 'jest', 'junit', 'kubernetes', 'logging', 'machine-learning', 'memory-management', 'microsoft', 'monitoring', 'nunit', 'observability', 'optimization', 'orchestration', 'owasp', 'performance', 'playwright', 'python', 'rust', 'security', 'sql', 'standards', 'systems', 'testing', 'troubleshooting', 'vitest', 'web', 'xunit']
 ---
 
 # GitHub Actions CI/CD Best Practices

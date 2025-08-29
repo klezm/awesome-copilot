@@ -1,6 +1,7 @@
 ---
 description: 'TypeScript patterns for Azure Functions'
 applyTo: '**/*.ts, **/*.js, **/*.json'
+tags: ['ai', 'api', 'async', 'azure', 'backend', 'cloud', 'concurrency', 'guidelines', 'instructions', 'machine-learning', 'microsoft', 'standards', 'typescript']
 ---
 
 ## Guidance for Code Generation

@@ -1,6 +1,7 @@
 ---
 description: 'This workflow guides you through a systematic approach to identify missing features, prioritize them, and create detailed specifications for implementation.'
 mode: 'agent'
+tags: ['agent', 'ai', 'api', 'automation', 'autonomous', 'backend', 'documentation', 'machine-learning', 'performance', 'prompt', 'task', 'testing']
 ---
 
 # Product Manager Assistant: Feature Identification and Specification

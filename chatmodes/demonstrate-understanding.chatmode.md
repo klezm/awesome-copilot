@@ -1,6 +1,7 @@
 ---
 description: 'Validate user understanding of code, design patterns, and implementation details through guided questioning.'
-tools: ['codebase', 'fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']
+tools: '['codebase', 'fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']'
+tags: ['ai', 'assistant', 'backend', 'chatmode', 'documentation', 'go', 'guidance', 'guidelines', 'learning', 'machine-learning', 'persona', 'standards', 'testing']
 ---
 # Demonstrate Understanding mode instructions
 
