@@ -445,10 +445,99 @@ footer a:hover {
     min-height: 0;
 }
 
+.modal-body-container {
+    display: flex;
+    height: 100%;
+}
+
+/* Table of Contents Styles */
+.modal-toc {
+    width: 250px;
+    background: #f6f8fa;
+    border-right: 1px solid #e1e4e8;
+    padding: 1.5rem 1rem;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.modal-toc h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #24292f;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.toc-nav {
+    list-style: none;
+}
+
+.toc-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.toc-nav li {
+    margin: 0;
+    padding: 0;
+}
+
+.toc-nav a {
+    display: block;
+    padding: 0.375rem 0.75rem;
+    color: #656d76;
+    text-decoration: none;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.toc-nav a:hover {
+    background-color: #e1e4e8;
+    color: #24292f;
+}
+
+.toc-nav a.active {
+    background-color: #dbeafe;
+    color: #0366d6;
+    font-weight: 600;
+    border-left-color: #0366d6;
+}
+
+.toc-nav .toc-h1 {
+    margin-left: 0;
+}
+
+.toc-nav .toc-h2 {
+    margin-left: 1rem;
+}
+
+.toc-nav .toc-h3 {
+    margin-left: 2rem;
+}
+
+.toc-nav .toc-h4 {
+    margin-left: 3rem;
+}
+
+.toc-nav .toc-h5 {
+    margin-left: 4rem;
+}
+
+.toc-nav .toc-h6 {
+    margin-left: 5rem;
+}
+
 .modal-markdown-content {
     padding: 2rem;
     line-height: 1.6;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .modal-markdown-content h1,
@@ -671,6 +760,30 @@ footer a:hover {
         border-top-color: #30363d;
     }
     
+    .modal-toc {
+        background-color: #0d1117;
+        border-right-color: #30363d;
+    }
+    
+    .modal-toc h3 {
+        color: #e6edf3;
+    }
+    
+    .toc-nav a {
+        color: #8b949e;
+    }
+    
+    .toc-nav a:hover {
+        background-color: #21262d;
+        color: #e6edf3;
+    }
+    
+    .toc-nav a.active {
+        background-color: #0d2136;
+        color: #58a6ff;
+        border-left-color: #58a6ff;
+    }
+    
     .modal-markdown-content h1,
     .modal-markdown-content h2 {
         border-bottom-color: #30363d;
@@ -704,6 +817,17 @@ footer a:hover {
     .modal-header,
     .modal-footer {
         padding: 1rem;
+    }
+
+    .modal-body-container {
+        flex-direction: column;
+    }
+    
+    .modal-toc {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #e1e4e8;
     }
     
     .modal-markdown-content {

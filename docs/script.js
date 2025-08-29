@@ -272,8 +272,8 @@ function createItemCard(item) {
                         <img src="https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white" alt="VS Code Insiders Install" />
                     </span>
                 </a>
-                <a href="${item.sourceUrl || item.link}" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
-                    📄 Source
+                <a href="${item.sourceUrl || item.link}" class="btn btn-secondary" target="_blank" rel="noopener noreferrer" title="View source on GitHub">
+                    🔗 View on GitHub
                 </a>
             </div>
         </div>
@@ -605,6 +605,12 @@ async function showPreviewModal(item) {
         
         // Apply syntax highlighting to code blocks
         applySyntaxHighlighting();
+        
+        // Generate table of contents
+        generateTableOfContents();
+        
+        // Hide tooltip when modal is open
+        hideTooltipPreview();
     } catch (error) {
         modalContent.innerHTML = `<div class="error">Error loading content: ${error.message}</div>`;
     }
@@ -618,6 +624,7 @@ async function toggleSourceView() {
     
     const modalContent = document.getElementById('modal-content');
     const showSourceBtn = document.getElementById('modal-show-source');
+    const tocContainer = document.getElementById('modal-toc');
     
     if (isSourceView) {
         // Switch to rendered view
@@ -631,8 +638,12 @@ async function toggleSourceView() {
             
             // Apply syntax highlighting to code blocks
             applySyntaxHighlighting();
+            
+            // Generate table of contents for rendered view
+            generateTableOfContents();
         } catch (error) {
             modalContent.innerHTML = `<div class="error">Error loading content: ${error.message}</div>`;
+            tocContainer.style.display = 'none';
         }
         
         isSourceView = false;
@@ -640,6 +651,9 @@ async function toggleSourceView() {
         // Switch to source view
         modalContent.innerHTML = '<div class="loading">Loading source...</div>';
         showSourceBtn.textContent = 'Show Rendered';
+        
+        // Hide TOC in source view
+        tocContainer.style.display = 'none';
         
         try {
             const content = await fetchMarkdownContent(currentModalItem.sourceUrl);
@@ -658,12 +672,14 @@ async function toggleSourceView() {
 // Hide preview modal
 function hidePreviewModal() {
     const modal = document.getElementById('preview-modal');
+    const tocContainer = document.getElementById('modal-toc');
     modal.classList.remove('show');
     modal.setAttribute('aria-hidden', 'true');
     
     // Reset state
     currentModalItem = null;
     isSourceView = false;
+    tocContainer.style.display = 'none';
 }
 
 // Show tooltip preview
@@ -800,6 +816,154 @@ if ('serviceWorker' in navigator) {
         // Note: We're not actually registering a service worker yet,
         // but this shows where it would go for future enhancement
     });
+}
+
+// Table of Contents functionality
+function generateTableOfContents() {
+    const modalContent = document.getElementById('modal-content');
+    const tocContainer = document.getElementById('modal-toc');
+    const tocNav = document.getElementById('modal-toc-nav');
+    
+    // Find all headings in the content
+    const headings = modalContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    
+    if (headings.length === 0) {
+        tocContainer.style.display = 'none';
+        return;
+    }
+    
+    // Generate unique IDs for headings and build TOC structure
+    const tocItems = [];
+    let tocHtml = '<ul>';
+    
+    headings.forEach((heading, index) => {
+        const level = parseInt(heading.tagName.substr(1));
+        const text = heading.textContent.trim();
+        const id = `heading-${index}`;
+        
+        // Add ID to heading for linking
+        heading.id = id;
+        
+        // Create TOC entry
+        const tocItem = {
+            id,
+            text,
+            level,
+            element: heading
+        };
+        tocItems.push(tocItem);
+        
+        tocHtml += `<li><a href="#${id}" class="toc-h${level}" data-target="${id}">${escapeHtml(text)}</a></li>`;
+    });
+    
+    tocHtml += '</ul>';
+    tocNav.innerHTML = tocHtml;
+    tocContainer.style.display = 'block';
+    
+    // Set up click handlers for TOC links
+    tocNav.addEventListener('click', (e) => {
+        if (e.target.matches('a[data-target]')) {
+            e.preventDefault();
+            const targetId = e.target.getAttribute('data-target');
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                // Smooth scroll to target
+                targetElement.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Update active state
+                updateActiveTocItem(targetId);
+            }
+        }
+    });
+    
+    // Set up scroll listener for automatic highlighting
+    const contentContainer = modalContent.parentElement;
+    contentContainer.addEventListener('scroll', throttle(updateTocOnScroll, 100));
+    
+    // Initial active state
+    updateTocOnScroll();
+}
+
+// Update active TOC item based on scroll position
+function updateTocOnScroll() {
+    const modalContent = document.getElementById('modal-content');
+    const tocNav = document.getElementById('modal-toc-nav');
+    const headings = modalContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    const contentContainer = modalContent.parentElement;
+    
+    if (!headings.length) return;
+    
+    const scrollTop = contentContainer.scrollTop;
+    const containerHeight = contentContainer.clientHeight;
+    
+    // Find the currently visible heading
+    let activeHeading = null;
+    let minDistance = Infinity;
+    
+    headings.forEach(heading => {
+        const rect = heading.getBoundingClientRect();
+        const containerRect = contentContainer.getBoundingClientRect();
+        const relativeTop = rect.top - containerRect.top;
+        
+        // Check if heading is in the top third of the viewport
+        if (relativeTop >= 0 && relativeTop <= containerHeight / 3) {
+            if (relativeTop < minDistance) {
+                minDistance = relativeTop;
+                activeHeading = heading;
+            }
+        }
+    });
+    
+    // Fallback: if no heading in top third, use the first one above the viewport
+    if (!activeHeading) {
+        for (let i = headings.length - 1; i >= 0; i--) {
+            const heading = headings[i];
+            const rect = heading.getBoundingClientRect();
+            const containerRect = contentContainer.getBoundingClientRect();
+            const relativeTop = rect.top - containerRect.top;
+            
+            if (relativeTop < 0) {
+                activeHeading = heading;
+                break;
+            }
+        }
+    }
+    
+    // Update active state in TOC
+    if (activeHeading) {
+        updateActiveTocItem(activeHeading.id);
+    }
+}
+
+// Update active TOC item
+function updateActiveTocItem(activeId) {
+    const tocNav = document.getElementById('modal-toc-nav');
+    const tocLinks = tocNav.querySelectorAll('a');
+    
+    tocLinks.forEach(link => {
+        if (link.getAttribute('data-target') === activeId) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
+// Throttle function for performance
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
 }
 
 // Analytics hook (placeholder for future use)
