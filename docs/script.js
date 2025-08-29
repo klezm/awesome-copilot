@@ -838,9 +838,8 @@ async function showPreviewModal(item) {
     modal.classList.add('show');
     modal.setAttribute('aria-hidden', 'false');
     
-    // Focus management
-    const modalCloseBtn = document.getElementById('modal-close');
-    modalCloseBtn.focus();
+    // Focus management - focus the modal content instead of close button
+    modalContent.focus();
     
     try {
         const content = await fetchMarkdownContent(item.sourceUrl);
