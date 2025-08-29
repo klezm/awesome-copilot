@@ -6,6 +6,7 @@ const itemsPerPage = 10;
 let currentModalItem = null;
 let isSourceView = false;
 let isLoading = false;
+let currentModalFrontmatter = '';
 
 // DOM elements
 const searchInput = document.getElementById('search');
@@ -649,6 +650,9 @@ function markdownToHtml(markdown) {
         content = markdown.replace(/^---[\s\S]*?---\n?/, '');
     }
     
+    // Store frontmatter globally so we can use it in scroll visibility logic
+    currentModalFrontmatter = frontMatter;
+    
     let htmlContent = '';
     
     // Try to use marked.js if available
@@ -676,16 +680,7 @@ function markdownToHtml(markdown) {
         htmlContent = fallbackMarkdownToHtml(content);
     }
     
-    // Add frontmatter if it exists - show it above content and make it visible when scrolling up
-    if (frontMatter) {
-        const frontMatterHtml = `<div class="frontmatter-container" id="frontmatter-section">
-            <div class="frontmatter-header">
-                <h4>Front Matter</h4>
-            </div>
-            <pre><code class="language-yaml">${escapeHtml(frontMatter)}</code></pre>
-        </div>`;
-        htmlContent = frontMatterHtml + htmlContent;
-    }
+    // DO NOT add frontmatter HTML here - it will be dynamically added by setupFrontmatterVisibility()
     
     return htmlContent;
 }
@@ -943,6 +938,7 @@ function hidePreviewModal() {
     // Reset state
     currentModalItem = null;
     isSourceView = false;
+    currentModalFrontmatter = '';
     
     // Keep TOC visible for next time - don't hide it
     if (tocContainer) {
@@ -1088,14 +1084,25 @@ if ('serviceWorker' in navigator) {
 
 // Set up frontmatter visibility based on scroll position
 function setupFrontmatterVisibility() {
-    const frontmatterSection = document.getElementById('frontmatter-section');
     const modalContent = document.getElementById('modal-content');
     const contentContainer = modalContent.parentElement;
     
-    if (!frontmatterSection || !contentContainer) return;
+    if (!currentModalFrontmatter || !contentContainer) return;
     
     // Track if the user has scrolled down from the initial position
     let hasScrolledDown = false;
+    let frontmatterElement = null;
+    
+    // Function to create frontmatter HTML
+    function createFrontmatterHTML() {
+        const frontMatterHtml = `<div class="frontmatter-container visible" id="frontmatter-section">
+            <div class="frontmatter-header">
+                <h4>Front Matter</h4>
+            </div>
+            <pre><code class="language-yaml">${escapeHtml(currentModalFrontmatter)}</code></pre>
+        </div>`;
+        return frontMatterHtml;
+    }
     
     // Function to handle scroll and show/hide frontmatter
     const handleFrontmatterScroll = () => {
@@ -1109,15 +1116,31 @@ function setupFrontmatterVisibility() {
         // Only show frontmatter when:
         // 1. User has scrolled down before (not initial load)
         // 2. And is now near the top (scrolled back up)
-        if (hasScrolledDown && scrollTop <= 50) {
-            frontmatterSection.classList.add('visible');
-        } else {
-            frontmatterSection.classList.remove('visible');
+        const shouldShowFrontmatter = hasScrolledDown && scrollTop <= 50;
+        
+        if (shouldShowFrontmatter && !frontmatterElement) {
+            // Add frontmatter to the DOM
+            const frontmatterHTML = createFrontmatterHTML();
+            modalContent.insertAdjacentHTML('afterbegin', frontmatterHTML);
+            frontmatterElement = document.getElementById('frontmatter-section');
+            
+            // Re-generate table of contents since we added content
+            generateTableOfContents();
+        } else if (!shouldShowFrontmatter && frontmatterElement) {
+            // Remove frontmatter from the DOM
+            frontmatterElement.remove();
+            frontmatterElement = null;
+            
+            // Re-generate table of contents since we removed content
+            generateTableOfContents();
         }
     };
     
-    // Initially ensure frontmatter is hidden (don't call handleFrontmatterScroll immediately)
-    frontmatterSection.classList.remove('visible');
+    // Ensure frontmatter is not present initially
+    const existingFrontmatter = document.getElementById('frontmatter-section');
+    if (existingFrontmatter) {
+        existingFrontmatter.remove();
+    }
     
     // Add scroll listener
     contentContainer.addEventListener('scroll', handleFrontmatterScroll);
