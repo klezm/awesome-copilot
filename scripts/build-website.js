@@ -6,7 +6,7 @@ const path = require("path");
 // Base URLs for aka.ms redirects - these are used in the main script
 const AKA_INSTALL_URLS = {
   prompt: "https://aka.ms/awesome-copilot/install/prompt",
-  instructions: "https://aka.ms/awesome-copilot/install/instructions", 
+  instructions: "https://aka.ms/awesome-copilot/install/instructions",
   mode: "https://aka.ms/awesome-copilot/install/chatmode"
 };
 
@@ -21,7 +21,7 @@ function getRepositoryInfo() {
       baseUrl: `https://github.com/${owner}/${repo}`
     };
   }
-  
+
   // Fallback to package.json
   const packageJsonPath = path.join(__dirname, "..", "package.json");
   if (fs.existsSync(packageJsonPath)) {
@@ -48,11 +48,11 @@ function getRepositoryInfo() {
   // Fallback to git remote (for local development)
   try {
     const { execSync } = require('child_process');
-    const remoteUrl = execSync('git remote get-url origin', { 
+    const remoteUrl = execSync('git remote get-url origin', {
       encoding: 'utf8',
-      cwd: __dirname 
+      cwd: __dirname
     }).trim();
-    
+
     const match = remoteUrl.match(/github\.com[\/:]([^\/]+)\/([^\/]+)/);
     if (match) {
       const repo = match[2].replace(/\.git$/, '');
@@ -65,11 +65,11 @@ function getRepositoryInfo() {
   } catch (error) {
     console.warn("Could not get git remote:", error.message);
   }
-  
+
   // Final fallback to github/awesome-copilot
   return {
     owner: "github",
-    repo: "awesome-copilot", 
+    repo: "awesome-copilot",
     baseUrl: "https://github.com/github/awesome-copilot"
   };
 }
@@ -78,35 +78,35 @@ function getRepositoryInfo() {
 function extractFrontMatter(filePath) {
   const content = fs.readFileSync(filePath, "utf8");
   const lines = content.split("\n");
-  
+
   if (lines[0] !== "---") {
     return {};
   }
-  
+
   const frontMatterEnd = lines.findIndex((line, index) => index > 0 && line === "---");
   if (frontMatterEnd === -1) {
     return {};
   }
-  
+
   const frontMatterLines = lines.slice(1, frontMatterEnd);
   const frontMatter = {};
-  
+
   for (const line of frontMatterLines) {
     const colonIndex = line.indexOf(":");
     if (colonIndex > 0) {
       const key = line.substring(0, colonIndex).trim();
       let value = line.substring(colonIndex + 1).trim();
-      
+
       // Remove quotes if present
-      if ((value.startsWith('"') && value.endsWith('"')) || 
+      if ((value.startsWith('"') && value.endsWith('"')) ||
           (value.startsWith("'") && value.endsWith("'"))) {
         value = value.slice(1, -1);
       }
-      
+
       frontMatter[key] = value;
     }
   }
-  
+
   return frontMatter;
 }
 
@@ -116,7 +116,7 @@ function extractTitle(filePath) {
   if (frontMatter.title) {
     return frontMatter.title;
   }
-  
+
   // Fallback to filename
   const basename = path.basename(filePath);
   const nameWithoutExt = basename.replace(/\.(prompt|instructions|chatmode)\.md$/, ".md").replace(/\.md$/, "");
@@ -126,7 +126,7 @@ function extractTitle(filePath) {
     .join(" ");
 }
 
-// Extract description from markdown file  
+// Extract description from markdown file
 function extractDescription(filePath) {
   const frontMatter = extractFrontMatter(filePath);
   return frontMatter.description || "";
@@ -137,7 +137,7 @@ function extractDescription(filePath) {
  */
 function generateJsonData(promptsDir, instructionsDir, chatmodesDir, repoInfo) {
   const repoBaseUrl = `${repoInfo.baseUrl}/blob/main`;
-  
+
   const data = {
     prompts: [],
     instructions: [],
@@ -157,7 +157,7 @@ function generateJsonData(promptsDir, instructionsDir, chatmodesDir, repoInfo) {
       const title = extractTitle(filePath);
       const description = extractDescription(filePath);
       const link = `prompts/${file}`;
-      
+
       // Create install URLs using the aka.ms URLs
       const repoUrl = `${repoBaseUrl}/${link}`;
       const rawUrl = `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/main/${link}`;
@@ -189,7 +189,7 @@ function generateJsonData(promptsDir, instructionsDir, chatmodesDir, repoInfo) {
       const title = extractTitle(filePath);
       const description = extractDescription(filePath);
       const link = `instructions/${file}`;
-      
+
       // Create install URLs using the aka.ms URLs
       const repoUrl = `${repoBaseUrl}/${link}`;
       const rawUrl = `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/main/${link}`;
@@ -221,7 +221,7 @@ function generateJsonData(promptsDir, instructionsDir, chatmodesDir, repoInfo) {
       const title = extractTitle(filePath);
       const description = extractDescription(filePath);
       const link = `chatmodes/${file}`;
-      
+
       // Create install URLs using the aka.ms URLs
       const repoUrl = `${repoBaseUrl}/${link}`;
       const rawUrl = `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/main/${link}`;
@@ -252,16 +252,16 @@ function updateHtmlTemplate(templatePath, outputPath, repoInfo) {
     console.error(`Template file not found: ${templatePath}`);
     return;
   }
-  
+
   let htmlContent = fs.readFileSync(templatePath, "utf8");
-  
+
   // Replace hardcoded GitHub links with dynamic ones
   const repoUrl = repoInfo.baseUrl;
   htmlContent = htmlContent.replace(
-    /https:\/\/github\.com\/github\/awesome-copilot/g, 
+    /https:\/\/github\.com\/github\/awesome-copilot/g,
     repoUrl
   );
-  
+
   fs.writeFileSync(outputPath, htmlContent);
   console.log(`Updated HTML template with repository links: ${outputPath}`);
 }
@@ -296,26 +296,26 @@ try {
   // Generate JSON data for website
   console.log("Generating JSON data for website...");
   const jsonData = generateJsonData(promptsDir, instructionsDir, chatmodesDir, repoInfo);
-  
+
   // Ensure docs directory exists
   if (!fs.existsSync(docsDir)) {
     fs.mkdirSync(docsDir, { recursive: true });
   }
-  
+
   // Write JSON data file
   const jsonContent = JSON.stringify(jsonData, null, 2);
   writeFileIfChanged(path.join(docsDir, "data.json"), jsonContent);
-  
+
   // Update HTML template with dynamic repository links
   const templatePath = path.join(docsDir, "index.template.html");
   const outputPath = path.join(docsDir, "index.html");
-  
+
   updateHtmlTemplate(templatePath, outputPath, repoInfo);
-  
+
   // Generate summary stats
   const totalCount = jsonData.prompts.length + jsonData.instructions.length + jsonData.chatmodes.length;
   console.log(`Generated data for ${totalCount} items: ${jsonData.prompts.length} prompts, ${jsonData.instructions.length} instructions, ${jsonData.chatmodes.length} chat modes`);
-  
+
 } catch (error) {
   console.error(`Error building website: ${error.message}`);
   process.exit(1);

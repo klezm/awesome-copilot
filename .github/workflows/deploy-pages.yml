@@ -113,8 +113,8 @@ jobs:
               issue_number: context.issue.number,
             });
 
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && 
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
               comment.body.includes('Preview deployment')
             );
 
@@ -190,8 +190,8 @@ jobs:
               issue_number: context.issue.number,
             });
 
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && 
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
               comment.body.includes('Netlify Preview deployment')
             );
 
@@ -410,18 +410,18 @@ jobs:
                   <p class="description">Browse all available PR preview deployments for the Awesome Copilot project</p>
                   <a href="https://REPO_OWNER.github.io/REPO_NAME/" class="main-site-link">← Back to Main Site</a>
               </div>
-              
+
               <div id="preview-list">
                   <div class="no-previews">
                       <h3>No preview deployments found</h3>
                       <p>Preview deployments will appear here when pull requests are created.</p>
                   </div>
               </div>
-              
+
               <script>
                   // This will be populated by the build script
                   const previews = PREVIEW_DATA_PLACEHOLDER;
-                  
+
                   function formatDate(timestamp) {
                       const date = new Date(timestamp * 1000);
                       return date.toLocaleDateString('en-US', {
@@ -432,38 +432,38 @@ jobs:
                           minute: '2-digit'
                       });
                   }
-                  
+
                   function renderPreviews() {
                       const container = document.getElementById('preview-list');
-                      
+
                       if (previews.length === 0) {
                           return; // Keep the "no previews" message
                       }
-                      
+
                       const grid = document.createElement('div');
                       grid.className = 'preview-grid';
-                      
+
                       previews.forEach(preview => {
                           const card = document.createElement('div');
                           card.className = 'preview-card';
-                          
+
                           const prNumber = preview.name.match(/pr(\d+)-/)?.[1] || 'Unknown';
                           const timestamp = preview.name.match(/-(\d+)$/)?.[1];
                           const dateStr = timestamp ? formatDate(parseInt(timestamp)) : 'Unknown date';
-                          
+
                           card.innerHTML = `
                               <h3 class="preview-title"><a href="https://github.com/REPO_OWNER/REPO_NAME/pull/${prNumber}">PR #${prNumber}</a></h3>
                               <div class="preview-date">Deployed: ${dateStr}</div>
                               <a href="${preview.url}" class="preview-link">View Preview →</a>
                           `;
-                          
+
                           grid.appendChild(card);
                       });
-                      
+
                       container.innerHTML = '';
                       container.appendChild(grid);
                   }
-                  
+
                   renderPreviews();
               </script>
           </body>
@@ -479,13 +479,13 @@ jobs:
               if [ -d "$preview_dir" ] && [ "$preview_dir" != "previews/pr*-*" ]; then
                 folder_name=$(basename "$preview_dir")
                 preview_url="https://$REPO_OWNER.github.io/$REPO_NAME/${preview_dir}/"
-                
+
                 if [ "$FIRST" = true ]; then
                   FIRST=false
                 else
                   PREVIEW_DATA="$PREVIEW_DATA,"
                 fi
-                
+
                 PREVIEW_DATA="$PREVIEW_DATA{\"name\":\"$folder_name\",\"url\":\"$preview_url\"}"
               fi
             done
@@ -546,8 +546,8 @@ jobs:
               issue_number: context.issue.number,
             });
 
-            // const botComment = comments.find(comment => 
-            //   comment.user.type === 'Bot' && 
+            // const botComment = comments.find(comment =>
+            //   comment.user.type === 'Bot' &&
             //   comment.body.includes('GitHub Pages Preview deployment')
             // );
 

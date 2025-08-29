@@ -66,7 +66,7 @@ jobs:
 
             <details>
               <summary>View diff</summary>
-              
+
               ```diff
               ${{ steps.check-diff.outputs.diff }}
               ```
