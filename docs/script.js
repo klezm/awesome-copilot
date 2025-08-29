@@ -327,20 +327,32 @@ let currentModalItem = null;
 
 // Simple markdown parser for fallback
 function parseMarkdown(text) {
-    return text
+    // First escape any HTML that's not markdown syntax
+    // but preserve content within code blocks and inline code
+    const codeBlocks = [];
+    const inlineCode = [];
+    
+    // Extract and preserve code blocks
+    text = text.replace(/```[\s\S]*?```/g, (match, offset) => {
+        codeBlocks.push(match);
+        return `__CODEBLOCK_${codeBlocks.length - 1}__`;
+    });
+    
+    // Extract and preserve inline code
+    text = text.replace(/`[^`]+`/g, (match, offset) => {
+        inlineCode.push(match);
+        return `__INLINECODE_${inlineCode.length - 1}__`;
+    });
+    
+    // Now escape HTML in the remaining text
+    text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    
+    // Process markdown syntax
+    text = text
         // Headers
         .replace(/^### (.+)$/gm, '<h3>$1</h3>')
         .replace(/^## (.+)$/gm, '<h2>$1</h2>')
         .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-        
-        // Code blocks
-        .replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-            const langClass = lang ? ` class="language-${lang}"` : '';
-            return `<pre><code${langClass}>${escapeHtml(code.trim())}</code></pre>`;
-        })
-        
-        // Inline code
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
         
         // Bold and italic
         .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
@@ -364,6 +376,27 @@ function parseMarkdown(text) {
         .replace(/<p><\/p>/g, '')
         .replace(/<p>(<[hul])/g, '$1')
         .replace(/(<\/[hul]>)<\/p>/g, '$1');
+    
+    // Restore inline code
+    inlineCode.forEach((code, index) => {
+        // Remove backticks and escape HTML within
+        const codeContent = code.slice(1, -1);
+        text = text.replace(`__INLINECODE_${index}__`, `<code>${escapeHtml(codeContent)}</code>`);
+    });
+    
+    // Restore code blocks
+    codeBlocks.forEach((block, index) => {
+        const match = block.match(/```(\w+)?\n?([\s\S]*?)```/);
+        if (match) {
+            const lang = match[1];
+            const code = match[2];
+            const langClass = lang ? ` class="language-${lang}"` : '';
+            text = text.replace(`__CODEBLOCK_${index}__`, 
+                `<pre><code${langClass}>${escapeHtml(code.trim())}</code></pre>`);
+        }
+    });
+    
+    return text;
 }
 
 function openPreviewModal(item) {
@@ -389,8 +422,9 @@ function openPreviewModal(item) {
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     
-    // Focus management
-    document.getElementById('close-modal-btn').focus();
+    // Focus management - focus the modal content area
+    modalContent.setAttribute('tabindex', '-1');
+    modalContent.focus();
     
     // Load and render markdown content
     loadMarkdownContent(item);
