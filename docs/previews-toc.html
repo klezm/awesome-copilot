@@ -626,14 +626,19 @@
                 groups[prNumber].sort((a, b) => b.timestamp - a.timestamp);
             });
             
-            // Convert to array and sort by newest preview in each group
-            return Object.keys(groups)
-                .map(prNumber => ({
+            // Convert to array and sort groups by their latest timestamp (newest first)
+            const groupArray = Object.keys(groups).map(prNumber => {
+                const groupPreviews = groups[prNumber];
+                const latestTimestamp = Math.max(...groupPreviews.map(p => p.timestamp));
+                return {
                     prNumber,
-                    previews: groups[prNumber],
-                    latestTimestamp: groups[prNumber][0].timestamp
-                }))
-                .sort((a, b) => b.latestTimestamp - a.latestTimestamp);
+                    previews: groupPreviews,
+                    latestTimestamp: latestTimestamp
+                };
+            });
+            
+            // Sort groups by latest timestamp in descending order (newest groups first)
+            return groupArray.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
         }
         
         function createPreviewItem(preview, index) {
