@@ -599,6 +599,59 @@ footer a:hover {
     color: #24292f;
 }
 
+/* CRITICAL: Hide any potential frontmatter content that might leak through */
+#modal-content > p:first-child:contains("description:"),
+#modal-content > p:first-child:contains("mode:"),
+#modal-content > p:first-child:contains("title:"),
+#modal-content > p:first-child:contains("author:"),
+#modal-content > p:first-child:contains("tools:"),
+#modal-content > p:first-child:contains("model:"),
+#modal-content > p:first-child:contains("applyTo:") {
+    display: none !important;
+}
+
+#modal-content > pre:first-child:contains("description:"),
+#modal-content > pre:first-child:contains("mode:"),
+#modal-content > pre:first-child:contains("title:"),
+#modal-content > pre:first-child:contains("author:"),
+#modal-content > pre:first-child:contains("tools:"),
+#modal-content > pre:first-child:contains("model:"),
+#modal-content > pre:first-child:contains("applyTo:") {
+    display: none !important;
+}
+
+#modal-content > div:first-child:contains("description:"),
+#modal-content > div:first-child:contains("mode:"),
+#modal-content > div:first-child:contains("title:"),
+#modal-content > div:first-child:contains("author:"),
+#modal-content > div:first-child:contains("tools:"),
+#modal-content > div:first-child:contains("model:"),
+#modal-content > div:first-child:contains("applyTo:") {
+    display: none !important;
+}
+
+/* Hide frontmatter-like content in any position */
+.modal-content p:contains("description:"),
+.modal-content p:contains("mode:"),
+.modal-content p:contains("title:"),
+.modal-content p:contains("author:"),
+.modal-content p:contains("tools:"),
+.modal-content p:contains("model:"),
+.modal-content p:contains("applyTo:") {
+    display: none !important;
+}
+
+/* Show only when explicitly marked as frontmatter container */
+.frontmatter-container p:contains("description:"),
+.frontmatter-container p:contains("mode:"),
+.frontmatter-container p:contains("title:"),
+.frontmatter-container p:contains("author:"),
+.frontmatter-container p:contains("tools:"),
+.frontmatter-container p:contains("model:"),
+.frontmatter-container p:contains("applyTo:") {
+    display: block !important;
+}
+
 .modal-markdown-content h1,
 .modal-markdown-content h2,
 .modal-markdown-content h3,

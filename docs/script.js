@@ -641,43 +641,73 @@ For the complete ${type.toLowerCase()}, please use the install buttons to add it
 function markdownToHtml(markdown) {
     if (!markdown) return '';
     
-    // Extract front matter with more aggressive pattern matching
+    // CRITICAL: Ultra-aggressive frontmatter extraction with multiple patterns
     let frontMatter = '';
     let content = markdown;
     
-    // More comprehensive frontmatter detection
-    const frontMatterMatch = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
-    if (frontMatterMatch) {
-        frontMatter = frontMatterMatch[1];
-        content = markdown.replace(/^---[\s\S]*?---\r?\n?/, '');
+    // Pattern 1: Standard YAML frontmatter with ---
+    const standardFrontMatterMatch = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
+    if (standardFrontMatterMatch) {
+        frontMatter = standardFrontMatterMatch[1];
+        content = markdown.substring(standardFrontMatterMatch[0].length);
     }
     
-    // Also handle cases where frontmatter might not have the standard format
-    const yamlLikeMatch = content.match(/^(description|mode|title|author|tools|model):\s*['"]/);
-    if (yamlLikeMatch && !frontMatter) {
-        // Extract YAML-like content at the beginning
+    // Pattern 2: Frontmatter without closing --- (malformed)
+    if (!frontMatter) {
+        const openFrontMatterMatch = markdown.match(/^---\r?\n([\s\S]*?)(?=\n#|\n[A-Za-z]|\n\n[A-Za-z])/);
+        if (openFrontMatterMatch) {
+            frontMatter = openFrontMatterMatch[1];
+            content = markdown.substring(openFrontMatterMatch[0].length);
+        }
+    }
+    
+    // Pattern 3: YAML-like content at start without --- delimiters
+    if (!frontMatter) {
+        const yamlPattern = /^(description|mode|title|author|tools|model|applyTo):\s*['"][^'"]*['"](\r?\n(description|mode|title|author|tools|model|applyTo):\s*['"][^'"]*['"])*(\r?\n)*/;
+        const yamlMatch = content.match(yamlPattern);
+        if (yamlMatch) {
+            frontMatter = yamlMatch[0].trim();
+            content = content.substring(yamlMatch[0].length);
+        }
+    }
+    
+    // Pattern 4: Any line that looks like YAML at the very beginning
+    if (!frontMatter) {
         const lines = content.split('\n');
-        let frontMatterLines = [];
-        let contentLines = [];
-        let inFrontMatter = true;
+        const frontMatterLines = [];
+        let i = 0;
         
-        for (const line of lines) {
-            if (inFrontMatter && line.match(/^(description|mode|title|author|tools|model):/)) {
-                frontMatterLines.push(line);
-            } else if (inFrontMatter && line.trim() === '') {
-                // Continue collecting frontmatter through empty lines
-                frontMatterLines.push(line);
+        // Skip initial empty lines
+        while (i < lines.length && lines[i].trim() === '') {
+            i++;
+        }
+        
+        // Collect YAML-like lines from the start
+        while (i < lines.length) {
+            const line = lines[i].trim();
+            if (line.match(/^(description|mode|title|author|tools|model|applyTo):\s/)) {
+                frontMatterLines.push(lines[i]);
+                i++;
+            } else if (line === '' && frontMatterLines.length > 0) {
+                // Allow empty lines within frontmatter
+                i++;
             } else {
-                inFrontMatter = false;
-                contentLines.push(line);
+                break;
             }
         }
         
         if (frontMatterLines.length > 0) {
             frontMatter = frontMatterLines.join('\n');
-            content = contentLines.join('\n');
+            content = lines.slice(i).join('\n');
         }
     }
+    
+    // ULTRA-AGGRESSIVE content cleaning: Remove any remaining frontmatter-like patterns
+    content = content.replace(/^(description|mode|title|author|tools|model|applyTo):\s*['"][^'"]*['"]\r?\n/gm, '');
+    content = content.replace(/^(description|mode|title|author|tools|model|applyTo):\s*[^'\n][^\n]*\r?\n/gm, '');
+    
+    // Remove any leading empty lines after frontmatter removal
+    content = content.replace(/^\s*\n+/, '');
     
     // Store frontmatter globally so we can use it in scroll visibility logic
     currentModalFrontmatter = frontMatter;
@@ -709,10 +739,13 @@ function markdownToHtml(markdown) {
         htmlContent = fallbackMarkdownToHtml(content);
     }
     
-    // CRITICAL: Ensure no frontmatter-like content is included in the HTML
-    // Remove any remaining YAML-like content from the beginning of the HTML
-    htmlContent = htmlContent.replace(/^<p>\s*(description|mode|title|author|tools|model):\s*[^<]*<\/p>\s*/i, '');
-    htmlContent = htmlContent.replace(/^<pre><code[^>]*>\s*(description|mode|title|author|tools|model):[^<]*<\/code><\/pre>\s*/i, '');
+    // FINAL CLEANUP: Aggressively remove any HTML that looks like frontmatter
+    htmlContent = htmlContent.replace(/^<p>\s*(description|mode|title|author|tools|model|applyTo):\s*[^<]*<\/p>\s*/gi, '');
+    htmlContent = htmlContent.replace(/^<pre><code[^>]*>\s*(description|mode|title|author|tools|model|applyTo):[^<]*<\/code><\/pre>\s*/gi, '');
+    htmlContent = htmlContent.replace(/^<div[^>]*>\s*(description|mode|title|author|tools|model|applyTo):[^<]*<\/div>\s*/gi, '');
+    
+    // Remove any paragraphs that contain only YAML-like content
+    htmlContent = htmlContent.replace(/<p>\s*(description|mode|title|author|tools|model|applyTo):\s*[^<]*<\/p>/gi, '');
     
     // DO NOT add frontmatter HTML here - it will be dynamically added by setupFrontmatterVisibility()
     
@@ -873,10 +906,61 @@ async function showPreviewModal(item) {
     try {
         const content = await fetchMarkdownContent(item.sourceUrl);
         const htmlContent = markdownToHtml(content);
+        
+        // CRITICAL: Set content but immediately ensure frontmatter is hidden
         modalContent.innerHTML = htmlContent || '<p>No content available.</p>';
         
-        // CRITICAL: Ensure no frontmatter is present in the DOM initially
+        // IMMEDIATE frontmatter cleanup - multiple passes to be absolutely sure
         removeFrontmatterFromDOM();
+        
+        // Add CSS to hide any potential frontmatter that might slip through
+        const style = document.createElement('style');
+        style.id = 'frontmatter-hide-style';
+        style.textContent = `
+            #modal-content p:first-child:has-text("description:"),
+            #modal-content p:first-child:has-text("mode:"),
+            #modal-content p:first-child:has-text("title:"),
+            #modal-content p:first-child:has-text("author:"),
+            #modal-content p:first-child:has-text("tools:"),
+            #modal-content p:first-child:has-text("model:"),
+            #modal-content p:first-child:has-text("applyTo:") {
+                display: none !important;
+            }
+            
+            #modal-content > *:first-child {
+                --frontmatter-check: attr(textContent);
+            }
+            
+            #modal-content > p:first-child,
+            #modal-content > pre:first-child,
+            #modal-content > div:first-child {
+                display: var(--frontmatter-display, block);
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Use JavaScript to hide elements that contain frontmatter text
+        const firstElements = modalContent.querySelectorAll('p:first-child, pre:first-child, div:first-child');
+        firstElements.forEach(element => {
+            const text = element.textContent || '';
+            if (text.match(/^\s*(description|mode|title|author|tools|model|applyTo):/i)) {
+                element.style.display = 'none';
+            }
+        });
+        
+        // Another cleanup pass after a minimal delay
+        setTimeout(() => {
+            removeFrontmatterFromDOM();
+            
+            // Hide any visible frontmatter patterns
+            const allElements = modalContent.querySelectorAll('*');
+            allElements.forEach(element => {
+                const text = element.textContent || '';
+                if (text.match(/^\s*(description|mode|title|author|tools|model|applyTo):\s/i)) {
+                    element.style.display = 'none';
+                }
+            });
+        }, 10);
         
         // Apply syntax highlighting to code blocks
         applySyntaxHighlighting();
@@ -975,8 +1059,14 @@ function hidePreviewModal() {
         delete contentContainer._tocScrollHandler;
     }
     
-    // CRITICAL: Aggressive cleanup of frontmatter when closing modal
+    // CRITICAL: Ultra-aggressive cleanup of frontmatter when closing modal
     removeFrontmatterFromDOM();
+    
+    // Remove any style elements we may have added
+    const hideStyle = document.getElementById('frontmatter-hide-style');
+    if (hideStyle) {
+        hideStyle.remove();
+    }
     
     // Reset state
     currentModalItem = null;
@@ -1133,7 +1223,10 @@ function removeFrontmatterFromDOM() {
         '.frontmatter-container',
         '.frontmatter',
         '[class*="frontmatter"]',
-        '[id*="frontmatter"]'
+        '[id*="frontmatter"]',
+        '.front-matter',
+        '[class*="front-matter"]',
+        '[id*="front-matter"]'
     ];
     
     selectors.forEach(selector => {
@@ -1141,19 +1234,68 @@ function removeFrontmatterFromDOM() {
         elements.forEach(element => element.remove());
     });
     
-    // Also remove any elements that might contain frontmatter-like content
+    // Ultra-aggressive content-based removal
     const modalContent = document.getElementById('modal-content');
-    if (modalContent) {
-        // Check for any pre/code blocks that might contain YAML frontmatter at the beginning
-        const firstChild = modalContent.firstElementChild;
-        if (firstChild && (firstChild.tagName === 'PRE' || firstChild.tagName === 'CODE')) {
-            const text = firstChild.textContent || '';
-            // If it looks like YAML frontmatter (starts with description:, mode:, etc.)
-            if (text.match(/^\s*(description|mode|title|author):/)) {
-                firstChild.remove();
+    if (!modalContent) return;
+    
+    // Remove any elements that contain frontmatter-like content at the beginning
+    const allElements = modalContent.querySelectorAll('*');
+    for (let element of allElements) {
+        const text = element.textContent || '';
+        const innerHTML = element.innerHTML || '';
+        
+        // Check if element contains YAML-like frontmatter patterns
+        if (element.tagName === 'P' || element.tagName === 'PRE' || element.tagName === 'CODE' || element.tagName === 'DIV') {
+            if (text.match(/^\s*(description|mode|title|author|tools|model|applyTo):\s/i) ||
+                innerHTML.match(/^\s*(description|mode|title|author|tools|model|applyTo):\s/i)) {
+                element.remove();
+                continue;
+            }
+        }
+        
+        // Check for code blocks that might contain YAML frontmatter
+        if (element.tagName === 'PRE') {
+            const codeElement = element.querySelector('code');
+            const codeText = codeElement ? codeElement.textContent : element.textContent;
+            if (codeText && codeText.match(/^\s*(description|mode|title|author|tools|model|applyTo):/i)) {
+                element.remove();
+                continue;
             }
         }
     }
+    
+    // Check the first few children for any remaining frontmatter-like content
+    const children = Array.from(modalContent.children);
+    for (let i = 0; i < Math.min(3, children.length); i++) {
+        const child = children[i];
+        const text = child.textContent || '';
+        
+        // If any of the first 3 elements contain frontmatter patterns, remove them
+        if (text.match(/^\s*(description|mode|title|author|tools|model|applyTo):\s/i)) {
+            child.remove();
+        }
+    }
+    
+    // Final check: remove any text nodes that might contain frontmatter
+    const walker = document.createTreeWalker(
+        modalContent,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+    
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+        textNodes.push(node);
+    }
+    
+    textNodes.forEach(textNode => {
+        const text = textNode.textContent || '';
+        if (text.match(/^\s*(description|mode|title|author|tools|model|applyTo):\s/i)) {
+            textNode.remove();
+        }
+    });
 }
 
 // Set up frontmatter visibility based on scroll position
@@ -1163,8 +1305,11 @@ function setupFrontmatterVisibility() {
     
     if (!currentModalFrontmatter || !contentContainer) return;
     
-    // CRITICAL: Ensure no frontmatter is visible initially - aggressive cleanup
+    // CRITICAL: Ultra-aggressive initial cleanup - multiple approaches
     removeFrontmatterFromDOM();
+    
+    // Ensure scroll position starts at top
+    contentContainer.scrollTop = 0;
     
     // Track if the user has scrolled down from the initial position
     let hasScrolledDown = false;
@@ -1185,7 +1330,7 @@ function setupFrontmatterVisibility() {
     const handleFrontmatterScroll = () => {
         const scrollTop = contentContainer.scrollTop;
         
-        // Track if user has scrolled down at least once
+        // Track if user has scrolled down at least once (more than 50px from top)
         if (scrollTop > 50) {
             hasScrolledDown = true;
         }
@@ -1196,7 +1341,7 @@ function setupFrontmatterVisibility() {
         const shouldShowFrontmatter = hasScrolledDown && scrollTop <= 50;
         
         if (shouldShowFrontmatter && !frontmatterElement) {
-            // Double-check: remove any existing frontmatter first
+            // Triple-check: remove any existing frontmatter first
             removeFrontmatterFromDOM();
             
             // Add frontmatter to the DOM
@@ -1216,16 +1361,39 @@ function setupFrontmatterVisibility() {
         }
     };
     
-    // Ensure frontmatter is not present initially - final cleanup
+    // CRITICAL: Immediate and thorough cleanup with multiple timeouts
+    // Immediate cleanup
+    removeFrontmatterFromDOM();
+    
+    // Cleanup after 1ms (next tick)
     setTimeout(() => {
         removeFrontmatterFromDOM();
-    }, 100); // Small delay to ensure all DOM operations are complete
+    }, 1);
+    
+    // Cleanup after 10ms
+    setTimeout(() => {
+        removeFrontmatterFromDOM();
+    }, 10);
+    
+    // Cleanup after 50ms
+    setTimeout(() => {
+        removeFrontmatterFromDOM();
+    }, 50);
+    
+    // Final cleanup after 100ms
+    setTimeout(() => {
+        removeFrontmatterFromDOM();
+    }, 100);
     
     // Add scroll listener
     contentContainer.addEventListener('scroll', handleFrontmatterScroll);
     
     // Store reference for cleanup
     contentContainer._frontmatterScrollHandler = handleFrontmatterScroll;
+    
+    // Ensure initial state is correct - no frontmatter visible
+    hasScrolledDown = false;
+    frontmatterElement = null;
 }
 
 // Table of Contents functionality
