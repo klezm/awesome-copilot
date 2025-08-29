@@ -134,6 +134,7 @@ function setupThemeEventListeners() {
         syntaxThemeSelect.addEventListener('change', (e) => {
             themeSettings.syntaxTheme = e.target.value;
             applyTheme();
+            updateSyntaxPreview();
         });
     }
     
@@ -162,6 +163,9 @@ function openSettingsModal() {
     if (settingsModal) {
         settingsModal.style.display = 'block';
         settingsModal.setAttribute('aria-hidden', 'false');
+        
+        // Update syntax preview
+        updateSyntaxPreview();
         
         // Focus the first control
         const firstControl = settingsModal.querySelector('select, button');
@@ -227,6 +231,37 @@ function showNotification(message) {
     setTimeout(() => {
         notification.remove();
     }, 3000);
+}
+
+function updateSyntaxPreview() {
+    const preview = document.querySelector('.syntax-preview code');
+    if (!preview) return;
+    
+    // Simple syntax highlighting for TypeScript
+    const code = `// Preview
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+const Button = ({ children, onClick }: ButtonProps) => {
+  return (
+    &lt;button onClick={onClick}&gt;
+      {children}
+    &lt;/button&gt;
+  );
+};`;
+    
+    // Basic syntax highlighting
+    let highlighted = code
+        .replace(/\/\/ .*/g, '<span class="comment">$&</span>')
+        .replace(/\b(interface|const|return)\b/g, '<span class="keyword">$1</span>')
+        .replace(/\b(React\.ReactNode|ButtonProps)\b/g, '<span class="type">$1</span>')
+        .replace(/('primary'|'secondary')/g, '<span class="string">$1</span>')
+        .replace(/\b(Button)\b(?=\s*=)/g, '<span class="function">$1</span>');
+    
+    preview.innerHTML = highlighted;
 }
 
 // Set up event listeners

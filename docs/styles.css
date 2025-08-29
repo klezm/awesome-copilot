@@ -731,6 +731,50 @@ footer {
     --syntax-function: #a6e22e;
 }
 
+/* Syntax Highlighting Preview */
+.syntax-preview {
+    margin-top: 0.75rem;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-primary);
+}
+
+.syntax-preview pre {
+    background-color: var(--syntax-bg);
+    color: var(--syntax-text);
+    padding: 1rem;
+    margin: 0;
+    font-family: 'SF Mono', Monaco, 'Inconsolata', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    overflow-x: auto;
+}
+
+.syntax-preview code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+}
+
+/* Syntax highlighting tokens */
+.token.comment { color: var(--syntax-comment); }
+.token.keyword { color: var(--syntax-keyword); font-weight: bold; }
+.token.string { color: var(--syntax-string); }
+.token.number { color: var(--syntax-number); }
+.token.function { color: var(--syntax-function); }
+.token.class-name { color: var(--syntax-function); }
+.token.operator { color: var(--syntax-text); }
+.token.punctuation { color: var(--syntax-text); }
+
+/* Basic syntax highlighting without external library */
+.syntax-preview .comment { color: var(--syntax-comment); }
+.syntax-preview .keyword { color: var(--syntax-keyword); font-weight: bold; }
+.syntax-preview .string { color: var(--syntax-string); }
+.syntax-preview .number { color: var(--syntax-number); }
+.syntax-preview .function { color: var(--syntax-function); }
+.syntax-preview .type { color: var(--syntax-function); }
+
 /* Navigation updates for settings button */
 .nav-controls {
     display: flex;
