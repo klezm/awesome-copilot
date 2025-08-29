@@ -450,7 +450,7 @@ jobs:
                           const dateStr = timestamp ? formatDate(parseInt(timestamp)) : 'Unknown date';
                           
                           card.innerHTML = `
-                              <h3 class="preview-title"><a href="https://github.com/${REPO_OWNER}/${REPO_NAME}/pull/${prNumber}">PR #${prNumber}</a></h3>
+                              <h3 class="preview-title"><a href="https://github.com/REPO_OWNER/REPO_NAME/pull/${prNumber}">PR #${prNumber}</a></h3>
                               <div class="preview-date">Deployed: ${dateStr}</div>
                               <a href="${preview.url}" class="preview-link">View Preview →</a>
                           `;
