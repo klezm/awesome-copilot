@@ -68,7 +68,7 @@ jobs:
   deploy-vercel:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ secrets.VERCEL_TOKEN != '' }}
+    if: false
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -76,8 +76,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -145,7 +145,7 @@ jobs:
   deploy-netlify:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ secrets.NETLIFY_AUTH_TOKEN != '' && github.event_name == 'pull_request' }}
+    if: false
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -153,8 +153,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -168,7 +168,7 @@ jobs:
         id: deploy-netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: './docs'
+          publish-dir: "./docs"
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "Deploy from GitHub Actions - PR #${{ github.event.number }}"
@@ -305,10 +305,10 @@ jobs:
           set -e
           REPO_OWNER="${{ github.repository_owner }}"
           REPO_NAME="$(echo "${{ github.repository }}" | sed "s|^$REPO_OWNER/||")"
-          
+
           # Ensure previews directory exists
           mkdir -p previews
-          
+
           # Generate HTML content for the index
           cat > previews/index.html << 'EOF'
           <!DOCTYPE html>
@@ -467,11 +467,11 @@ jobs:
           </body>
           </html>
           EOF
-          
+
           # Collect all preview directories and generate JSON data
           PREVIEW_DATA="["
           FIRST=true
-          
+
           if [ -d previews ]; then
             for preview_dir in previews/pr*-*; do
               if [ -d "$preview_dir" ] && [ "$preview_dir" != "previews/pr*-*" ]; then
@@ -488,14 +488,14 @@ jobs:
               fi
             done
           fi
-          
+
           PREVIEW_DATA="$PREVIEW_DATA]"
-          
+
           # Replace placeholders in the HTML
           sed -i "s|REPO_OWNER|$REPO_OWNER|g" previews/index.html
           sed -i "s|REPO_NAME|$REPO_NAME|g" previews/index.html
           sed -i "s|PREVIEW_DATA_PLACEHOLDER|$PREVIEW_DATA|g" previews/index.html
-          
+
           echo "Generated previews index with $(echo "$PREVIEW_DATA" | grep -o '{' | wc -l) preview(s)"
 
       - name: Remove old PR previews
