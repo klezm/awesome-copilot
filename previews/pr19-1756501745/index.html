@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome GitHub Copilot - Interactive Explorer</title>
+    <meta name="description" content="Explore and discover GitHub Copilot prompts, instructions, and chat modes">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <header>
+        <a href="#main" class="sr-only">Skip to main content</a>
+        <div class="container">
+            <h1>🤖 Awesome GitHub Copilot</h1>
+            <p class="subtitle">Interactive Explorer for Prompts, Instructions & Chat Modes</p>
+        </div>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <div class="container">
+            <div class="nav-controls">
+                <div class="search-container">
+                    <label for="search" class="sr-only">Search prompts, instructions, and chat modes</label>
+                    <input type="search" id="search" placeholder="Search..." aria-describedby="search-help">
+                    <span id="search-help" class="sr-only">Search across titles and descriptions</span>
+                </div>
+                <div class="filter-container">
+                    <label for="type-filter" class="sr-only">Filter by type</label>
+                    <select id="type-filter" aria-describedby="filter-help">
+                        <option value="all">All Types</option>
+                        <option value="prompts">Prompts</option>
+                        <option value="instructions">Instructions</option>
+                        <option value="chatmodes">Chat Modes</option>
+                    </select>
+                    <span id="filter-help" class="sr-only">Filter content by type</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main" class="container">
+        <div class="stats">
+            <span id="total-count">Loading...</span>
+        </div>
+
+        <div class="content-grid">
+            <section id="results" aria-live="polite" aria-label="Search results">
+                <div class="loading">Loading awesome content...</div>
+            </section>
+        </div>
+
+        <div id="pagination" class="pagination" style="display: none;">
+            <button id="prev-page" class="btn btn-secondary" disabled>Previous</button>
+            <span id="page-info"></span>
+            <button id="next-page" class="btn btn-secondary" disabled>Next</button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                <a href="https://github.com/klezm/awesome-copilot">View on GitHub</a> |
+                <a href="https://github.com/klezm/awesome-copilot/blob/main/CONTRIBUTING.md">Contributing</a> |
+                <a href="https://github.com/klezm/awesome-copilot/blob/main/LICENSE">License</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-content">
+        <div class="modal-overlay" aria-label="Close modal"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Preview</h2>
+                <button id="modal-close" class="modal-close" aria-label="Close preview modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-container">
+                    <div id="modal-toc" class="modal-toc" style="display: none;">
+                        <h3>Table of Contents</h3>
+                        <nav id="modal-toc-nav" class="toc-nav"></nav>
+                    </div>
+                    <div id="modal-content" class="modal-markdown-content" tabindex="0">
+                        <div class="loading">Loading content...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-show-source" class="btn btn-secondary">Show Source</button>
+                <button id="modal-close-footer" class="btn btn-secondary">Close</button>
+                <a id="modal-install" href="#" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Install in VS Code</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Tooltip -->
+    <div id="preview-tooltip" class="tooltip" aria-hidden="true" role="tooltip">
+        <div class="tooltip-content">
+            <div class="tooltip-title"></div>
+            <div class="tooltip-description"></div>
+            <div class="tooltip-preview"></div>
+        </div>
+        <div class="tooltip-arrow"></div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="help-modal-title">
+        <div class="modal-overlay" aria-label="Close help modal"></div>
+        <div class="modal-content help-modal-content">
+            <div class="modal-header">
+                <h2 id="help-modal-title">Keyboard Shortcuts</h2>
+                <button id="help-modal-close" class="modal-close" aria-label="Close help modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="help-section">
+                    <h3>Navigation</h3>
+                    <div class="shortcut-list">
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <kbd>↑</kbd> <kbd>↓</kbd>
+                            </div>
+                            <div class="shortcut-description">Navigate between items</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <kbd>Enter</kbd> <kbd>Space</kbd>
+                            </div>
+                            <div class="shortcut-description">Open preview for selected item</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <kbd>/</kbd>
+                            </div>
+                            <div class="shortcut-description">Focus search box from anywhere</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="help-section">
+                    <h3>Preview Modal</h3>
+                    <div class="shortcut-list">
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <kbd>←</kbd> <kbd>→</kbd>
+                            </div>
+                            <div class="shortcut-description">Navigate between items in preview</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <kbd>S</kbd>
+                            </div>
+                            <div class="shortcut-description">Toggle between rendered and source view</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <kbd>Esc</kbd>
+                            </div>
+                            <div class="shortcut-description">Close modal</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="help-section">
+                    <h3>General</h3>
+                    <div class="shortcut-list">
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <kbd>?</kbd>
+                            </div>
+                            <div class="shortcut-description">Show this help dialog</div>
+                        </div>
+                        <div class="shortcut-item">
+                            <div class="shortcut-keys">
+                                <kbd>Esc</kbd>
+                            </div>
+                            <div class="shortcut-description">Close any open modal or tooltip</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="help-modal-close-footer" class="btn btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Help Button -->
+    <button id="floating-help-btn" class="floating-help-btn" aria-label="Show keyboard shortcuts" title="Keyboard shortcuts (?)">
+        ?
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
