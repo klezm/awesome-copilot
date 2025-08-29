@@ -1,0 +1,32 @@
+# Pre-commit configuration for awesome-copilot
+# See https://pre-commit.com for more information
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Remove trailing whitespace from all files except markdown
+      # Markdown files are handled separately to preserve intentional trailing spaces
+      - id: trailing-whitespace
+        exclude: \.md$
+
+      # Ensure files end with a newline (excluding markdown to match .editorconfig)
+      - id: end-of-file-fixer
+        exclude: \.md$
+
+      # Check for files that would conflict in case-insensitive filesystems
+      - id: check-case-conflict
+
+      # Check for merge conflicts
+      - id: check-merge-conflict
+
+      # Check YAML files for syntax errors
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+
+      # Check JSON files for syntax errors
+      - id: check-json
+
+      # Prevent adding large files to the repository
+      - id: check-added-large-files
+        args: [--maxkb=1024]

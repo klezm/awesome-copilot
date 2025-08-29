@@ -23,11 +23,11 @@ async function init() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         allData = await response.json();
-        
+
         // Initialize display
         updateFilteredData();
         setupEventListeners();
-        
+
         console.log('Application initialized successfully');
     } catch (error) {
         console.error('Error loading data:', error);
@@ -74,7 +74,7 @@ function setupEventListeners() {
     // Keyboard navigation for pagination
     document.addEventListener('keydown', (e) => {
         if (e.target.matches('input, select, button, a')) return;
-        
+
         const totalPages = Math.ceil(filteredData.length / itemsPerPage);
         if (e.key === 'ArrowLeft' && currentPage > 1) {
             e.preventDefault();
@@ -94,7 +94,7 @@ function setupEventListeners() {
 function updateFilteredData() {
     const searchTerm = searchInput.value.toLowerCase().trim();
     const selectedType = typeFilter.value;
-    
+
     // Combine all data
     let combinedData = [];
     if (selectedType === 'all' || selectedType === 'prompts') {
@@ -106,10 +106,10 @@ function updateFilteredData() {
     if (selectedType === 'all' || selectedType === 'chatmodes') {
         combinedData = combinedData.concat(allData.chatmodes);
     }
-    
+
     // Filter by search term
     if (searchTerm) {
-        filteredData = combinedData.filter(item => 
+        filteredData = combinedData.filter(item =>
             item.title.toLowerCase().includes(searchTerm) ||
             item.description.toLowerCase().includes(searchTerm) ||
             item.file.toLowerCase().includes(searchTerm)
@@ -117,10 +117,10 @@ function updateFilteredData() {
     } else {
         filteredData = combinedData;
     }
-    
+
     // Sort alphabetically by title
     filteredData.sort((a, b) => a.title.localeCompare(b.title));
-    
+
     updateDisplay();
 }
 
@@ -136,16 +136,16 @@ function updateStats() {
     const total = filteredData.length;
     const searchTerm = searchInput.value.trim();
     const selectedType = typeFilter.value;
-    
+
     let statsText = `Showing ${total} item${total !== 1 ? 's' : ''}`;
-    
+
     if (searchTerm || selectedType !== 'all') {
         const filters = [];
         if (searchTerm) filters.push(`search: "${searchTerm}"`);
         if (selectedType !== 'all') filters.push(`type: ${selectedType}`);
         statsText += ` (filtered by ${filters.join(', ')})`;
     }
-    
+
     totalCountElement.textContent = statsText;
 }
 
@@ -155,30 +155,30 @@ function renderItems() {
         showEmptyState();
         return;
     }
-    
+
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
     const pageItems = filteredData.slice(startIndex, endIndex);
-    
+
     const itemsHtml = pageItems.map(item => createItemCard(item)).join('');
     resultsContainer.innerHTML = itemsHtml;
 }
 
 // Create HTML for a single item card
 function createItemCard(item) {
-    const descriptionHtml = item.description 
+    const descriptionHtml = item.description
         ? `<p class="item-description">${escapeHtml(item.description)}</p>`
         : '';
-    
+
     // Get the appropriate emoji and label for each type
     const typeInfo = {
         'chatmodes': { emoji: '💭', label: 'Chat Mode' },
         'instructions': { emoji: '📋', label: 'Instruction' },
         'prompts': { emoji: '🎯', label: 'Prompt' }
     };
-    
+
     const { emoji, label } = typeInfo[item.type] || { emoji: '', label: 'Unknown' };
-    
+
     return `
         <div class="item-card">
             <div class="item-header">
@@ -211,20 +211,20 @@ function createItemCard(item) {
 function showEmptyState() {
     const searchTerm = searchInput.value.trim();
     const selectedType = typeFilter.value;
-    
+
     let message = 'No items found';
     if (searchTerm || selectedType !== 'all') {
         message += ' matching your criteria';
     }
     message += '.';
-    
+
     let suggestion = '';
     if (searchTerm) {
         suggestion = '<br><br>Try adjusting your search terms or clearing the search to see all items.';
     } else if (selectedType !== 'all') {
         suggestion = '<br><br>Try selecting "All Types" to see more items.';
     }
-    
+
     resultsContainer.innerHTML = `
         <div class="loading">
             <p>${message}${suggestion}</p>
@@ -244,23 +244,23 @@ function showError(message) {
 // Update pagination controls
 function updatePagination() {
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    
+
     if (totalPages <= 1) {
         paginationContainer.style.display = 'none';
         return;
     }
-    
+
     paginationContainer.style.display = 'flex';
-    
+
     // Update button states
     prevPageButton.disabled = currentPage === 1;
     nextPageButton.disabled = currentPage === totalPages;
-    
+
     // Update page info
     const startItem = (currentPage - 1) * itemsPerPage + 1;
     const endItem = Math.min(currentPage * itemsPerPage, filteredData.length);
     pageInfoElement.textContent = `${startItem}-${endItem} of ${filteredData.length}`;
-    
+
     // Update ARIA labels
     prevPageButton.setAttribute('aria-label', `Go to page ${currentPage - 1}`);
     nextPageButton.setAttribute('aria-label', `Go to page ${currentPage + 1}`);
