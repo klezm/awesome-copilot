@@ -1,10 +1,11 @@
 // Global variables
 let allData = { prompts: [], instructions: [], chatmodes: [] };
 let filteredData = [];
-let currentPage = 1;
+let displayedItems = 0;
 const itemsPerPage = 10;
 let currentModalItem = null;
 let isSourceView = false;
+let isLoading = false;
 
 // DOM elements
 const searchInput = document.getElementById('search');
@@ -29,6 +30,7 @@ async function init() {
         // Initialize display
         updateFilteredData();
         setupEventListeners();
+        setupHelpModal();
         
         console.log('Application initialized successfully');
     } catch (error) {
@@ -44,54 +46,32 @@ function setupEventListeners() {
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-            currentPage = 1;
+            displayedItems = 0;
             updateFilteredData();
         }, 300);
     });
 
     // Type filter
     typeFilter.addEventListener('change', () => {
-        currentPage = 1;
+        displayedItems = 0;
         updateFilteredData();
     });
 
-    // Pagination
-    prevPageButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            updateFilteredData();
-            scrollToTop();
-        }
-    });
-
-    nextPageButton.addEventListener('click', () => {
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        if (currentPage < totalPages) {
-            currentPage++;
-            updateFilteredData();
-            scrollToTop();
-        }
-    });
-
-    // Keyboard navigation for pagination
-    document.addEventListener('keydown', (e) => {
-        if (e.target.matches('input, select, button, a')) return;
+    // Infinite scroll
+    window.addEventListener('scroll', throttle(() => {
+        if (isLoading) return;
         
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        if (e.key === 'ArrowLeft' && currentPage > 1) {
-            e.preventDefault();
-            currentPage--;
-            updateFilteredData();
-            scrollToTop();
-        } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
-            e.preventDefault();
-            currentPage++;
-            updateFilteredData();
-            scrollToTop();
-        } else if (e.key === 'Escape') {
-            hidePreviewModal();
-            hideTooltipPreview();
+        const scrollPosition = window.innerHeight + window.scrollY;
+        const threshold = document.body.offsetHeight - 1000; // Load more when 1000px from bottom
+        
+        if (scrollPosition >= threshold && displayedItems < filteredData.length) {
+            loadMoreItems();
         }
+    }, 100));
+
+    // Keyboard navigation for main list and shortcuts
+    document.addEventListener('keydown', (e) => {
+        handleGlobalKeydown(e);
     });
 
     // Preview modal event listeners
@@ -193,23 +173,31 @@ function updateFilteredData() {
     // Sort alphabetically by title
     filteredData.sort((a, b) => a.title.localeCompare(b.title));
     
+    displayedItems = 0;
     updateDisplay();
+    loadMoreItems();
 }
 
 // Update the display with current filtered data
 function updateDisplay() {
     updateStats();
-    renderItems();
-    updatePagination();
+    if (filteredData.length === 0) {
+        showEmptyState();
+        hidePagination();
+    } else {
+        resultsContainer.innerHTML = '';
+        hidePagination();
+    }
 }
 
 // Update statistics display
 function updateStats() {
+    const displayed = Math.min(displayedItems, filteredData.length);
     const total = filteredData.length;
     const searchTerm = searchInput.value.trim();
     const selectedType = typeFilter.value;
     
-    let statsText = `Showing ${total} item${total !== 1 ? 's' : ''}`;
+    let statsText = `Showing ${displayed} of ${total} item${total !== 1 ? 's' : ''}`;
     
     if (searchTerm || selectedType !== 'all') {
         const filters = [];
@@ -221,14 +209,48 @@ function updateStats() {
     totalCountElement.textContent = statsText;
 }
 
-// Render items for current page
-function renderItems() {
-    if (filteredData.length === 0) {
-        showEmptyState();
+// Load more items for infinite scroll
+function loadMoreItems() {
+    if (isLoading || displayedItems >= filteredData.length) return;
+    
+    isLoading = true;
+    
+    const endIndex = Math.min(displayedItems + itemsPerPage, filteredData.length);
+    const newItems = filteredData.slice(displayedItems, endIndex);
+    
+    if (newItems.length === 0) {
+        isLoading = false;
         return;
     }
     
-    const startIndex = (currentPage - 1) * itemsPerPage;
+    // Add loading indicator
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.className = 'loading-more';
+    loadingIndicator.innerHTML = '<div class="loading">Loading more items...</div>';
+    resultsContainer.appendChild(loadingIndicator);
+    
+    // Simulate a brief loading delay for better UX
+    setTimeout(() => {
+        // Remove loading indicator
+        loadingIndicator.remove();
+        
+        // Add new items
+        const itemsHtml = newItems.map(item => createItemCard(item)).join('');
+        resultsContainer.insertAdjacentHTML('beforeend', itemsHtml);
+        
+        displayedItems = endIndex;
+        isLoading = false;
+        
+        // Update stats to show current display count
+        updateStats();
+    }, 200);
+}
+
+// Render items for current page (legacy - replaced by loadMoreItems)
+function renderItems() {
+    // This function is now handled by loadMoreItems for infinite scroll
+    return;
+}
     const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
     const pageItems = filteredData.slice(startIndex, endIndex);
     
@@ -315,28 +337,11 @@ function showError(message) {
 }
 
 // Update pagination controls
-function updatePagination() {
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    
-    if (totalPages <= 1) {
+// Hide pagination (replaced by infinite scroll)
+function hidePagination() {
+    if (paginationContainer) {
         paginationContainer.style.display = 'none';
-        return;
     }
-    
-    paginationContainer.style.display = 'flex';
-    
-    // Update button states
-    prevPageButton.disabled = currentPage === 1;
-    nextPageButton.disabled = currentPage === totalPages;
-    
-    // Update page info
-    const startItem = (currentPage - 1) * itemsPerPage + 1;
-    const endItem = Math.min(currentPage * itemsPerPage, filteredData.length);
-    pageInfoElement.textContent = `${startItem}-${endItem} of ${filteredData.length}`;
-    
-    // Update ARIA labels
-    prevPageButton.setAttribute('aria-label', `Go to page ${currentPage - 1}`);
-    nextPageButton.setAttribute('aria-label', `Go to page ${currentPage + 1}`);
 }
 
 // Utility function to escape HTML
@@ -346,11 +351,166 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Scroll to top of results
+// Scroll to top of results (still useful for certain actions)
 function scrollToTop() {
     const mainElement = document.getElementById('main');
     if (mainElement) {
         mainElement.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// Global keyboard shortcuts handler
+function handleGlobalKeydown(e) {
+    // Don't interfere with input elements unless it's a special key
+    const isInInput = e.target.matches('input, select, button, a, textarea');
+    
+    // Handle modal-specific shortcuts first
+    if (currentModalItem) {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            hidePreviewModal();
+            hideTooltipPreview();
+            return;
+        }
+        
+        if ((e.key === 's' || e.key === 'S') && !isInInput) {
+            e.preventDefault();
+            toggleSourceView();
+            return;
+        }
+    }
+    
+    // Handle help modal
+    if (e.key === '?' && !isInInput) {
+        e.preventDefault();
+        showHelpModal();
+        return;
+    }
+    
+    // Close any modal with Escape
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        hidePreviewModal();
+        hideTooltipPreview();
+        hideHelpModal();
+        return;
+    }
+    
+    // List navigation with arrow keys (only when not in input)
+    if (!isInInput && !currentModalItem) {
+        const cards = document.querySelectorAll('.item-card');
+        if (cards.length === 0) return;
+        
+        const currentFocused = document.activeElement;
+        let currentIndex = Array.from(cards).indexOf(currentFocused);
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (currentIndex < 0) {
+                cards[0].focus();
+            } else if (currentIndex < cards.length - 1) {
+                cards[currentIndex + 1].focus();
+            }
+            
+            // Load more items if near the end
+            if (currentIndex >= cards.length - 3) {
+                loadMoreItems();
+            }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (currentIndex > 0) {
+                cards[currentIndex - 1].focus();
+            } else if (currentIndex < 0 && cards.length > 0) {
+                cards[cards.length - 1].focus();
+            }
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            if (currentFocused && currentFocused.classList.contains('item-card')) {
+                e.preventDefault();
+                const itemData = currentFocused.getAttribute('data-item');
+                if (itemData) {
+                    const item = JSON.parse(itemData);
+                    showPreviewModal(item);
+                }
+            }
+        }
+    }
+    
+    // Focus search with '/' key
+    if (e.key === '/' && !isInInput) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+    }
+}
+
+// Help modal functionality
+function showHelpModal() {
+    const helpModal = document.getElementById('help-modal');
+    if (helpModal) {
+        helpModal.classList.add('show');
+        helpModal.setAttribute('aria-hidden', 'false');
+        
+        // Focus the close button
+        const closeBtn = document.getElementById('help-modal-close');
+        if (closeBtn) {
+            closeBtn.focus();
+        }
+    }
+}
+
+function hideHelpModal() {
+    const helpModal = document.getElementById('help-modal');
+    if (helpModal) {
+        helpModal.classList.remove('show');
+        helpModal.setAttribute('aria-hidden', 'true');
+    }
+}
+
+function setupHelpModal() {
+    const helpModal = document.getElementById('help-modal');
+    const helpOverlay = helpModal?.querySelector('.modal-overlay');
+    const helpClose = document.getElementById('help-modal-close');
+    const helpCloseFooter = document.getElementById('help-modal-close-footer');
+    const floatingHelpBtn = document.getElementById('floating-help-btn');
+    
+    // Close modal events
+    if (helpOverlay) helpOverlay.addEventListener('click', hideHelpModal);
+    if (helpClose) helpClose.addEventListener('click', hideHelpModal);
+    if (helpCloseFooter) helpCloseFooter.addEventListener('click', hideHelpModal);
+    if (floatingHelpBtn) floatingHelpBtn.addEventListener('click', showHelpModal);
+    
+    // Prevent modal content clicks from closing modal
+    const helpContent = helpModal?.querySelector('.modal-content');
+    if (helpContent) {
+        helpContent.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+    
+    // Focus trap for help modal
+    if (helpModal) {
+        helpModal.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hideHelpModal();
+                return;
+            }
+            
+            if (e.key === 'Tab') {
+                const focusableElements = helpModal.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+                
+                if (e.shiftKey && document.activeElement === firstElement) {
+                    e.preventDefault();
+                    lastElement.focus();
+                } else if (!e.shiftKey && document.activeElement === lastElement) {
+                    e.preventDefault();
+                    firstElement.focus();
+                }
+            }
+        });
     }
 }
 
@@ -459,8 +619,16 @@ For the complete ${type.toLowerCase()}, please use the install buttons to add it
 function markdownToHtml(markdown) {
     if (!markdown) return '';
     
-    // Remove front matter
-    let content = markdown.replace(/^---[\s\S]*?---\n?/, '');
+    // Extract front matter
+    let frontMatter = '';
+    let content = markdown;
+    const frontMatterMatch = markdown.match(/^---\n([\s\S]*?)\n---\n/);
+    if (frontMatterMatch) {
+        frontMatter = frontMatterMatch[1];
+        content = markdown.replace(/^---[\s\S]*?---\n?/, '');
+    }
+    
+    let htmlContent = '';
     
     // Try to use marked.js if available
     if (typeof marked !== 'undefined') {
@@ -476,15 +644,29 @@ function markdownToHtml(markdown) {
                 smartypants: false
             });
             
-            return marked.parse(content);
+            htmlContent = marked.parse(content);
         } catch (error) {
             console.error('Error parsing markdown with marked:', error);
+            htmlContent = fallbackMarkdownToHtml(content);
         }
+    } else {
+        // Fallback to enhanced simple parser if marked is not available
+        console.log('Using fallback markdown parser (marked.js not available)');
+        htmlContent = fallbackMarkdownToHtml(content);
     }
     
-    // Fallback to enhanced simple parser if marked is not available
-    console.log('Using fallback markdown parser (marked.js not available)');
-    return fallbackMarkdownToHtml(content);
+    // Add frontmatter if it exists
+    if (frontMatter) {
+        const frontMatterHtml = `<div class="frontmatter-container">
+            <details class="frontmatter">
+                <summary>Front Matter</summary>
+                <pre><code class="language-yaml">${escapeHtml(frontMatter)}</code></pre>
+            </details>
+        </div>`;
+        htmlContent = frontMatterHtml + htmlContent;
+    }
+    
+    return htmlContent;
 }
 
 // Enhanced fallback markdown parser that handles HTML tags properly
@@ -652,8 +834,8 @@ async function toggleSourceView() {
         modalContent.innerHTML = '<div class="loading">Loading source...</div>';
         showSourceBtn.textContent = 'Show Rendered';
         
-        // Hide TOC in source view
-        tocContainer.style.display = 'none';
+        // Keep TOC visible in source view
+        tocContainer.style.display = 'block';
         
         try {
             const content = await fetchMarkdownContent(currentModalItem.sourceUrl);
@@ -663,6 +845,7 @@ async function toggleSourceView() {
             applySyntaxHighlighting();
         } catch (error) {
             modalContent.innerHTML = `<div class="error">Error loading source: ${error.message}</div>`;
+            tocContainer.style.display = 'none';
         }
         
         isSourceView = true;

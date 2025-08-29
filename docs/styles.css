@@ -458,6 +458,9 @@ footer a:hover {
     padding: 1.5rem 1rem;
     overflow-y: auto;
     flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    max-height: 100%;
 }
 
 .modal-toc h3 {
@@ -538,6 +541,50 @@ footer a:hover {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
     flex: 1;
     overflow-y: auto;
+}
+
+/* Frontmatter Styles */
+.frontmatter-container {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #e1e4e8;
+    padding-bottom: 1rem;
+}
+
+.frontmatter {
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 0;
+}
+
+.frontmatter summary {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: #24292f;
+    border-radius: 6px 6px 0 0;
+    transition: background-color 0.2s ease;
+}
+
+.frontmatter summary:hover {
+    background-color: #e1e4e8;
+}
+
+.frontmatter[open] summary {
+    border-bottom: 1px solid #e1e4e8;
+    border-radius: 6px 6px 0 0;
+}
+
+.frontmatter pre {
+    margin: 0;
+    background: #fff;
+    border: none;
+    border-radius: 0 0 6px 6px;
+    padding: 1rem;
+}
+
+.frontmatter code {
+    background: none;
 }
 
 .modal-markdown-content h1,
@@ -697,6 +744,99 @@ footer a:hover {
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-right: 0.5rem;
+}
+
+/* Floating Help Button */
+.floating-help-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #0366d6;
+    color: white;
+    border: none;
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(3, 102, 214, 0.3);
+    transition: all 0.3s ease;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-help-btn:hover {
+    background: #0256cc;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(3, 102, 214, 0.4);
+}
+
+.floating-help-btn:focus {
+    outline: 3px solid rgba(3, 102, 214, 0.3);
+    outline-offset: 2px;
+}
+
+.floating-help-btn:active {
+    transform: translateY(0);
+}
+
+/* Help Modal Styles */
+.help-modal-content {
+    max-width: 600px;
+    width: 90vw;
+}
+
+.help-section {
+    margin-bottom: 2rem;
+}
+
+.help-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #24292f;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.shortcut-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.shortcut-item kbd {
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding: 0.25rem 0.5rem;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #24292f;
+    min-width: 24px;
+    text-align: center;
+}
+
+.shortcut-item span {
+    color: #656d76;
+    font-size: 0.9rem;
+}
+
+/* Loading more indicator */
+.loading-more {
+    padding: 1rem;
+    text-align: center;
 }
 
 /* Animations */
