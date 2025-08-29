@@ -534,13 +534,16 @@ footer a:hover {
 
 .modal-body {
     flex: 1;
-    overflow: auto;
+    overflow: hidden;
     padding: 0;
+    height: 60vh;
 }
 
 .modal-content {
     padding: 1.5rem;
     line-height: 1.6;
+    height: 100%;
+    overflow: auto;
 }
 
 /* Markdown content styling in modal */
@@ -640,7 +643,7 @@ footer a:hover {
     margin: 0;
     padding: 1rem;
     overflow: auto;
-    max-height: 60vh;
+    height: 100%;
     font-family: 'SF Mono', Monaco, 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
     font-size: 0.875rem;
     line-height: 1.45;
@@ -654,6 +657,13 @@ footer a:hover {
     padding: 0;
     border: none;
     font-family: inherit;
+    color: inherit;
+}
+
+/* Override highlight.js styles for source view */
+.source-view .hljs {
+    background: transparent;
+    padding: 0;
 }
 
 /* Dark mode support for modal */
@@ -717,6 +727,11 @@ footer a:hover {
         border-color: #30363d;
         color: #e6edf3;
     }
+    
+    .source-view .hljs {
+        background: transparent;
+        color: inherit;
+    }
 }
 
 /* Responsive modal */
@@ -724,6 +739,10 @@ footer a:hover {
     .modal-container {
         width: 95vw;
         max-height: 95vh;
+    }
+    
+    .modal-body {
+        height: 50vh;
     }
     
     .modal-header {

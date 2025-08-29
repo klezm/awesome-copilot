@@ -483,7 +483,11 @@ function toggleSourceView() {
     } else {
         // Switch to source mode
         if (currentRawMarkdown) {
-            modalContent.innerHTML = `<pre class="source-view"><code>${escapeHtml(currentRawMarkdown)}</code></pre>`;
+            modalContent.innerHTML = `<pre class="source-view"><code class="language-markdown">${escapeHtml(currentRawMarkdown)}</code></pre>`;
+            // Apply syntax highlighting
+            modalContent.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
         } else {
             modalContent.innerHTML = '<div class="loading">Source not available</div>';
         }
