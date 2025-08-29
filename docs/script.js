@@ -4,6 +4,12 @@ let filteredData = [];
 let currentPage = 1;
 const itemsPerPage = 10;
 
+// Theme system variables
+let themeSettings = {
+    theme: 'auto',
+    syntaxTheme: 'default'
+};
+
 // DOM elements
 const searchInput = document.getElementById('search');
 const typeFilter = document.getElementById('type-filter');
@@ -14,9 +20,21 @@ const prevPageButton = document.getElementById('prev-page');
 const nextPageButton = document.getElementById('next-page');
 const pageInfoElement = document.getElementById('page-info');
 
+// Theme system DOM elements
+const settingsButton = document.getElementById('settings-btn');
+const settingsModal = document.getElementById('settings-modal');
+const closeModalButton = document.getElementById('close-modal');
+const themeSelect = document.getElementById('theme-select');
+const syntaxThemeSelect = document.getElementById('syntax-theme-select');
+const resetSettingsButton = document.getElementById('reset-settings');
+const saveSettingsButton = document.getElementById('save-settings');
+
 // Initialize the application
 async function init() {
     try {
+        // Initialize theme system first
+        initThemeSystem();
+        
         // Load data
         const response = await fetch('data.json');
         if (!response.ok) {
@@ -33,6 +51,182 @@ async function init() {
         console.error('Error loading data:', error);
         showError('Failed to load content. Please refresh the page and try again.');
     }
+}
+
+// Theme System Functions
+function initThemeSystem() {
+    // Load saved settings
+    loadThemeSettings();
+    
+    // Apply initial theme
+    applyTheme();
+    
+    // Set up theme event listeners
+    setupThemeEventListeners();
+}
+
+function loadThemeSettings() {
+    try {
+        const saved = localStorage.getItem('awesome-copilot-settings');
+        if (saved) {
+            themeSettings = { ...themeSettings, ...JSON.parse(saved) };
+        }
+    } catch (error) {
+        console.warn('Failed to load theme settings:', error);
+    }
+    
+    // Update UI controls
+    if (themeSelect) themeSelect.value = themeSettings.theme;
+    if (syntaxThemeSelect) syntaxThemeSelect.value = themeSettings.syntaxTheme;
+}
+
+function saveThemeSettings() {
+    try {
+        localStorage.setItem('awesome-copilot-settings', JSON.stringify(themeSettings));
+        console.log('Theme settings saved');
+    } catch (error) {
+        console.error('Failed to save theme settings:', error);
+    }
+}
+
+function applyTheme() {
+    const root = document.documentElement;
+    
+    // Apply main theme
+    if (themeSettings.theme === 'auto') {
+        root.removeAttribute('data-theme');
+    } else {
+        root.setAttribute('data-theme', themeSettings.theme);
+    }
+    
+    // Apply syntax theme
+    root.className = root.className.replace(/syntax-theme-\w+/g, '');
+    root.classList.add(`syntax-theme-${themeSettings.syntaxTheme}`);
+}
+
+function setupThemeEventListeners() {
+    // Settings modal controls
+    if (settingsButton) {
+        settingsButton.addEventListener('click', openSettingsModal);
+    }
+    
+    if (closeModalButton) {
+        closeModalButton.addEventListener('click', closeSettingsModal);
+    }
+    
+    if (settingsModal) {
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                closeSettingsModal();
+            }
+        });
+    }
+    
+    // Theme controls
+    if (themeSelect) {
+        themeSelect.addEventListener('change', (e) => {
+            themeSettings.theme = e.target.value;
+            applyTheme();
+        });
+    }
+    
+    if (syntaxThemeSelect) {
+        syntaxThemeSelect.addEventListener('change', (e) => {
+            themeSettings.syntaxTheme = e.target.value;
+            applyTheme();
+        });
+    }
+    
+    // Modal action buttons
+    if (saveSettingsButton) {
+        saveSettingsButton.addEventListener('click', () => {
+            saveThemeSettings();
+            closeSettingsModal();
+            showNotification('Settings saved successfully!');
+        });
+    }
+    
+    if (resetSettingsButton) {
+        resetSettingsButton.addEventListener('click', resetThemeSettings);
+    }
+    
+    // Keyboard navigation for modal
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && settingsModal && settingsModal.style.display === 'block') {
+            closeSettingsModal();
+        }
+    });
+}
+
+function openSettingsModal() {
+    if (settingsModal) {
+        settingsModal.style.display = 'block';
+        settingsModal.setAttribute('aria-hidden', 'false');
+        
+        // Focus the first control
+        const firstControl = settingsModal.querySelector('select, button');
+        if (firstControl) {
+            firstControl.focus();
+        }
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeSettingsModal() {
+    if (settingsModal) {
+        settingsModal.style.display = 'none';
+        settingsModal.setAttribute('aria-hidden', 'true');
+        
+        // Restore body scroll
+        document.body.style.overflow = '';
+        
+        // Return focus to settings button
+        if (settingsButton) {
+            settingsButton.focus();
+        }
+    }
+}
+
+function resetThemeSettings() {
+    themeSettings = {
+        theme: 'auto',
+        syntaxTheme: 'default'
+    };
+    
+    // Update UI
+    if (themeSelect) themeSelect.value = themeSettings.theme;
+    if (syntaxThemeSelect) syntaxThemeSelect.value = themeSettings.syntaxTheme;
+    
+    // Apply changes
+    applyTheme();
+    
+    showNotification('Settings reset to defaults');
+}
+
+function showNotification(message) {
+    // Simple notification - could be enhanced with a proper toast system
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--button-primary-bg);
+        color: var(--button-primary-text);
+        padding: 12px 16px;
+        border-radius: 6px;
+        z-index: 1001;
+        box-shadow: 0 4px 12px var(--shadow);
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
 
 // Set up event listeners

@@ -455,3 +455,313 @@ footer a:hover {
         color: #8b949e;
     }
 }
+
+/* Theme System - CSS Custom Properties */
+:root {
+    /* Light theme (default) */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f6f8fa;
+    --bg-tertiary: #f6f8fa;
+    --text-primary: #24292f;
+    --text-secondary: #656d76;
+    --text-link: #0969da;
+    --border-primary: #d0d7de;
+    --border-secondary: #d8dee4;
+    --border-accent: #0969da;
+    --button-primary-bg: #0366d6;
+    --button-primary-text: #ffffff;
+    --button-secondary-bg: #f6f8fa;
+    --button-secondary-text: #24292f;
+    --button-secondary-border: #d0d7de;
+    --shadow: rgba(0, 0, 0, 0.1);
+    
+    /* Syntax highlighting theme variables */
+    --syntax-bg: #f8f9fa;
+    --syntax-text: #24292f;
+    --syntax-comment: #6f7179;
+    --syntax-keyword: #cf222e;
+    --syntax-string: #0a3069;
+    --syntax-number: #0550ae;
+    --syntax-function: #8250df;
+}
+
+/* Dark theme override */
+[data-theme="dark"] {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-link: #58a6ff;
+    --border-primary: #30363d;
+    --border-secondary: #30363d;
+    --border-accent: #1f6feb;
+    --button-primary-bg: #1f6feb;
+    --button-primary-text: #ffffff;
+    --button-secondary-bg: #21262d;
+    --button-secondary-text: #e6edf3;
+    --button-secondary-border: #30363d;
+    --shadow: rgba(0, 0, 0, 0.3);
+    
+    /* Dark syntax highlighting */
+    --syntax-bg: #161b22;
+    --syntax-text: #e6edf3;
+    --syntax-comment: #8b949e;
+    --syntax-keyword: #ff7b72;
+    --syntax-string: #a5d6ff;
+    --syntax-number: #79c0ff;
+    --syntax-function: #d2a8ff;
+}
+
+/* Apply theme variables to existing elements */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+nav {
+    background-color: var(--bg-secondary);
+    border-bottom-color: var(--border-primary);
+}
+
+input, select {
+    background-color: var(--bg-primary);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+}
+
+input:focus, select:focus {
+    border-color: var(--border-accent);
+    outline-color: var(--border-accent);
+}
+
+.item-card {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-primary);
+}
+
+.item-card:hover {
+    border-color: var(--border-accent);
+}
+
+.item-title {
+    color: var(--text-link);
+}
+
+.btn-primary {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+}
+
+.btn-secondary {
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border-color: var(--button-secondary-border);
+}
+
+footer {
+    background-color: var(--bg-secondary);
+    border-top-color: var(--border-primary);
+    color: var(--text-secondary);
+}
+
+/* Settings Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: var(--bg-primary);
+    margin: 10% auto;
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 8px 32px var(--shadow);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0.25rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.setting-group {
+    margin-bottom: 1.5rem;
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.setting-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-primary);
+    gap: 1rem;
+}
+
+/* Syntax Highlighting Theme Styles */
+.syntax-theme-default {
+    --syntax-bg: #f8f9fa;
+    --syntax-text: #24292f;
+    --syntax-comment: #6f7179;
+    --syntax-keyword: #cf222e;
+    --syntax-string: #0a3069;
+    --syntax-number: #0550ae;
+    --syntax-function: #8250df;
+}
+
+.syntax-theme-github {
+    --syntax-bg: #ffffff;
+    --syntax-text: #24292e;
+    --syntax-comment: #6a737d;
+    --syntax-keyword: #d73a49;
+    --syntax-string: #032f62;
+    --syntax-number: #005cc5;
+    --syntax-function: #6f42c1;
+}
+
+.syntax-theme-vs2015 {
+    --syntax-bg: #1e1e1e;
+    --syntax-text: #dcdcdc;
+    --syntax-comment: #57a64a;
+    --syntax-keyword: #569cd6;
+    --syntax-string: #ce9178;
+    --syntax-number: #b5cea8;
+    --syntax-function: #dcdcaa;
+}
+
+.syntax-theme-atom-one-dark {
+    --syntax-bg: #282c34;
+    --syntax-text: #abb2bf;
+    --syntax-comment: #5c6370;
+    --syntax-keyword: #c678dd;
+    --syntax-string: #98c379;
+    --syntax-number: #d19a66;
+    --syntax-function: #61afef;
+}
+
+.syntax-theme-monokai {
+    --syntax-bg: #272822;
+    --syntax-text: #f8f8f2;
+    --syntax-comment: #75715e;
+    --syntax-keyword: #f92672;
+    --syntax-string: #e6db74;
+    --syntax-number: #ae81ff;
+    --syntax-function: #a6e22e;
+}
+
+/* Navigation updates for settings button */
+.nav-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .nav-controls {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+    }
+    
+    .modal-content {
+        margin: 5% auto;
+        width: 95%;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .modal-footer .btn:last-child {
+        margin-bottom: 0;
+    }
+}
