@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Deployments - Awesome Copilot</title>
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg" type="image/svg+xml">
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Base Typography and Colors */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #24292f;
+            background-color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #0366d6 0%, #2188ff 100%);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .main-site-link {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 6px;
+            display: inline-block;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 0.875rem;
+        }
+        
+        .main-site-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Main Content */
+        main {
+            padding: 1.5rem 0;
+            min-height: calc(100vh - 180px);
+        }
+        
+        .stats {
+            margin-bottom: 1.5rem;
+            color: #656d76;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        
+        /* PR Group Styles */
+        .pr-groups {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .pr-group {
+            border: 1px solid #d0d7de;
+            border-radius: 12px;
+            background: #ffffff;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .pr-group:hover {
+            border-color: #0366d6;
+            box-shadow: 0 4px 12px rgba(3, 102, 214, 0.1);
+        }
+        
+        .pr-group-header {
+            background: #f6f8fa;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #d0d7de;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        
+        .pr-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0366d6;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .pr-title:hover {
+            text-decoration: underline;
+        }
+        
+        .pr-meta {
+            color: #656d76;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .preview-count {
+            background: #0366d6;
+            color: white;
+            padding: 0.125rem 0.375rem;
+            border-radius: 10px;
+            font-size: 0.625rem;
+            font-weight: 500;
+        }
+        
+        /* Timeline Styles */
+        .preview-timeline {
+            position: relative;
+            padding: 1rem;
+        }
+        
+        .preview-timeline::before {
+            content: '';
+            position: absolute;
+            left: 1.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #0366d6, #d0d7de);
+        }
+        
+        .preview-item {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        
+        .preview-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .preview-item::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #0366d6;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 0 1px #d0d7de;
+        }
+        
+        .preview-item.latest::before {
+            background: #1f883d;
+            width: 12px;
+            height: 12px;
+            left: 0.875rem;
+            animation: pulse 2s infinite;
+        }
+        
+        .preview-item.older {
+            opacity: 0.7;
+        }
+        
+        .preview-item.older::before {
+            background: #8b949e;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(31, 136, 61, 0.7), 0 0 0 1px #d0d7de;
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(31, 136, 61, 0), 0 0 0 1px #d0d7de;
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(31, 136, 61, 0), 0 0 0 1px #d0d7de;
+            }
+        }
+        
+        .preview-info {
+            flex: 1;
+            min-width: 180px;
+        }
+        
+        .preview-date {
+            color: #656d76;
+            font-size: 0.75rem;
+            margin-bottom: 0.125rem;
+            font-weight: 500;
+        }
+        
+        .preview-age {
+            color: #8b949e;
+            font-size: 0.625rem;
+        }
+        
+        .preview-actions {
+            display: flex;
+            gap: 0.375rem;
+            align-items: center;
+        }
+        
+        .github-link {
+            color: #656d76;
+            text-decoration: none;
+            padding: 0.375rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d0d7de;
+            background: #f6f8fa;
+        }
+        
+        .github-link:hover {
+            color: #24292f;
+            background: #e6e8ea;
+            border-color: #8b949e;
+            transform: translateY(-1px);
+        }
+        
+        .github-link svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .preview-link {
+            background: #0366d6;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .preview-link:hover {
+            background: #0256cc;
+            transform: translateY(-1px);
+        }
+        
+        .preview-link.latest {
+            background: #1f883d;
+            box-shadow: 0 0 0 2px rgba(31, 136, 61, 0.2);
+        }
+        
+        .preview-link.latest:hover {
+            background: #1a7f37;
+        }
+        
+        .latest-badge {
+            background: #1f883d;
+            color: white;
+            padding: 0.0625rem 0.375rem;
+            border-radius: 10px;
+            font-size: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Collapsible Styles */
+        .hidden-previews {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .hidden-previews.expanded {
+            max-height: 2000px; /* Large enough to accommodate content */
+            transition: max-height 0.3s ease-in;
+        }
+        
+        .show-more-button {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            color: #656d76;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+        }
+        
+        .show-more-button:hover {
+            background: #e6e8ea;
+            border-color: #8b949e;
+            color: #24292f;
+        }
+        
+        .show-more-button .icon {
+            transition: transform 0.2s ease;
+        }
+        
+        .show-more-button.expanded .icon {
+            transform: rotate(180deg);
+        }
+        
+        /* No Previews State */
+        .no-previews {
+            text-align: center;
+            color: #656d76;
+            padding: 2rem 1.5rem;
+            background: #f6f8fa;
+            border-radius: 12px;
+            border: 1px solid #d0d7de;
+        }
+        
+        .no-previews h3 {
+            margin-bottom: 0.5rem;
+            color: #24292f;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .subtitle {
+                font-size: 0.875rem;
+            }
+            
+            .pr-group-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .preview-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .preview-timeline::before {
+                left: 1rem;
+            }
+            
+            .preview-item {
+                padding-left: 2rem;
+            }
+            
+            .preview-item::before {
+                left: 0.5rem;
+            }
+            
+            .preview-item.latest::before {
+                left: 0.375rem;
+            }
+            
+            .container {
+                padding: 0 12px;
+            }
+            
+            main {
+                padding: 1rem 0;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #0d1117;
+                color: #e6edf3;
+            }
+            
+            header {
+                background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%);
+            }
+            
+            .pr-group {
+                background-color: #161b22;
+                border-color: #30363d;
+            }
+            
+            .pr-group:hover {
+                border-color: #1f6feb;
+                box-shadow: 0 4px 12px rgba(31, 111, 235, 0.1);
+            }
+            
+            .pr-group-header {
+                background-color: #21262d;
+                border-bottom-color: #30363d;
+            }
+            
+            .pr-title {
+                color: #58a6ff;
+            }
+            
+            .pr-meta {
+                color: #8b949e;
+            }
+            
+            .preview-count {
+                background-color: #1f6feb;
+            }
+            
+            .preview-timeline::before {
+                background: linear-gradient(to bottom, #1f6feb, #30363d);
+            }
+            
+            .preview-item::before {
+                background: #1f6feb;
+                border-color: #161b22;
+                box-shadow: 0 0 0 1px #30363d;
+            }
+            
+            .preview-item.latest::before {
+                background: #3fb950;
+            }
+            
+            .preview-item.older::before {
+                background: #6e7681;
+            }
+            
+            .preview-date {
+                color: #8b949e;
+            }
+            
+            .preview-age {
+                color: #6e7681;
+            }
+            
+            .preview-link {
+                background-color: #1f6feb;
+            }
+            
+            .preview-link:hover {
+                background-color: #1a5feb;
+            }
+            
+            .preview-link.latest {
+                background-color: #238636;
+            }
+            
+            .preview-link.latest:hover {
+                background-color: #2ea043;
+            }
+            
+            .latest-badge {
+                background-color: #238636;
+            }
+            
+            .no-previews {
+                background-color: #161b22;
+                border-color: #30363d;
+                color: #8b949e;
+            }
+            
+            .no-previews h3 {
+                color: #e6edf3;
+            }
+            
+            .stats {
+                color: #8b949e;
+            }
+            
+            .github-link {
+                color: #8b949e;
+                background-color: #21262d;
+                border-color: #30363d;
+            }
+            
+            .github-link:hover {
+                color: #e6edf3;
+                background-color: #30363d;
+                border-color: #6e7681;
+            }
+            
+            .show-more-button {
+                background-color: #21262d;
+                border-color: #30363d;
+                color: #8b949e;
+            }
+            
+            .show-more-button:hover {
+                background-color: #30363d;
+                border-color: #6e7681;
+                color: #e6edf3;
+            }
+            
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(59, 185, 80, 0.7), 0 0 0 1px #30363d;
+                }
+                70% {
+                    box-shadow: 0 0 0 10px rgba(59, 185, 80, 0), 0 0 0 1px #30363d;
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(59, 185, 80, 0), 0 0 0 1px #30363d;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚀 Preview Deployments</h1>
+            <p class="subtitle">Browse all available PR preview deployments for the Awesome Copilot project</p>
+            <a href="https://REPO_OWNER.github.io/REPO_NAME/" class="main-site-link">← Back to Main Site</a>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="stats">
+                <span id="stats-text">Loading preview deployments...</span>
+            </div>
+            
+            <div id="preview-list">
+                <div class="no-previews">
+                    <h3>No preview deployments found</h3>
+                    <p>Preview deployments will appear here when pull requests are created.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // This will be populated by the build script
+        const previews = PREVIEW_DATA_PLACEHOLDER;
+        
+        function formatDate(timestamp) {
+            const date = new Date(timestamp * 1000);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function formatRelativeTime(timestamp) {
+            const now = Date.now();
+            const diff = now - (timestamp * 1000);
+            const minutes = Math.floor(diff / (1000 * 60));
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            if (days > 0) {
+                return `${days} day${days === 1 ? '' : 's'} ago`;
+            } else if (hours > 0) {
+                return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+            } else if (minutes > 0) {
+                return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+            } else {
+                return 'Just now';
+            }
+        }
+        
+        function groupPreviewsByPR(previews) {
+            const groups = {};
+            
+            previews.forEach(preview => {
+                const prMatch = preview.name.match(/pr(\d+)-(\d+)$/);
+                if (prMatch) {
+                    const prNumber = prMatch[1];
+                    const timestamp = parseInt(prMatch[2]);
+                    
+                    if (!groups[prNumber]) {
+                        groups[prNumber] = [];
+                    }
+                    
+                    groups[prNumber].push({
+                        ...preview,
+                        prNumber,
+                        timestamp
+                    });
+                }
+            });
+            
+            // Sort previews within each group by timestamp (newest first)
+            Object.keys(groups).forEach(prNumber => {
+                groups[prNumber].sort((a, b) => b.timestamp - a.timestamp);
+            });
+            
+            // Convert to array and sort groups by their latest timestamp (newest first)
+            const groupArray = Object.keys(groups).map(prNumber => {
+                const groupPreviews = groups[prNumber];
+                const latestTimestamp = Math.max(...groupPreviews.map(p => p.timestamp));
+                return {
+                    prNumber,
+                    previews: groupPreviews,
+                    latestTimestamp: latestTimestamp
+                };
+            });
+            
+            // Sort groups by latest timestamp in descending order (newest groups first)
+            return groupArray.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
+        }
+        
+        function createPreviewItem(preview, index) {
+            const item = document.createElement('div');
+            item.className = `preview-item ${index === 0 ? 'latest' : 'older'}`;
+            
+            const info = document.createElement('div');
+            info.className = 'preview-info';
+            
+            const date = document.createElement('div');
+            date.className = 'preview-date';
+            date.textContent = formatDate(preview.timestamp);
+            
+            const age = document.createElement('div');
+            age.className = 'preview-age';
+            age.textContent = formatRelativeTime(preview.timestamp);
+            
+            info.appendChild(date);
+            info.appendChild(age);
+            
+            const actions = document.createElement('div');
+            actions.className = 'preview-actions';
+            
+            if (index === 0) {
+                const badge = document.createElement('span');
+                badge.className = 'latest-badge';
+                badge.textContent = 'Latest';
+                actions.appendChild(badge);
+            }
+            
+            const githubLink = document.createElement('a');
+            githubLink.className = 'github-link';
+            githubLink.href = `https://github.com/REPO_OWNER/REPO_NAME/tree/gh-pages/previews/${preview.name}`;
+            githubLink.title = 'View source files on GitHub';
+            githubLink.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>`;
+            
+            actions.appendChild(githubLink);
+            
+            const link = document.createElement('a');
+            link.className = `preview-link ${index === 0 ? 'latest' : ''}`;
+            link.href = preview.url;
+            link.innerHTML = `View Preview <span>→</span>`;
+            
+            actions.appendChild(link);
+            
+            item.appendChild(info);
+            item.appendChild(actions);
+            
+            return item;
+        }
+        
+        function renderPreviews() {
+            const container = document.getElementById('preview-list');
+            const statsElement = document.getElementById('stats-text');
+            
+            if (previews.length === 0) {
+                statsElement.textContent = 'No preview deployments available';
+                return; // Keep the "no previews" message
+            }
+            
+            const groupedPreviews = groupPreviewsByPR(previews);
+            const totalPreviews = previews.length;
+            const totalPRs = groupedPreviews.length;
+            
+            statsElement.textContent = `Found ${totalPreviews} preview deployment${totalPreviews === 1 ? '' : 's'} across ${totalPRs} pull request${totalPRs === 1 ? '' : 's'}`;
+            
+            const prGroupsContainer = document.createElement('div');
+            prGroupsContainer.className = 'pr-groups';
+            
+            groupedPreviews.forEach(group => {
+                const prGroup = document.createElement('div');
+                prGroup.className = 'pr-group';
+                
+                const header = document.createElement('div');
+                header.className = 'pr-group-header';
+                
+                const title = document.createElement('a');
+                title.className = 'pr-title';
+                title.href = `https://github.com/REPO_OWNER/REPO_NAME/pull/${group.prNumber}`;
+                title.innerHTML = `<span>📋</span> Pull Request #${group.prNumber}`;
+                
+                const meta = document.createElement('div');
+                meta.className = 'pr-meta';
+                
+                const count = document.createElement('span');
+                count.className = 'preview-count';
+                count.textContent = `${group.previews.length} deployment${group.previews.length === 1 ? '' : 's'}`;
+                
+                const latestDate = document.createElement('span');
+                latestDate.textContent = `Latest: ${formatRelativeTime(group.latestTimestamp)}`;
+                
+                meta.appendChild(count);
+                meta.appendChild(latestDate);
+                
+                header.appendChild(title);
+                header.appendChild(meta);
+                
+                const timeline = document.createElement('div');
+                timeline.className = 'preview-timeline';
+                
+                // Show only first 5 previews initially
+                const visiblePreviews = group.previews.slice(0, 5);
+                const hiddenPreviews = group.previews.slice(5);
+                
+                // Render visible previews
+                visiblePreviews.forEach((preview, index) => {
+                    const item = createPreviewItem(preview, index);
+                    timeline.appendChild(item);
+                });
+                
+                // Create collapsible section for hidden previews if any
+                if (hiddenPreviews.length > 0) {
+                    const showMoreButton = document.createElement('button');
+                    showMoreButton.className = 'show-more-button';
+                    showMoreButton.innerHTML = `
+                        <span>Show ${hiddenPreviews.length} older preview${hiddenPreviews.length === 1 ? '' : 's'}</span>
+                        <span class="icon">▼</span>
+                    `;
+                    
+                    const hiddenContainer = document.createElement('div');
+                    hiddenContainer.className = 'hidden-previews';
+                    
+                    hiddenPreviews.forEach((preview, index) => {
+                        const item = createPreviewItem(preview, index + 5);
+                        hiddenContainer.appendChild(item);
+                    });
+                    
+                    showMoreButton.addEventListener('click', () => {
+                        const isExpanded = hiddenContainer.classList.contains('expanded');
+                        
+                        if (isExpanded) {
+                            hiddenContainer.classList.remove('expanded');
+                            showMoreButton.classList.remove('expanded');
+                            showMoreButton.innerHTML = `
+                                <span>Show ${hiddenPreviews.length} older preview${hiddenPreviews.length === 1 ? '' : 's'}</span>
+                                <span class="icon">▼</span>
+                            `;
+                        } else {
+                            hiddenContainer.classList.add('expanded');
+                            showMoreButton.classList.add('expanded');
+                            showMoreButton.innerHTML = `
+                                <span>Hide ${hiddenPreviews.length} older preview${hiddenPreviews.length === 1 ? '' : 's'}</span>
+                                <span class="icon">▼</span>
+                            `;
+                        }
+                    });
+                    
+                    timeline.appendChild(showMoreButton);
+                    timeline.appendChild(hiddenContainer);
+                }
+                
+                prGroup.appendChild(header);
+                prGroup.appendChild(timeline);
+                
+                prGroupsContainer.appendChild(prGroup);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(prGroupsContainer);
+        }
+        
+        // Render previews when page loads
+        renderPreviews();
+    </script>
+</body>
+</html>
