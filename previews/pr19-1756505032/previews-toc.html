@@ -548,7 +548,7 @@
         <div class="container">
             <h1>🚀 Preview Deployments</h1>
             <p class="subtitle">Browse all available PR preview deployments for the Awesome Copilot project</p>
-            <a href="https://klezm.github.io/awesome-copilot/" class="main-site-link">← Back to Main Site</a>
+            <a href="https://REPO_OWNER.github.io/REPO_NAME/" class="main-site-link">← Back to Main Site</a>
         </div>
     </header>
     
@@ -569,7 +569,7 @@
     
     <script>
         // This will be populated by the build script
-        const previews = [{"name":"pr16-1756481846","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756481846/"},{"name":"pr16-1756482897","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756482897/"},{"name":"pr16-1756483637","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756483637/"},{"name":"pr16-1756483909","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756483909/"},{"name":"pr18-1756486099","url":"https://klezm.github.io/awesome-copilot/previews/pr18-1756486099/"},{"name":"pr18-1756486142","url":"https://klezm.github.io/awesome-copilot/previews/pr18-1756486142/"},{"name":"pr19-1756486319","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756486319/"},{"name":"pr19-1756486904","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756486904/"},{"name":"pr19-1756486939","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756486939/"},{"name":"pr19-1756487921","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756487921/"},{"name":"pr19-1756487958","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756487958/"},{"name":"pr19-1756489030","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756489030/"},{"name":"pr19-1756489075","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756489075/"},{"name":"pr19-1756493859","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756493859/"},{"name":"pr19-1756493889","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756493889/"},{"name":"pr19-1756495515","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756495515/"},{"name":"pr19-1756495543","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756495543/"},{"name":"pr19-1756496887","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756496887/"},{"name":"pr19-1756498674","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756498674/"},{"name":"pr19-1756498707","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756498707/"},{"name":"pr19-1756499392","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756499392/"},{"name":"pr19-1756499422","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756499422/"},{"name":"pr19-1756500240","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756500240/"},{"name":"pr19-1756500292","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756500292/"},{"name":"pr19-1756500845","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756500845/"},{"name":"pr19-1756500881","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756500881/"},{"name":"pr19-1756501745","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756501745/"},{"name":"pr19-1756501784","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756501784/"},{"name":"pr19-1756502431","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756502431/"},{"name":"pr19-1756503121","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756503121/"},{"name":"pr19-1756503152","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756503152/"},{"name":"pr19-1756504003","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756504003/"},{"name":"pr19-1756504033","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756504033/"},{"name":"pr19-1756505032","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756505032/"},{"name":"pr21-1756495286","url":"https://klezm.github.io/awesome-copilot/previews/pr21-1756495286/"},{"name":"pr21-1756498354","url":"https://klezm.github.io/awesome-copilot/previews/pr21-1756498354/"},{"name":"pr21-1756499042","url":"https://klezm.github.io/awesome-copilot/previews/pr21-1756499042/"},{"name":"pr21-1756499082","url":"https://klezm.github.io/awesome-copilot/previews/pr21-1756499082/"},{"name":"pr21-1756499743","url":"https://klezm.github.io/awesome-copilot/previews/pr21-1756499743/"},{"name":"pr21-1756499778","url":"https://klezm.github.io/awesome-copilot/previews/pr21-1756499778/"},{"name":"pr24-1756503304","url":"https://klezm.github.io/awesome-copilot/previews/pr24-1756503304/"},{"name":"pr24-1756503335","url":"https://klezm.github.io/awesome-copilot/previews/pr24-1756503335/"},{"name":"pr24-1756503488","url":"https://klezm.github.io/awesome-copilot/previews/pr24-1756503488/"},{"name":"pr24-1756503523","url":"https://klezm.github.io/awesome-copilot/previews/pr24-1756503523/"}];
+        const previews = PREVIEW_DATA_PLACEHOLDER;
         
         function formatDate(timestamp) {
             const date = new Date(timestamp * 1000);
@@ -671,7 +671,7 @@
             
             const githubLink = document.createElement('a');
             githubLink.className = 'github-link';
-            githubLink.href = `https://github.com/klezm/awesome-copilot/tree/gh-pages/previews/${preview.name}`;
+            githubLink.href = `https://github.com/REPO_OWNER/REPO_NAME/tree/gh-pages/previews/${preview.name}`;
             githubLink.title = 'View source files on GitHub';
             githubLink.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>`;
             
@@ -717,7 +717,7 @@
                 
                 const title = document.createElement('a');
                 title.className = 'pr-title';
-                title.href = `https://github.com/klezm/awesome-copilot/pull/${group.prNumber}`;
+                title.href = `https://github.com/REPO_OWNER/REPO_NAME/pull/${group.prNumber}`;
                 title.innerHTML = `<span>📋</span> Pull Request #${group.prNumber}`;
                 
                 const meta = document.createElement('div');
