@@ -492,7 +492,7 @@
         <div class="container">
             <h1>🚀 Preview Deployments</h1>
             <p class="subtitle">Browse all available PR preview deployments for the Awesome Copilot project</p>
-            <a href="https://klezm.github.io/awesome-copilot/" class="main-site-link">← Back to Main Site</a>
+            <a href="https://REPO_OWNER.github.io/REPO_NAME/" class="main-site-link">← Back to Main Site</a>
         </div>
     </header>
     
@@ -513,7 +513,7 @@
     
     <script>
         // This will be populated by the build script
-        const previews = [{"name":"pr16-1756481846","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756481846/"},{"name":"pr16-1756482897","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756482897/"},{"name":"pr16-1756483637","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756483637/"},{"name":"pr16-1756483909","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756483909/"},{"name":"pr18-1756486099","url":"https://klezm.github.io/awesome-copilot/previews/pr18-1756486099/"},{"name":"pr18-1756486142","url":"https://klezm.github.io/awesome-copilot/previews/pr18-1756486142/"},{"name":"pr19-1756486319","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756486319/"},{"name":"pr19-1756486904","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756486904/"},{"name":"pr19-1756486939","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756486939/"},{"name":"pr19-1756487921","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756487921/"},{"name":"pr19-1756487958","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756487958/"},{"name":"pr19-1756489030","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756489030/"},{"name":"pr19-1756489075","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756489075/"},{"name":"pr19-1756493859","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756493859/"},{"name":"pr19-1756493889","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756493889/"},{"name":"pr19-1756495515","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756495515/"},{"name":"pr19-1756495543","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756495543/"},{"name":"pr19-1756496887","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756496887/"},{"name":"pr21-1756495286","url":"https://klezm.github.io/awesome-copilot/previews/pr21-1756495286/"},{"name":"pr21-1756498354","url":"https://klezm.github.io/awesome-copilot/previews/pr21-1756498354/"}];
+        const previews = PREVIEW_DATA_PLACEHOLDER;
         
         function formatDate(timestamp) {
             const date = new Date(timestamp * 1000);
@@ -607,7 +607,7 @@
                 
                 const title = document.createElement('a');
                 title.className = 'pr-title';
-                title.href = `https://github.com/klezm/awesome-copilot/pull/${group.prNumber}`;
+                title.href = `https://github.com/REPO_OWNER/REPO_NAME/pull/${group.prNumber}`;
                 title.target = '_blank';
                 title.rel = 'noopener noreferrer';
                 title.innerHTML = `<span>📋</span> Pull Request #${group.prNumber}`;
@@ -661,7 +661,7 @@
                     
                     const githubLink = document.createElement('a');
                     githubLink.className = 'github-link';
-                    githubLink.href = `https://github.com/klezm/awesome-copilot/tree/gh-pages/previews/${preview.name}`;
+                    githubLink.href = `https://github.com/REPO_OWNER/REPO_NAME/tree/gh-pages/previews/${preview.name}`;
                     githubLink.target = '_blank';
                     githubLink.rel = 'noopener noreferrer';
                     githubLink.title = 'View source files on GitHub';
