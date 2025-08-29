@@ -67,6 +67,38 @@
         </div>
     </footer>
 
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-content">
+        <div class="modal-overlay" aria-label="Close modal"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Preview</h2>
+                <button id="modal-close" class="modal-close" aria-label="Close preview modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-content" class="modal-markdown-content">
+                    <div class="loading">Loading content...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-close-footer" class="btn btn-secondary">Close</button>
+                <a id="modal-install" href="#" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Install in VS Code</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Tooltip -->
+    <div id="preview-tooltip" class="tooltip" aria-hidden="true" role="tooltip">
+        <div class="tooltip-content">
+            <div class="tooltip-title"></div>
+            <div class="tooltip-description"></div>
+            <div class="tooltip-preview"></div>
+        </div>
+        <div class="tooltip-arrow"></div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
