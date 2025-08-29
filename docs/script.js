@@ -251,12 +251,6 @@ function renderItems() {
     // This function is now handled by loadMoreItems for infinite scroll
     return;
 }
-    const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-    const pageItems = filteredData.slice(startIndex, endIndex);
-    
-    const itemsHtml = pageItems.map(item => createItemCard(item)).join('');
-    resultsContainer.innerHTML = itemsHtml;
-}
 
 // Create HTML for a single item card
 function createItemCard(item) {
