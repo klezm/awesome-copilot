@@ -882,6 +882,10 @@ function hidePreviewModal() {
         contentContainer.removeEventListener('scroll', contentContainer._frontmatterScrollHandler);
         delete contentContainer._frontmatterScrollHandler;
     }
+    if (contentContainer?._tocScrollHandler) {
+        contentContainer.removeEventListener('scroll', contentContainer._tocScrollHandler);
+        delete contentContainer._tocScrollHandler;
+    }
     
     // Reset state
     currentModalItem = null;
@@ -1122,7 +1126,16 @@ function generateTableOfContents() {
     
     // Set up scroll listener for automatic highlighting
     const contentContainer = modalContent.parentElement;
-    contentContainer.addEventListener('scroll', throttle(updateTocOnScroll, 100));
+    
+    // Remove any existing TOC scroll listener before adding new one
+    if (contentContainer._tocScrollHandler) {
+        contentContainer.removeEventListener('scroll', contentContainer._tocScrollHandler);
+    }
+    
+    // Create and store the scroll handler for cleanup
+    const tocScrollHandler = throttle(updateTocOnScroll, 100);
+    contentContainer._tocScrollHandler = tocScrollHandler;
+    contentContainer.addEventListener('scroll', tocScrollHandler);
     
     // Initial active state
     updateTocOnScroll();
