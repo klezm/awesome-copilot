@@ -3,6 +3,8 @@ let allData = { prompts: [], instructions: [], chatmodes: [] };
 let filteredData = [];
 let currentPage = 1;
 const itemsPerPage = 10;
+let currentModalItem = null;
+let isSourceView = false;
 
 // DOM elements
 const searchInput = document.getElementById('search');
@@ -111,21 +113,39 @@ function setupEventListeners() {
         }
     });
 
-    // Hover events for tooltip preview
-    resultsContainer.addEventListener('mouseenter', (e) => {
+    // Hover events for tooltip preview with improved behavior
+    resultsContainer.addEventListener('mouseover', (e) => {
         if (e.target.matches('.item-card') || e.target.closest('.item-card')) {
             const card = e.target.matches('.item-card') ? e.target : e.target.closest('.item-card');
+            
+            // Clear any existing timeout
+            if (tooltipTimeout) {
+                clearTimeout(tooltipTimeout);
+                tooltipTimeout = null;
+            }
+            
+            // Don't show tooltip if modal is open
+            const modal = document.getElementById('preview-modal');
+            if (modal.classList.contains('show')) {
+                return;
+            }
+            
             const item = JSON.parse(card.getAttribute('data-item'));
             
-            tooltipTimeout = setTimeout(() => {
-                showTooltipPreview(item, card);
-            }, 800); // Delay to avoid showing on quick hovers
+            // Show tooltip immediately on hover
+            showTooltipPreview(item, card);
         }
     }, true);
 
-    resultsContainer.addEventListener('mouseleave', (e) => {
+    resultsContainer.addEventListener('mouseout', (e) => {
         if (e.target.matches('.item-card') || e.target.closest('.item-card')) {
-            hideTooltipPreview();
+            // Only hide if we're not moving to a child element of the same card
+            const card = e.target.matches('.item-card') ? e.target : e.target.closest('.item-card');
+            const relatedTarget = e.relatedTarget;
+            
+            if (!relatedTarget || !card.contains(relatedTarget)) {
+                hideTooltipPreview();
+            }
         }
     }, true);
 
@@ -527,17 +547,48 @@ function fallbackMarkdownToHtml(content) {
     return processed;
 }
 
+// Apply syntax highlighting to code blocks
+function applySyntaxHighlighting() {
+    if (typeof hljs !== 'undefined') {
+        // Highlight all code blocks
+        document.querySelectorAll('.modal-markdown-content pre code').forEach(block => {
+            hljs.highlightElement(block);
+        });
+        
+        // Also highlight inline code if it looks like code
+        document.querySelectorAll('.modal-markdown-content code:not(pre code)').forEach(block => {
+            // Only highlight if it contains programming-like content
+            if (block.textContent.includes('(') || block.textContent.includes('{') || 
+                block.textContent.includes('function') || block.textContent.includes('const') ||
+                block.textContent.includes('let') || block.textContent.includes('var')) {
+                hljs.highlightElement(block);
+            }
+        });
+    } else {
+        console.log('Highlight.js not available - skipping syntax highlighting');
+    }
+}
+
 // Show preview modal
 async function showPreviewModal(item) {
+    // Hide any open tooltip first
+    hideTooltipPreview();
+    
+    // Store current item for source toggle
+    currentModalItem = item;
+    isSourceView = false;
+    
     const modal = document.getElementById('preview-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalContent = document.getElementById('modal-content');
     const modalInstall = document.getElementById('modal-install');
+    const showSourceBtn = document.getElementById('modal-show-source');
     
     // Set up modal
     modalTitle.textContent = `Preview: ${item.title}`;
     modalInstall.href = item.vscodeUrl;
     modalContent.innerHTML = '<div class="loading">Loading content...</div>';
+    showSourceBtn.textContent = 'Show Source';
     
     // Show modal
     modal.classList.add('show');
@@ -551,6 +602,9 @@ async function showPreviewModal(item) {
         const content = await fetchMarkdownContent(item.sourceUrl);
         const htmlContent = markdownToHtml(content);
         modalContent.innerHTML = htmlContent || '<p>No content available.</p>';
+        
+        // Apply syntax highlighting to code blocks
+        applySyntaxHighlighting();
     } catch (error) {
         modalContent.innerHTML = `<div class="error">Error loading content: ${error.message}</div>`;
     }
@@ -558,11 +612,58 @@ async function showPreviewModal(item) {
     trackEvent('Preview', 'modal_open', item.type);
 }
 
+// Toggle between rendered and source view
+async function toggleSourceView() {
+    if (!currentModalItem) return;
+    
+    const modalContent = document.getElementById('modal-content');
+    const showSourceBtn = document.getElementById('modal-show-source');
+    
+    if (isSourceView) {
+        // Switch to rendered view
+        modalContent.innerHTML = '<div class="loading">Loading content...</div>';
+        showSourceBtn.textContent = 'Show Source';
+        
+        try {
+            const content = await fetchMarkdownContent(currentModalItem.sourceUrl);
+            const htmlContent = markdownToHtml(content);
+            modalContent.innerHTML = htmlContent || '<p>No content available.</p>';
+            
+            // Apply syntax highlighting to code blocks
+            applySyntaxHighlighting();
+        } catch (error) {
+            modalContent.innerHTML = `<div class="error">Error loading content: ${error.message}</div>`;
+        }
+        
+        isSourceView = false;
+    } else {
+        // Switch to source view
+        modalContent.innerHTML = '<div class="loading">Loading source...</div>';
+        showSourceBtn.textContent = 'Show Rendered';
+        
+        try {
+            const content = await fetchMarkdownContent(currentModalItem.sourceUrl);
+            modalContent.innerHTML = `<pre><code class="language-markdown">${escapeHtml(content)}</code></pre>`;
+            
+            // Apply syntax highlighting to the markdown source
+            applySyntaxHighlighting();
+        } catch (error) {
+            modalContent.innerHTML = `<div class="error">Error loading source: ${error.message}</div>`;
+        }
+        
+        isSourceView = true;
+    }
+}
+
 // Hide preview modal
 function hidePreviewModal() {
     const modal = document.getElementById('preview-modal');
     modal.classList.remove('show');
     modal.setAttribute('aria-hidden', 'true');
+    
+    // Reset state
+    currentModalItem = null;
+    isSourceView = false;
 }
 
 // Show tooltip preview
@@ -646,11 +747,15 @@ function setupModalEventListeners() {
     const modalOverlay = modal.querySelector('.modal-overlay');
     const modalClose = document.getElementById('modal-close');
     const modalCloseFooter = document.getElementById('modal-close-footer');
+    const showSourceBtn = document.getElementById('modal-show-source');
     
     // Close modal events
     modalOverlay.addEventListener('click', hidePreviewModal);
     modalClose.addEventListener('click', hidePreviewModal);
     modalCloseFooter.addEventListener('click', hidePreviewModal);
+    
+    // Show source toggle
+    showSourceBtn.addEventListener('click', toggleSourceView);
     
     // Prevent modal content clicks from closing modal
     modal.querySelector('.modal-content').addEventListener('click', (e) => {

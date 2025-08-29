@@ -390,9 +390,9 @@ footer a:hover {
 .modal-content {
     background: white;
     border-radius: 12px;
-    max-width: 90vw;
-    max-height: 90vh;
-    width: 800px;
+    max-width: 95vw;
+    max-height: 95vh;
+    width: 1200px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
@@ -696,8 +696,8 @@ footer a:hover {
 @media (max-width: 768px) {
     .modal-content {
         width: 95vw;
-        max-height: 95vh;
-        margin: 10px;
+        max-height: 90vh;
+        margin: 20px 10px;
         border-radius: 8px;
     }
     
