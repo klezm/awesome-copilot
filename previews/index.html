@@ -95,18 +95,18 @@
         <p class="description">Browse all available PR preview deployments for the Awesome Copilot project</p>
         <a href="https://klezm.github.io/awesome-copilot/" class="main-site-link">← Back to Main Site</a>
     </div>
-
+    
     <div id="preview-list">
         <div class="no-previews">
             <h3>No preview deployments found</h3>
             <p>Preview deployments will appear here when pull requests are created.</p>
         </div>
     </div>
-
+    
     <script>
         // This will be populated by the build script
-        const previews = [{"name":"pr16-1756481846","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756481846/"},{"name":"pr16-1756482897","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756482897/"},{"name":"pr16-1756483637","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756483637/"},{"name":"pr16-1756483909","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756483909/"},{"name":"pr18-1756486099","url":"https://klezm.github.io/awesome-copilot/previews/pr18-1756486099/"},{"name":"pr18-1756486142","url":"https://klezm.github.io/awesome-copilot/previews/pr18-1756486142/"}];
-
+        const previews = [{"name":"pr16-1756481846","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756481846/"},{"name":"pr16-1756482897","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756482897/"},{"name":"pr16-1756483637","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756483637/"},{"name":"pr16-1756483909","url":"https://klezm.github.io/awesome-copilot/previews/pr16-1756483909/"},{"name":"pr18-1756486099","url":"https://klezm.github.io/awesome-copilot/previews/pr18-1756486099/"},{"name":"pr18-1756486142","url":"https://klezm.github.io/awesome-copilot/previews/pr18-1756486142/"},{"name":"pr19-1756486319","url":"https://klezm.github.io/awesome-copilot/previews/pr19-1756486319/"}];
+        
         function formatDate(timestamp) {
             const date = new Date(timestamp * 1000);
             return date.toLocaleDateString('en-US', {
@@ -117,38 +117,38 @@
                 minute: '2-digit'
             });
         }
-
+        
         function renderPreviews() {
             const container = document.getElementById('preview-list');
-
+            
             if (previews.length === 0) {
                 return; // Keep the "no previews" message
             }
-
+            
             const grid = document.createElement('div');
             grid.className = 'preview-grid';
-
+            
             previews.forEach(preview => {
                 const card = document.createElement('div');
                 card.className = 'preview-card';
-
+                
                 const prNumber = preview.name.match(/pr(\d+)-/)?.[1] || 'Unknown';
                 const timestamp = preview.name.match(/-(\d+)$/)?.[1];
                 const dateStr = timestamp ? formatDate(parseInt(timestamp)) : 'Unknown date';
-
+                
                 card.innerHTML = `
                     <h3 class="preview-title"><a href="https://github.com/klezm/awesome-copilot/pull/${prNumber}">PR #${prNumber}</a></h3>
                     <div class="preview-date">Deployed: ${dateStr}</div>
                     <a href="${preview.url}" class="preview-link">View Preview →</a>
                 `;
-
+                
                 grid.appendChild(card);
             });
-
+            
             container.innerHTML = '';
             container.appendChild(grid);
         }
-
+        
         renderPreviews();
     </script>
 </body>
