@@ -358,8 +358,13 @@ function handleGlobalKeydown(e) {
     // Don't interfere with input elements unless it's a special key
     const isInInput = e.target.matches('input, select, button, a, textarea');
     
+    // Check if any modal is open
+    const previewModal = document.getElementById('preview-modal');
+    const helpModal = document.getElementById('help-modal');
+    const isModalOpen = previewModal?.classList.contains('show') || helpModal?.classList.contains('show');
+    
     // Handle modal-specific shortcuts first
-    if (currentModalItem) {
+    if (isModalOpen && previewModal?.classList.contains('show')) {
         if (e.key === 'Escape') {
             e.preventDefault();
             hidePreviewModal();
@@ -374,8 +379,17 @@ function handleGlobalKeydown(e) {
         }
     }
     
-    // Handle help modal
-    if (e.key === '?' && !isInInput) {
+    // Handle help modal shortcuts
+    if (helpModal?.classList.contains('show')) {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            hideHelpModal();
+            return;
+        }
+    }
+    
+    // Handle help modal trigger (only when no modal is open)
+    if (e.key === '?' && !isInInput && !isModalOpen) {
         e.preventDefault();
         showHelpModal();
         return;
@@ -649,13 +663,13 @@ function markdownToHtml(markdown) {
         htmlContent = fallbackMarkdownToHtml(content);
     }
     
-    // Add frontmatter if it exists
+    // Add frontmatter if it exists - show it above content and make it visible when scrolling up
     if (frontMatter) {
-        const frontMatterHtml = `<div class="frontmatter-container">
-            <details class="frontmatter">
-                <summary>Front Matter</summary>
-                <pre><code class="language-yaml">${escapeHtml(frontMatter)}</code></pre>
-            </details>
+        const frontMatterHtml = `<div class="frontmatter-container" id="frontmatter-section">
+            <div class="frontmatter-header">
+                <h4>Front Matter</h4>
+            </div>
+            <pre><code class="language-yaml">${escapeHtml(frontMatter)}</code></pre>
         </div>`;
         htmlContent = frontMatterHtml + htmlContent;
     }
@@ -785,6 +799,9 @@ async function showPreviewModal(item) {
         // Generate table of contents
         generateTableOfContents();
         
+        // Set up frontmatter visibility based on scroll position
+        setupFrontmatterVisibility();
+        
         // Hide tooltip when modal is open
         hideTooltipPreview();
     } catch (error) {
@@ -807,6 +824,9 @@ async function toggleSourceView() {
         modalContent.innerHTML = '<div class="loading">Loading content...</div>';
         showSourceBtn.textContent = 'Show Source';
         
+        // Keep TOC visible
+        tocContainer.style.display = 'block';
+        
         try {
             const content = await fetchMarkdownContent(currentModalItem.sourceUrl);
             const htmlContent = markdownToHtml(content);
@@ -817,9 +837,11 @@ async function toggleSourceView() {
             
             // Generate table of contents for rendered view
             generateTableOfContents();
+            
+            // Set up frontmatter visibility
+            setupFrontmatterVisibility();
         } catch (error) {
             modalContent.innerHTML = `<div class="error">Error loading content: ${error.message}</div>`;
-            tocContainer.style.display = 'none';
         }
         
         isSourceView = false;
@@ -839,7 +861,6 @@ async function toggleSourceView() {
             applySyntaxHighlighting();
         } catch (error) {
             modalContent.innerHTML = `<div class="error">Error loading source: ${error.message}</div>`;
-            tocContainer.style.display = 'none';
         }
         
         isSourceView = true;
@@ -850,13 +871,26 @@ async function toggleSourceView() {
 function hidePreviewModal() {
     const modal = document.getElementById('preview-modal');
     const tocContainer = document.getElementById('modal-toc');
+    const modalContent = document.getElementById('modal-content');
+    
     modal.classList.remove('show');
     modal.setAttribute('aria-hidden', 'true');
+    
+    // Clean up event listeners
+    const contentContainer = modalContent?.parentElement;
+    if (contentContainer?._frontmatterScrollHandler) {
+        contentContainer.removeEventListener('scroll', contentContainer._frontmatterScrollHandler);
+        delete contentContainer._frontmatterScrollHandler;
+    }
     
     // Reset state
     currentModalItem = null;
     isSourceView = false;
-    tocContainer.style.display = 'none';
+    
+    // Keep TOC visible for next time - don't hide it
+    if (tocContainer) {
+        tocContainer.style.display = 'block';
+    }
 }
 
 // Show tooltip preview
@@ -993,6 +1027,36 @@ if ('serviceWorker' in navigator) {
         // Note: We're not actually registering a service worker yet,
         // but this shows where it would go for future enhancement
     });
+}
+
+// Set up frontmatter visibility based on scroll position
+function setupFrontmatterVisibility() {
+    const frontmatterSection = document.getElementById('frontmatter-section');
+    const modalContent = document.getElementById('modal-content');
+    const contentContainer = modalContent.parentElement;
+    
+    if (!frontmatterSection || !contentContainer) return;
+    
+    // Function to handle scroll and show/hide frontmatter
+    const handleFrontmatterScroll = () => {
+        const scrollTop = contentContainer.scrollTop;
+        
+        // Show frontmatter when scrolled up (near the top)
+        if (scrollTop <= 50) {
+            frontmatterSection.classList.add('visible');
+        } else {
+            frontmatterSection.classList.remove('visible');
+        }
+    };
+    
+    // Initially show frontmatter if at top
+    handleFrontmatterScroll();
+    
+    // Add scroll listener
+    contentContainer.addEventListener('scroll', handleFrontmatterScroll);
+    
+    // Store reference for cleanup
+    contentContainer._frontmatterScrollHandler = handleFrontmatterScroll;
 }
 
 // Table of Contents functionality
