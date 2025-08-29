@@ -523,7 +523,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: gh-pages
         run: |
-          cp -r ../repo/docs/* || true
+          cp -r ../repo/docs/* ./ || true
 
       - name: Commit and push
         working-directory: gh-pages
