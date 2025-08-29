@@ -115,6 +115,23 @@ You are an expert [domain/role] with deep knowledge in [specific areas].
 
 **Note**: Once your contribution is merged, you'll automatically be added to our [Contributors](#contributors-) section! We use [all-contributors](https://github.com/all-contributors/all-contributors) to recognize all types of contributions to the project.
 
+## Code Quality and Formatting
+
+This repository uses pre-commit hooks to maintain consistent code quality and formatting:
+
+- **Automatic formatting**: Trailing whitespace is automatically removed (except in markdown files where it might be intentional)
+- **File consistency**: Ensures files end with a newline and checks for common issues
+- **CI validation**: A GitHub Actions workflow runs pre-commit checks on all pull requests
+
+To set up pre-commit hooks locally (optional but recommended):
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+This will automatically run the formatting checks before each commit, ensuring your contributions meet the repository's standards.
+
 ## What We Accept
 
 We welcome contributions covering any technology, framework, or development practice that helps developers work more effectively with GitHub Copilot. This includes:
