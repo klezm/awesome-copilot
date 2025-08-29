@@ -260,19 +260,20 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
+        working-directory: repo
         with:
           node-version: "18"
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
         working-directory: repo
+        run: npm ci
 
       - name: Build site data for PR preview
+        working-directory: repo
         run: |
           npm run build
           npm run build:website
-        working-directory: repo
 
       - name: Setup git config
         run: |
