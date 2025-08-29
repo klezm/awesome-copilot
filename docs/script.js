@@ -95,12 +95,18 @@ function setupEventListeners() {
     // Preview modal event listeners
     setupModalEventListeners();
     
-    // Results container event delegation for preview buttons and hover
+    // Results container event delegation for preview buttons and card clicks
     resultsContainer.addEventListener('click', (e) => {
-        if (e.target.matches('.preview-btn') || e.target.closest('.preview-btn')) {
+        // Check if click is on a button or link (prevent card click)
+        if (e.target.matches('button, a, .btn') || e.target.closest('button, a, .btn')) {
+            return; // Let the button/link handle its own click
+        }
+        
+        // Check if click is on a card
+        if (e.target.matches('.item-card') || e.target.closest('.item-card')) {
             e.preventDefault();
-            const btn = e.target.matches('.preview-btn') ? e.target : e.target.closest('.preview-btn');
-            const item = JSON.parse(btn.getAttribute('data-preview-item'));
+            const card = e.target.matches('.item-card') ? e.target : e.target.closest('.item-card');
+            const item = JSON.parse(card.getAttribute('data-item'));
             showPreviewModal(item);
         }
     });
@@ -122,6 +128,18 @@ function setupEventListeners() {
             hideTooltipPreview();
         }
     }, true);
+
+    // Keyboard support for clickable cards
+    resultsContainer.addEventListener('keydown', (e) => {
+        if (e.target.matches('.item-card') || e.target.closest('.item-card')) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const card = e.target.matches('.item-card') ? e.target : e.target.closest('.item-card');
+                const item = JSON.parse(card.getAttribute('data-item'));
+                showPreviewModal(item);
+            }
+        }
+    });
 }
 
 // Update filtered data based on search and filter criteria
@@ -214,18 +232,16 @@ function createItemCard(item) {
     const { emoji, label } = typeInfo[item.type] || { emoji: '', label: 'Unknown' };
     
     return `
-        <div class="item-card" data-item='${JSON.stringify(item).replace(/'/g, "&apos;")}'>
+        <div class="item-card clickable-card" data-item='${JSON.stringify(item).replace(/'/g, "&apos;")}' role="button" tabindex="0" aria-label="Click to preview ${escapeHtml(item.title)}">
             <div class="item-header">
-                <a href="${item.sourceUrl || item.link}" class="item-title" target="_blank" rel="noopener noreferrer">
-                    ${escapeHtml(item.title)}
-                </a>
+                <div class="item-title-section">
+                    <h3 class="item-title">${escapeHtml(item.title)}</h3>
+                    <span class="preview-indicator">👁️ Click to preview</span>
+                </div>
                 <span class="item-type">${emoji} ${label}</span>
             </div>
             ${descriptionHtml}
             <div class="item-actions">
-                <button class="btn btn-secondary preview-btn" data-preview-item='${JSON.stringify(item).replace(/'/g, "&apos;")}' aria-label="Preview ${escapeHtml(item.title)}">
-                    👁️ Preview
-                </button>
                 <a href="${item.vscodeUrl}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
                     <span class="install-badge">
                         <img src="https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white" alt="VS Code Install" />
@@ -419,47 +435,96 @@ for GitHub Copilot to use in your development workflow.
 For the complete ${type.toLowerCase()}, please use the install buttons to add it to your VS Code environment.`;
 }
 
-// Simple markdown to HTML converter
-function simpleMarkdownToHtml(markdown) {
+// Markdown to HTML converter using marked.js with fallback
+function markdownToHtml(markdown) {
     if (!markdown) return '';
     
     // Remove front matter
     let content = markdown.replace(/^---[\s\S]*?---\n?/, '');
     
-    // Convert headers
-    content = content.replace(/^### (.*$)/gm, '<h3>$1</h3>');
-    content = content.replace(/^## (.*$)/gm, '<h2>$1</h2>');
-    content = content.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+    // Try to use marked.js if available
+    if (typeof marked !== 'undefined') {
+        try {
+            // Configure marked options for better security and formatting
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                headerIds: false,
+                mangle: false,
+                sanitize: false, // We trust the content from GitHub
+                smartLists: true,
+                smartypants: false
+            });
+            
+            return marked.parse(content);
+        } catch (error) {
+            console.error('Error parsing markdown with marked:', error);
+        }
+    }
     
-    // Convert code blocks
-    content = content.replace(/```[\s\S]*?```/g, (match) => {
-        const code = match.slice(3, -3).trim();
-        return `<pre><code>${escapeHtml(code)}</code></pre>`;
+    // Fallback to enhanced simple parser if marked is not available
+    console.log('Using fallback markdown parser (marked.js not available)');
+    return fallbackMarkdownToHtml(content);
+}
+
+// Enhanced fallback markdown parser that handles HTML tags properly
+function fallbackMarkdownToHtml(content) {
+    if (!content) return '';
+    
+    // First, escape any HTML tags that should be displayed as text
+    // But preserve basic markdown
+    let processed = content;
+    
+    // Convert headers
+    processed = processed.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+    processed = processed.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+    processed = processed.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+    
+    // Convert code blocks (multiline)
+    processed = processed.replace(/```([^]*?)```/g, (match, code) => {
+        return `<pre><code>${escapeHtml(code.trim())}</code></pre>`;
     });
     
     // Convert inline code
-    content = content.replace(/`([^`]+)`/g, '<code>$1</code>');
+    processed = processed.replace(/`([^`]+)`/g, '<code>$1</code>');
+    
+    // Convert blockquotes
+    processed = processed.replace(/^> (.+$)/gm, '<blockquote><p>$1</p></blockquote>');
     
     // Convert bold and italic
-    content = content.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    content = content.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    processed = processed.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    processed = processed.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
     
-    // Convert lists
-    content = content.replace(/^\* (.+$)/gm, '<li>$1</li>');
-    content = content.replace(/^- (.+$)/gm, '<li>$1</li>');
-    content = content.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    // Convert numbered lists
+    processed = processed.replace(/^(\d+)\. (.+$)/gm, '<ol><li>$2</li></ol>');
+    // Merge consecutive ol elements
+    processed = processed.replace(/<\/ol>\s*<ol>/g, '');
     
-    // Convert paragraphs
-    content = content.split('\n\n').map(paragraph => {
+    // Convert bullet lists
+    processed = processed.replace(/^[-*] (.+$)/gm, '<ul><li>$1</li></ul>');
+    // Merge consecutive ul elements
+    processed = processed.replace(/<\/ul>\s*<ul>/g, '');
+    
+    // Convert links
+    processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    
+    // Convert paragraphs (split by double newlines and wrap in <p> tags)
+    const paragraphs = processed.split(/\n\s*\n/);
+    processed = paragraphs.map(paragraph => {
         paragraph = paragraph.trim();
         if (!paragraph) return '';
-        if (paragraph.startsWith('<h') || paragraph.startsWith('<ul') || paragraph.startsWith('<pre')) {
+        
+        // Don't wrap headers, lists, code blocks, or blockquotes in paragraph tags
+        if (paragraph.match(/^<(h[1-6]|pre|ul|ol|blockquote)/)) {
             return paragraph;
         }
-        return `<p>${paragraph.replace(/\n/g, '<br>')}</p>`;
-    }).join('\n');
+        
+        // Replace single newlines with <br> within paragraphs
+        const withBreaks = paragraph.replace(/\n/g, '<br>');
+        return `<p>${withBreaks}</p>`;
+    }).filter(p => p).join('\n\n');
     
-    return content;
+    return processed;
 }
 
 // Show preview modal
@@ -484,7 +549,7 @@ async function showPreviewModal(item) {
     
     try {
         const content = await fetchMarkdownContent(item.sourceUrl);
-        const htmlContent = simpleMarkdownToHtml(content);
+        const htmlContent = markdownToHtml(content);
         modalContent.innerHTML = htmlContent || '<p>No content available.</p>';
     } catch (error) {
         modalContent.innerHTML = `<div class="error">Error loading content: ${error.message}</div>`;
