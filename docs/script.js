@@ -377,6 +377,19 @@ function handleGlobalKeydown(e) {
             toggleSourceView();
             return;
         }
+        
+        // Navigate between items in the modal
+        if (e.key === 'ArrowLeft' && !isInInput) {
+            e.preventDefault();
+            navigateToAdjacentItem('previous');
+            return;
+        }
+        
+        if (e.key === 'ArrowRight' && !isInInput) {
+            e.preventDefault();
+            navigateToAdjacentItem('next');
+            return;
+        }
     }
     
     // Handle help modal shortcuts
@@ -759,6 +772,41 @@ function applySyntaxHighlighting() {
     }
 }
 
+// Navigate to adjacent item in modal
+function navigateToAdjacentItem(direction) {
+    if (!currentModalItem || !filteredData.length) return;
+    
+    // Find current item index in filtered data
+    const currentIndex = filteredData.findIndex(item => 
+        item.title === currentModalItem.title && 
+        item.file === currentModalItem.file &&
+        item.type === currentModalItem.type
+    );
+    
+    if (currentIndex === -1) return;
+    
+    let newIndex;
+    if (direction === 'next') {
+        newIndex = currentIndex + 1;
+        if (newIndex >= filteredData.length) {
+            newIndex = 0; // Wrap to beginning
+        }
+    } else if (direction === 'previous') {
+        newIndex = currentIndex - 1;
+        if (newIndex < 0) {
+            newIndex = filteredData.length - 1; // Wrap to end
+        }
+    } else {
+        return;
+    }
+    
+    const newItem = filteredData[newIndex];
+    if (newItem) {
+        // Update modal with new item
+        showPreviewModal(newItem);
+    }
+}
+
 // Show preview modal
 async function showPreviewModal(item) {
     // Hide any open tooltip first
@@ -775,7 +823,13 @@ async function showPreviewModal(item) {
     const showSourceBtn = document.getElementById('modal-show-source');
     
     // Set up modal
-    modalTitle.textContent = `Preview: ${item.title}`;
+    const currentIndex = filteredData.findIndex(dataItem => 
+        dataItem.title === item.title && 
+        dataItem.file === item.file &&
+        dataItem.type === item.type
+    );
+    const position = currentIndex >= 0 ? ` (${currentIndex + 1} of ${filteredData.length})` : '';
+    modalTitle.textContent = `Preview: ${item.title}${position}`;
     modalInstall.href = item.vscodeUrl;
     modalContent.innerHTML = '<div class="loading">Loading content...</div>';
     showSourceBtn.textContent = 'Show Source';
