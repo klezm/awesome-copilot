@@ -1094,20 +1094,30 @@ function setupFrontmatterVisibility() {
     
     if (!frontmatterSection || !contentContainer) return;
     
+    // Track if the user has scrolled down from the initial position
+    let hasScrolledDown = false;
+    
     // Function to handle scroll and show/hide frontmatter
     const handleFrontmatterScroll = () => {
         const scrollTop = contentContainer.scrollTop;
         
-        // Show frontmatter when scrolled up (near the top)
-        if (scrollTop <= 50) {
+        // Track if user has scrolled down at least once
+        if (scrollTop > 50) {
+            hasScrolledDown = true;
+        }
+        
+        // Only show frontmatter when:
+        // 1. User has scrolled down before (not initial load)
+        // 2. And is now near the top (scrolled back up)
+        if (hasScrolledDown && scrollTop <= 50) {
             frontmatterSection.classList.add('visible');
         } else {
             frontmatterSection.classList.remove('visible');
         }
     };
     
-    // Initially show frontmatter if at top
-    handleFrontmatterScroll();
+    // Initially ensure frontmatter is hidden (don't call handleFrontmatterScroll immediately)
+    frontmatterSection.classList.remove('visible');
     
     // Add scroll listener
     contentContainer.addEventListener('scroll', handleFrontmatterScroll);
