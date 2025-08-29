@@ -14,7 +14,7 @@ on:
         type: boolean
 
 permissions:
-  contents: write  # Changed from read to write for gh-pages branch management
+  contents: write # Changed from read to write for gh-pages branch management
   pages: write
   id-token: write
   pull-requests: write
@@ -23,12 +23,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,13 +30,13 @@ jobs:
       should-deploy-pages: ${{ steps.check-deploy.outputs.should-deploy-pages }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -63,21 +57,21 @@ jobs:
 
       - name: Setup Pages
         if: steps.check-deploy.outputs.should-deploy-pages == 'true'
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact for GitHub Pages
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         if: steps.check-deploy.outputs.should-deploy-pages == 'true'
         with:
-          path: './docs'
+          path: "./docs"
 
   deploy-vercel:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ secrets.VERCEL_TOKEN != '' }}
+    if: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -151,10 +145,10 @@ jobs:
   deploy-netlify:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ secrets.NETLIFY_AUTH_TOKEN != '' && github.event_name == 'pull_request' }}
+    if: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -230,25 +224,55 @@ jobs:
     needs: build
     if: github.event_name == 'pull_request'
     steps:
+      # https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          # Fetch all history so we can access the gh-pages branch
-          fetch-depth: 0
+          path: repo
+
+      - name: Ensure gh-pages branch exists
+        working-directory: repo
+        run: |
+          set -e
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          if git ls-remote --heads origin gh-pages | grep -q 'refs/heads/gh-pages'; then
+            echo "gh-pages branch already exists"
+          else
+            echo "gh-pages branch not found — creating an empty gh-pages branch and pushing it"
+            git checkout --orphan gh-pages
+            git rm -rf . > /dev/null 2>&1 || true
+
+            # Configure a committer for the automated commit so it won't fail
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            git commit --allow-empty -m "Initialize empty gh-pages branch"
+            git push --set-upstream origin gh-pages
+            git checkout "$CURRENT_BRANCH"
+          fi
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v5
+        id: checkout-gh-pages
+        with:
+          ref: gh-pages
+          path: gh-pages
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
+        working-directory: repo
 
       - name: Build site data for PR preview
         run: |
           npm run build
           npm run build:website
+        working-directory: repo
 
       - name: Setup git config
         run: |
@@ -257,77 +281,51 @@ jobs:
 
       - name: Create PR preview deployment
         id: pr-preview
+        working-directory: gh-pages
         run: |
-          # Create preview folder name with PR number and date
+          set -e
           PR_NUMBER="${{ github.event.number }}"
-          DATE=$(date +%Y%m%d)
-          PREVIEW_DIR="previews/pr${PR_NUMBER}-${DATE}"
-          
-          # Preview URL formation: https://<username>.github.io/<repo>/${PREVIEW_DIR}/
-          # For this repo: https://klezm.github.io/awesome-copilot/${PREVIEW_DIR}/
-          PREVIEW_URL="https://klezm.github.io/awesome-copilot/${PREVIEW_DIR}/"
-          
+          TIMESTAMP=$(date +%s)
+          PREVIEW_DIR="previews/pr${PR_NUMBER}-${TIMESTAMP}"
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="$(echo "${{ github.repository }}" | sed "s|^$REPO_OWNER/||")"
+
+          PREVIEW_URL="https://$REPO_OWNER.github.io/$REPO_NAME/${PREVIEW_DIR}/"
           echo "preview-dir=${PREVIEW_DIR}" >> $GITHUB_OUTPUT
           echo "preview-url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
-          
-          # Check if gh-pages branch exists
-          if git ls-remote --heads origin gh-pages | grep -q gh-pages; then
-            echo "gh-pages branch exists, checking it out"
-            git checkout gh-pages
-          else
-            echo "gh-pages branch doesn't exist, creating orphan branch"
-            git checkout --orphan gh-pages
-            git rm -rf .
-            # Create a basic index.html for the root
-            cat > index.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head>
-              <title>GitHub Pages - PR Previews</title>
-              <meta charset="utf-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1">
-          </head>
-          <body>
-              <h1>GitHub Pages - PR Previews</h1>
-              <p>This is the GitHub Pages site for PR previews. Preview deployments can be found in the <code>previews/</code> folder.</p>
-              <p><a href="https://github.com/klezm/awesome-copilot">View Repository</a></p>
-          </body>
-          </html>
-          EOF
-            git add index.html
-            git commit -m "Initialize gh-pages branch with root index"
-          fi
-          
-          # Create/update the preview directory
+
+          # Create/update the preview directory and copy built site from the repo checkout
           mkdir -p "${PREVIEW_DIR}"
-          
-          # Copy built site files to preview directory
-          cp -r docs/* "${PREVIEW_DIR}/"
-          
+          cp -r ../repo/docs/* "${PREVIEW_DIR}/" || true
+
+      - name: Remove old PR previews
+        working-directory: gh-pages
+        run: |
           # Remove previews older than 30 days
-          find previews -name "pr*-*" -type d | while read preview_folder; do
-            # Extract date from folder name (format: pr123-20231215)
-            folder_date=$(echo "$preview_folder" | sed 's/.*-\([0-9]\{8\}\)$/\1/')
-            if [[ "$folder_date" =~ ^[0-9]{8}$ ]]; then
-              # Convert to timestamp for comparison
-              folder_timestamp=$(date -d "$folder_date" +%s 2>/dev/null || echo "0")
-              current_timestamp=$(date +%s)
-              thirty_days_ago=$((current_timestamp - 30 * 24 * 60 * 60))
-              
-              if [[ "$folder_timestamp" -lt "$thirty_days_ago" && "$folder_timestamp" -gt "0" ]]; then
-                echo "Removing old preview: $preview_folder (older than 30 days)"
-                rm -rf "$preview_folder"
+          if [ -d previews ]; then
+            find previews -maxdepth 1 -type d -name "pr*-*" | while read preview_folder; do
+              folder_epoch=$(echo "$preview_folder" | sed 's/.*-\([0-9]\{10,\}\)$/\1/')
+              if [[ "$folder_epoch" =~ ^[0-9]{10,}$ ]]; then
+                folder_timestamp="$folder_epoch"
+                current_timestamp=$(date +%s)
+                thirty_days_ago=$((current_timestamp - 30 * 24 * 60 * 60))
+                if [[ "$folder_timestamp" -lt "$thirty_days_ago" && "$folder_timestamp" -gt "0" ]]; then
+                  echo "Removing old preview: $preview_folder (older than 30 days)"
+                  rm -rf "$preview_folder"
+                fi
               fi
-            fi
-          done
-          
-          # Add and commit changes
+            done
+          fi
+
+      - name: Commit and push PR preview changes
+        working-directory: gh-pages
+        run: |
           git add .
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Add/update PR #${PR_NUMBER} preview deployment"
-            git push origin gh-pages
+            git commit -m "Add/update PR #${{ github.event.number }} preview deployment"
+            git push origin HEAD:gh-pages
           fi
 
       - name: Comment PR with GitHub Pages preview URL
@@ -348,16 +346,8 @@ jobs:
             const body = `## GitHub Pages Preview deployment
 
             ✅ **Preview deployed successfully!**
-
             🔗 **GitHub Pages Preview URL:** ${{ steps.pr-preview.outputs.preview-url }}
-
             📁 **Preview Directory:** \`${{ steps.pr-preview.outputs.preview-dir }}\`
-
-            ℹ️ **How preview URLs are formed:**
-            - Base URL: \`https://klezm.github.io/awesome-copilot/\`
-            - Preview path: \`previews/pr<PR_NUMBER>-YYYYMMDD/\`
-            - Full URL: \`https://klezm.github.io/awesome-copilot/previews/pr<PR_NUMBER>-YYYYMMDD/\`
-
             🧹 **Cleanup:** Preview folders older than 30 days are automatically removed.
 
             This preview will be updated automatically when you push new commits to this PR.`;
