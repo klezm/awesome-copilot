@@ -14,7 +14,7 @@ on:
         type: boolean
 
 permissions:
-  contents: read
+  contents: write  # Changed from read to write for gh-pages branch management
   pages: write
   id-token: write
   pull-requests: write
@@ -206,6 +206,159 @@ jobs:
             ✅ **Preview deployed successfully!**
 
             🔗 **Netlify Preview URL:** ${{ steps.deploy-netlify.outputs.deploy-url }}
+
+            This preview will be updated automatically when you push new commits to this PR.`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+  deploy-pages-pr:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history so we can access the gh-pages branch
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site data for PR preview
+        run: |
+          npm run build
+          npm run build:website
+
+      - name: Setup git config
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create PR preview deployment
+        id: pr-preview
+        run: |
+          # Create preview folder name with PR number and date
+          PR_NUMBER="${{ github.event.number }}"
+          DATE=$(date +%Y%m%d)
+          PREVIEW_DIR="previews/pr${PR_NUMBER}-${DATE}"
+          
+          # Preview URL formation: https://<username>.github.io/<repo>/${PREVIEW_DIR}/
+          # For this repo: https://klezm.github.io/awesome-copilot/${PREVIEW_DIR}/
+          PREVIEW_URL="https://klezm.github.io/awesome-copilot/${PREVIEW_DIR}/"
+          
+          echo "preview-dir=${PREVIEW_DIR}" >> $GITHUB_OUTPUT
+          echo "preview-url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
+          
+          # Check if gh-pages branch exists
+          if git ls-remote --heads origin gh-pages | grep -q gh-pages; then
+            echo "gh-pages branch exists, checking it out"
+            git checkout gh-pages
+          else
+            echo "gh-pages branch doesn't exist, creating orphan branch"
+            git checkout --orphan gh-pages
+            git rm -rf .
+            # Create a basic index.html for the root
+            cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>GitHub Pages - PR Previews</title>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+          </head>
+          <body>
+              <h1>GitHub Pages - PR Previews</h1>
+              <p>This is the GitHub Pages site for PR previews. Preview deployments can be found in the <code>previews/</code> folder.</p>
+              <p><a href="https://github.com/klezm/awesome-copilot">View Repository</a></p>
+          </body>
+          </html>
+          EOF
+            git add index.html
+            git commit -m "Initialize gh-pages branch with root index"
+          fi
+          
+          # Create/update the preview directory
+          mkdir -p "${PREVIEW_DIR}"
+          
+          # Copy built site files to preview directory
+          cp -r docs/* "${PREVIEW_DIR}/"
+          
+          # Remove previews older than 30 days
+          find previews -name "pr*-*" -type d | while read preview_folder; do
+            # Extract date from folder name (format: pr123-20231215)
+            folder_date=$(echo "$preview_folder" | sed 's/.*-\([0-9]\{8\}\)$/\1/')
+            if [[ "$folder_date" =~ ^[0-9]{8}$ ]]; then
+              # Convert to timestamp for comparison
+              folder_timestamp=$(date -d "$folder_date" +%s 2>/dev/null || echo "0")
+              current_timestamp=$(date +%s)
+              thirty_days_ago=$((current_timestamp - 30 * 24 * 60 * 60))
+              
+              if [[ "$folder_timestamp" -lt "$thirty_days_ago" && "$folder_timestamp" -gt "0" ]]; then
+                echo "Removing old preview: $preview_folder (older than 30 days)"
+                rm -rf "$preview_folder"
+              fi
+            fi
+          done
+          
+          # Add and commit changes
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add/update PR #${PR_NUMBER} preview deployment"
+            git push origin gh-pages
+          fi
+
+      - name: Comment PR with GitHub Pages preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('GitHub Pages Preview deployment')
+            );
+
+            const body = `## GitHub Pages Preview deployment
+
+            ✅ **Preview deployed successfully!**
+
+            🔗 **GitHub Pages Preview URL:** ${{ steps.pr-preview.outputs.preview-url }}
+
+            📁 **Preview Directory:** \`${{ steps.pr-preview.outputs.preview-dir }}\`
+
+            ℹ️ **How preview URLs are formed:**
+            - Base URL: \`https://klezm.github.io/awesome-copilot/\`
+            - Preview path: \`previews/pr<PR_NUMBER>-YYYYMMDD/\`
+            - Full URL: \`https://klezm.github.io/awesome-copilot/previews/pr<PR_NUMBER>-YYYYMMDD/\`
+
+            🧹 **Cleanup:** Preview folders older than 30 days are automatically removed.
 
             This preview will be updated automatically when you push new commits to this PR.`;
 
