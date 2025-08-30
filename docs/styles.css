@@ -534,7 +534,7 @@ footer a:hover {
 
 .modal-body {
     flex: 1;
-    overflow: hidden;
+    overflow: auto;
     padding: 0;
     height: 60vh;
 }
@@ -542,8 +542,6 @@ footer a:hover {
 .modal-content {
     padding: 1.5rem;
     line-height: 1.6;
-    height: 100%;
-    overflow: auto;
 }
 
 /* Markdown content styling in modal */
