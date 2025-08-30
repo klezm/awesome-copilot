@@ -28,6 +28,17 @@ async function init() {
         updateFilteredData();
         setupEventListeners();
         
+        // Handle URL-based modal opening after data is loaded
+        if (window.initializeURLHandling) {
+            const handled = window.initializeURLHandling();
+            if (!handled) {
+                // If URL handling failed (e.g., due to timing), retry after a short delay
+                setTimeout(() => {
+                    window.initializeURLHandling();
+                }, 100);
+            }
+        }
+        
         console.log('Application initialized successfully');
     } catch (error) {
         console.error('Error loading data:', error);
@@ -328,6 +339,65 @@ let currentRawMarkdown = null;
 let currentRenderedHTML = null;
 let isShowingSource = false;
 
+// URL sharing functionality
+function getItemIdFromFile(filename) {
+    // Remove file extension to create a unique ID
+    return filename.replace(/\.(prompt|instructions|chatmode)\.md$/, '');
+}
+
+function findItemById(itemId) {
+    // Ensure allData exists and has data
+    if (!allData || !itemId) {
+        return null;
+    }
+    
+    // Search through all data types to find item by ID
+    const allItems = [
+        ...(allData.prompts || []),
+        ...(allData.instructions || []),
+        ...(allData.chatmodes || [])
+    ];
+    
+    return allItems.find(item => getItemIdFromFile(item.file) === itemId);
+}
+
+function updateURLWithModal(item, section = null) {
+    const itemId = getItemIdFromFile(item.file);
+    let url = `#item=${encodeURIComponent(itemId)}`;
+    
+    if (section) {
+        url += `&section=${encodeURIComponent(section)}`;
+    }
+    
+    // Update URL without triggering navigation
+    history.pushState({ modalOpen: true, itemId, section }, '', url);
+}
+
+function clearURLModal() {
+    // Clear modal-related URL parameters
+    history.pushState({ modalOpen: false }, '', window.location.pathname);
+}
+
+function parseURLParams() {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    
+    return {
+        itemId: params.get('item'),
+        section: params.get('section')
+    };
+}
+
+function createSectionId(headerText) {
+    // Create a URL-friendly section ID from header text
+    return headerText
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
 // Simple markdown parser for fallback
 function parseMarkdown(text) {
     // First escape any HTML that's not markdown syntax
@@ -402,7 +472,7 @@ function parseMarkdown(text) {
     return text;
 }
 
-function openPreviewModal(item) {
+function openPreviewModal(item, section = null) {
     currentModalItem = item;
     currentRawMarkdown = null;
     currentRenderedHTML = null;
@@ -429,6 +499,9 @@ function openPreviewModal(item) {
     // Show loading state
     modalContent.innerHTML = '<div class="loading">Loading preview...</div>';
     
+    // Update URL with modal information
+    updateURLWithModal(item, section);
+    
     // Show modal
     modal.classList.add('show');
     modal.setAttribute('aria-hidden', 'false');
@@ -439,7 +512,7 @@ function openPreviewModal(item) {
     modalContent.focus();
     
     // Load and render markdown content
-    loadMarkdownContent(item);
+    loadMarkdownContent(item, section);
     
     trackEvent('Modal', 'open', item.type);
 }
@@ -453,6 +526,9 @@ function closePreviewModal() {
     currentRawMarkdown = null;
     currentRenderedHTML = null;
     isShowingSource = false;
+    
+    // Clear URL modal parameters
+    clearURLModal();
     
     trackEvent('Modal', 'close');
 }
@@ -503,7 +579,7 @@ function toggleSourceView() {
     trackEvent('Modal', 'toggle-source', isShowingSource ? 'source' : 'preview');
 }
 
-async function loadMarkdownContent(item) {
+async function loadMarkdownContent(item, targetSection = null) {
     const modalContent = document.getElementById('modal-content');
     
     try {
@@ -571,6 +647,14 @@ async function loadMarkdownContent(item) {
             });
         }
         
+        // Add clickable header functionality and IDs
+        addHeaderClickHandlers(item);
+        
+        // Scroll to target section if specified
+        if (targetSection) {
+            scrollToSection(targetSection);
+        }
+        
     } catch (error) {
         console.error('Error loading markdown content:', error);
         modalContent.innerHTML = `
@@ -580,6 +664,76 @@ async function loadMarkdownContent(item) {
             </div>
         `;
     }
+}
+
+function addHeaderClickHandlers(item) {
+    const modalContent = document.getElementById('modal-content');
+    const headers = modalContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    
+    headers.forEach(header => {
+        const headerText = header.textContent.trim();
+        const sectionId = createSectionId(headerText);
+        
+        // Add ID to header for scrolling
+        header.id = sectionId;
+        
+        // Make header clickable
+        header.style.cursor = 'pointer';
+        header.title = 'Click to copy link to this section';
+        
+        // Add click handler
+        header.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Update URL with section
+            updateURLWithModal(item, sectionId);
+            
+            // Visual feedback - briefly highlight the header
+            header.style.backgroundColor = '#fff3cd';
+            setTimeout(() => {
+                header.style.backgroundColor = '';
+            }, 1000);
+            
+            // Optional: Copy URL to clipboard
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    console.log('Section URL copied to clipboard');
+                }).catch(err => {
+                    console.log('Failed to copy URL:', err);
+                });
+            }
+            
+            trackEvent('Modal', 'section-click', sectionId);
+        });
+        
+        // Add visual indicator that header is clickable
+        header.addEventListener('mouseenter', () => {
+            header.style.backgroundColor = '#f8f9fa';
+        });
+        
+        header.addEventListener('mouseleave', () => {
+            header.style.backgroundColor = '';
+        });
+    });
+}
+
+function scrollToSection(sectionId) {
+    // Small delay to ensure content is fully rendered
+    setTimeout(() => {
+        const targetElement = document.getElementById(sectionId);
+        if (targetElement) {
+            targetElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+            
+            // Briefly highlight the target section
+            targetElement.style.backgroundColor = '#fff3cd';
+            setTimeout(() => {
+                targetElement.style.backgroundColor = '';
+            }, 2000);
+        }
+    }, 100);
 }
 
 // Modal event listeners
@@ -628,4 +782,57 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+    
+    // Handle URL-based modal opening on page load
+    function handleURLParams() {
+        const { itemId, section } = parseURLParams();
+        
+        if (itemId) {
+            // Ensure data is loaded before trying to find item
+            if (!allData) {
+                console.warn('Data not loaded yet, will retry URL handling');
+                return false; // Indicate that handling was not successful
+            }
+            
+            const item = findItemById(itemId);
+            if (item) {
+                openPreviewModal(item, section);
+                return true; // Successfully handled
+            } else {
+                console.warn(`Item not found: ${itemId}`);
+                // Clear invalid URL
+                clearURLModal();
+                return false;
+            }
+        }
+        return true; // No URL parameters to handle
+    }
+    
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+        const modal = document.getElementById('preview-modal');
+        const isModalOpen = modal.classList.contains('show');
+        
+        if (e.state && e.state.modalOpen) {
+            // Should open modal
+            if (!isModalOpen) {
+                const { itemId, section } = parseURLParams();
+                if (itemId) {
+                    const item = findItemById(itemId);
+                    if (item) {
+                        openPreviewModal(item, section);
+                    }
+                }
+            }
+        } else {
+            // Should close modal
+            if (isModalOpen) {
+                closePreviewModal();
+            }
+        }
+    });
+    
+    // Initialize URL-based modal opening after data is loaded
+    // This will be called from the init() function after data is loaded
+    window.initializeURLHandling = handleURLParams;
 });
