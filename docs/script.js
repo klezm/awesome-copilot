@@ -339,6 +339,8 @@ let currentRawMarkdown = null;
 let currentRenderedHTML = null;
 let currentCompletePreview = null;
 let isShowingSource = false;
+let tocObserver = null;
+let currentTocHeaders = [];
 
 // URL sharing functionality
 function getItemIdFromFile(filename) {
@@ -572,6 +574,13 @@ function closePreviewModal() {
     currentCompletePreview = null;
     isShowingSource = false;
     
+    // Clean up TOC observer
+    if (tocObserver) {
+        tocObserver.disconnect();
+        tocObserver = null;
+    }
+    currentTocHeaders = [];
+    
     // Clear URL modal parameters
     clearURLModal();
     
@@ -603,6 +612,9 @@ function toggleSourceView() {
             
             // Re-add header click handlers
             addHeaderClickHandlers(currentModalItem);
+            
+            // Regenerate TOC for preview mode
+            generateTOC();
         } else {
             modalContent.innerHTML = '<div class="loading">Preview not available</div>';
         }
@@ -624,6 +636,9 @@ function toggleSourceView() {
             modalContent.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightElement(block);
             });
+            
+            // Generate TOC for source mode too
+            generateTOCFromMarkdown(currentRawMarkdown);
         } else {
             modalContent.innerHTML = '<div class="loading">Source not available</div>';
         }
@@ -732,6 +747,9 @@ async function loadMarkdownContent(item, targetSection = null) {
             // Add clickable header functionality and IDs (only in preview mode)
             addHeaderClickHandlers(item);
             
+            // Generate TOC for preview mode
+            generateTOC();
+            
             // Scroll to target section if specified (only in preview mode)
             if (targetSection) {
                 scrollToSection(targetSection);
@@ -828,6 +846,217 @@ function scrollToSection(sectionId) {
     }, 100);
 }
 
+function generateTOC() {
+    const tocList = document.getElementById('toc-list');
+    const modalContent = document.getElementById('modal-content');
+    
+    if (!tocList || !modalContent) {
+        return;
+    }
+    
+    // Clear existing TOC
+    tocList.innerHTML = '';
+    currentTocHeaders = [];
+    
+    // Find all headers in the content
+    const headers = modalContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    
+    if (headers.length === 0) {
+        // Show empty state
+        tocList.innerHTML = '<li class="toc-item"><div class="toc-empty">No headings found</div></li>';
+        return;
+    }
+    
+    headers.forEach((header, index) => {
+        const level = parseInt(header.tagName.substring(1));
+        const text = header.textContent.trim();
+        const id = header.id || createSectionId(text);
+        
+        // Ensure header has an ID
+        if (!header.id) {
+            header.id = id;
+        }
+        
+        // Store header reference for observer
+        currentTocHeaders.push({
+            element: header,
+            id: id,
+            level: level
+        });
+        
+        // Create TOC item
+        const listItem = document.createElement('li');
+        listItem.className = 'toc-item';
+        
+        const link = document.createElement('a');
+        link.className = `toc-link level-${level}`;
+        link.href = `#${id}`;
+        link.textContent = text;
+        link.setAttribute('data-section-id', id);
+        
+        // Add click handler
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToSection(id);
+            
+            // Update URL with section
+            const currentViewMode = isShowingSource ? 'source' : 'preview';
+            updateURLWithModal(currentModalItem, id, currentViewMode);
+            
+            trackEvent('TOC', 'section-click', id);
+        });
+        
+        listItem.appendChild(link);
+        tocList.appendChild(listItem);
+    });
+    
+    // Set up intersection observer for active section highlighting
+    setupTOCObserver();
+}
+
+function setupTOCObserver() {
+    // Disconnect existing observer
+    if (tocObserver) {
+        tocObserver.disconnect();
+    }
+    
+    if (currentTocHeaders.length === 0) {
+        return;
+    }
+    
+    // Create intersection observer
+    const observerOptions = {
+        root: document.querySelector('.modal-main'),
+        rootMargin: '-100px 0px -60% 0px',
+        threshold: 0
+    };
+    
+    tocObserver = new IntersectionObserver((entries) => {
+        let activeId = null;
+        
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                activeId = entry.target.id;
+            }
+        });
+        
+        // Update active TOC link
+        if (activeId) {
+            updateActiveTOCLink(activeId);
+        }
+    }, observerOptions);
+    
+    // Observe all headers
+    currentTocHeaders.forEach(header => {
+        tocObserver.observe(header.element);
+    });
+}
+
+function updateActiveTOCLink(activeId) {
+    const tocLinks = document.querySelectorAll('.toc-link');
+    
+    tocLinks.forEach(link => {
+        if (link.getAttribute('data-section-id') === activeId) {
+            link.classList.add('active');
+            
+            // Scroll TOC link into view if needed
+            const tocNav = document.querySelector('.toc-nav');
+            if (tocNav) {
+                const linkRect = link.getBoundingClientRect();
+                const navRect = tocNav.getBoundingClientRect();
+                
+                if (linkRect.top < navRect.top || linkRect.bottom > navRect.bottom) {
+                    link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+            }
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
+function toggleTOC() {
+    const toc = document.getElementById('modal-toc');
+    const toggle = document.getElementById('toc-toggle');
+    
+    if (toc && toggle) {
+        toc.classList.toggle('collapsed');
+        toggle.classList.toggle('collapsed');
+        
+        const isCollapsed = toc.classList.contains('collapsed');
+        toggle.setAttribute('aria-label', isCollapsed ? 'Show table of contents' : 'Hide table of contents');
+        
+        trackEvent('TOC', 'toggle', isCollapsed ? 'collapsed' : 'expanded');
+    }
+}
+
+function generateTOCFromMarkdown(markdownText) {
+    const tocList = document.getElementById('toc-list');
+    
+    if (!tocList || !markdownText) {
+        return;
+    }
+    
+    // Clear existing TOC
+    tocList.innerHTML = '';
+    currentTocHeaders = [];
+    
+    // Extract headers from markdown using regex
+    const headerRegex = /^(#{1,6})\s+(.+)$/gm;
+    const headers = [];
+    let match;
+    
+    while ((match = headerRegex.exec(markdownText)) !== null) {
+        const level = match[1].length;
+        const text = match[2].trim();
+        const id = createSectionId(text);
+        
+        headers.push({
+            level: level,
+            text: text,
+            id: id
+        });
+    }
+    
+    if (headers.length === 0) {
+        tocList.innerHTML = '<li class="toc-item"><div class="toc-empty">No headings found</div></li>';
+        return;
+    }
+    
+    headers.forEach((header, index) => {
+        // Create TOC item
+        const listItem = document.createElement('li');
+        listItem.className = 'toc-item';
+        
+        const link = document.createElement('a');
+        link.className = `toc-link level-${header.level}`;
+        link.href = `#${header.id}`;
+        link.textContent = header.text;
+        link.setAttribute('data-section-id', header.id);
+        
+        // Add click handler (for source mode, just scroll to line)
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // For source mode, we can't really scroll to a specific line easily
+            // So we'll just update the URL
+            const currentViewMode = isShowingSource ? 'source' : 'preview';
+            updateURLWithModal(currentModalItem, header.id, currentViewMode);
+            
+            // Visual feedback
+            link.classList.add('active');
+            setTimeout(() => {
+                updateActiveTOCLink(null); // Clear all active states
+            }, 1000);
+            
+            trackEvent('TOC', 'section-click-source', header.id);
+        });
+        
+        listItem.appendChild(link);
+        tocList.appendChild(listItem);
+    });
+}
+
 // Modal event listeners
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('preview-modal');
@@ -851,6 +1080,12 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.querySelector('.modal-container').addEventListener('click', (e) => {
         e.stopPropagation();
     });
+    
+    // TOC toggle functionality
+    const tocToggle = document.getElementById('toc-toggle');
+    if (tocToggle) {
+        tocToggle.addEventListener('click', toggleTOC);
+    }
     
     // Add card click handlers (delegated event handling)
     document.addEventListener('click', (e) => {
