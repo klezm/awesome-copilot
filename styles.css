@@ -536,6 +536,7 @@ footer a:hover {
     flex: 1;
     overflow: auto;
     padding: 0;
+    height: 60vh;
 }
 
 .modal-content {
@@ -632,6 +633,35 @@ footer a:hover {
     font-weight: 600;
 }
 
+/* Source view styles */
+.source-view {
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    margin: 0;
+    padding: 1rem;
+    font-family: 'SF Mono', Monaco, 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: #24292f;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.source-view code {
+    background: transparent;
+    padding: 0;
+    border: none;
+    font-family: inherit;
+    color: inherit;
+}
+
+/* Override highlight.js styles for source view */
+.source-view .hljs {
+    background: transparent;
+    padding: 0;
+}
+
 /* Dark mode support for modal */
 @media (prefers-color-scheme: dark) {
     .modal-backdrop {
@@ -687,6 +717,17 @@ footer a:hover {
     .modal-content th {
         background: #21262d;
     }
+    
+    .source-view {
+        background: #161b22;
+        border-color: #30363d;
+        color: #e6edf3;
+    }
+    
+    .source-view .hljs {
+        background: transparent;
+        color: inherit;
+    }
 }
 
 /* Responsive modal */
@@ -694,6 +735,10 @@ footer a:hover {
     .modal-container {
         width: 95vw;
         max-height: 95vh;
+    }
+    
+    .modal-body {
+        height: 50vh;
     }
     
     .modal-header {

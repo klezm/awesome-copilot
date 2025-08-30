@@ -324,6 +324,9 @@ typeFilter.addEventListener('change', () => {
 
 // Modal functionality
 let currentModalItem = null;
+let currentRawMarkdown = null;
+let currentRenderedHTML = null;
+let isShowingSource = false;
 
 // Simple markdown parser for fallback
 function parseMarkdown(text) {
@@ -401,10 +404,15 @@ function parseMarkdown(text) {
 
 function openPreviewModal(item) {
     currentModalItem = item;
+    currentRawMarkdown = null;
+    currentRenderedHTML = null;
+    isShowingSource = false;
+    
     const modal = document.getElementById('preview-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalContent = document.getElementById('modal-content');
     const showSourceBtn = document.getElementById('show-source-btn');
+    const toggleSourceBtn = document.getElementById('toggle-source-btn');
     
     // Set modal title
     modalTitle.textContent = item.title;
@@ -413,6 +421,10 @@ function openPreviewModal(item) {
     showSourceBtn.onclick = () => {
         window.open(item.sourceUrl, '_blank', 'noopener,noreferrer');
     };
+    
+    // Set up toggle source button
+    toggleSourceBtn.onclick = toggleSourceView;
+    toggleSourceBtn.textContent = 'Show Source';
     
     // Show loading state
     modalContent.innerHTML = '<div class="loading">Loading preview...</div>';
@@ -438,8 +450,57 @@ function closePreviewModal() {
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     currentModalItem = null;
+    currentRawMarkdown = null;
+    currentRenderedHTML = null;
+    isShowingSource = false;
     
     trackEvent('Modal', 'close');
+}
+
+function toggleSourceView() {
+    const modalContent = document.getElementById('modal-content');
+    const toggleSourceBtn = document.getElementById('toggle-source-btn');
+    
+    if (!currentRawMarkdown && !currentRenderedHTML) {
+        // No content loaded yet
+        return;
+    }
+    
+    if (isShowingSource) {
+        // Switch to preview mode
+        if (currentRenderedHTML) {
+            modalContent.innerHTML = currentRenderedHTML;
+        } else {
+            modalContent.innerHTML = '<div class="loading">Preview not available</div>';
+        }
+        toggleSourceBtn.innerHTML = `
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/>
+            </svg>
+            Show Source
+        `;
+        isShowingSource = false;
+    } else {
+        // Switch to source mode
+        if (currentRawMarkdown) {
+            modalContent.innerHTML = `<pre class="source-view"><code class="language-markdown">${escapeHtml(currentRawMarkdown)}</code></pre>`;
+            // Apply syntax highlighting
+            modalContent.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+        } else {
+            modalContent.innerHTML = '<div class="loading">Source not available</div>';
+        }
+        toggleSourceBtn.innerHTML = `
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M1 14.5V1.5a.5.5 0 0 1 .5-.5h11.793a.25.25 0 0 1 .177.427L9.854 5.041a.25.25 0 0 0 0 .354l3.616 3.614a.25.25 0 0 1-.177.427H1.5a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+            Show Preview
+        `;
+        isShowingSource = true;
+    }
+    
+    trackEvent('Modal', 'toggle-source', isShowingSource ? 'source' : 'preview');
 }
 
 async function loadMarkdownContent(item) {
@@ -456,7 +517,10 @@ async function loadMarkdownContent(item) {
         
         let markdownText = await response.text();
         
-        // Remove front matter if present
+        // Store the original raw markdown (including front matter)
+        currentRawMarkdown = markdownText;
+        
+        // Remove front matter if present for rendering
         if (markdownText.startsWith('---')) {
             const frontMatterEnd = markdownText.indexOf('---', 3);
             if (frontMatterEnd !== -1) {
@@ -484,6 +548,9 @@ async function loadMarkdownContent(item) {
         }
         
         modalContent.innerHTML = htmlContent;
+        
+        // Store the rendered HTML
+        currentRenderedHTML = htmlContent;
         
         // Apply basic syntax highlighting if hljs is available
         if (typeof hljs !== 'undefined') {
