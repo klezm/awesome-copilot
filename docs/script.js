@@ -337,6 +337,7 @@ typeFilter.addEventListener('change', () => {
 let currentModalItem = null;
 let currentRawMarkdown = null;
 let currentRenderedHTML = null;
+let currentCompletePreview = null;
 let isShowingSource = false;
 
 // URL sharing functionality
@@ -400,6 +401,28 @@ function createSectionId(headerText) {
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
         .replace(/^-+|-+$/g, '');
+}
+
+// Create frontmatter display component
+function createFrontmatterComponent(frontMatter) {
+    if (!frontMatter || frontMatter.trim() === '') {
+        return '';
+    }
+    
+    return `
+        <div class="frontmatter-container">
+            <details class="frontmatter-details">
+                <summary class="frontmatter-summary">
+                    <span class="frontmatter-icon">📄</span>
+                    <span class="frontmatter-title">Frontmatter</span>
+                    <span class="frontmatter-toggle">▶</span>
+                </summary>
+                <div class="frontmatter-content">
+                    <pre class="frontmatter-code"><code class="language-yaml">${escapeHtml(frontMatter)}</code></pre>
+                </div>
+            </details>
+        </div>
+    `;
 }
 
 // Simple markdown parser for fallback
@@ -480,6 +503,7 @@ function openPreviewModal(item, section = null, viewMode = 'preview') {
     currentModalItem = item;
     currentRawMarkdown = null;
     currentRenderedHTML = null;
+    currentCompletePreview = null;
     isShowingSource = (viewMode === 'source');
     
     const modal = document.getElementById('preview-modal');
@@ -545,6 +569,7 @@ function closePreviewModal() {
     currentModalItem = null;
     currentRawMarkdown = null;
     currentRenderedHTML = null;
+    currentCompletePreview = null;
     isShowingSource = false;
     
     // Clear URL modal parameters
@@ -557,15 +582,15 @@ function toggleSourceView() {
     const modalContent = document.getElementById('modal-content');
     const toggleSourceBtn = document.getElementById('toggle-source-btn');
     
-    if (!currentRawMarkdown && !currentRenderedHTML) {
+    if (!currentRawMarkdown && !currentCompletePreview) {
         // No content loaded yet
         return;
     }
     
     if (isShowingSource) {
         // Switch to preview mode
-        if (currentRenderedHTML) {
-            modalContent.innerHTML = currentRenderedHTML;
+        if (currentCompletePreview) {
+            modalContent.innerHTML = currentCompletePreview;
             
             // Re-apply syntax highlighting and header handlers
             if (typeof hljs !== 'undefined') {
@@ -634,10 +659,12 @@ async function loadMarkdownContent(item, targetSection = null) {
         // Store the original raw markdown (including front matter)
         currentRawMarkdown = markdownText;
         
-        // Remove front matter if present for rendering
+        // Extract front matter if present
+        let frontMatter = '';
         if (markdownText.startsWith('---')) {
             const frontMatterEnd = markdownText.indexOf('---', 3);
             if (frontMatterEnd !== -1) {
+                frontMatter = markdownText.substring(3, frontMatterEnd).trim();
                 markdownText = markdownText.substring(frontMatterEnd + 3).trim();
             }
         }
@@ -676,7 +703,12 @@ async function loadMarkdownContent(item, targetSection = null) {
             }
         } else {
             // Show preview
-            modalContent.innerHTML = htmlContent;
+            const frontmatterHtml = createFrontmatterComponent(frontMatter);
+            const completePreviewContent = frontmatterHtml + htmlContent;
+            modalContent.innerHTML = completePreviewContent;
+            
+            // Store the complete preview content for later use in toggleSourceView
+            currentCompletePreview = completePreviewContent;
             
             // Apply basic syntax highlighting if hljs is available
             if (typeof hljs !== 'undefined') {
