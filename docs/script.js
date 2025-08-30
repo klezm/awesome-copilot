@@ -28,6 +28,17 @@ async function init() {
         updateFilteredData();
         setupEventListeners();
         
+        // Handle URL-based modal opening after data is loaded
+        if (window.initializeURLHandling) {
+            const handled = window.initializeURLHandling();
+            if (!handled) {
+                // If URL handling failed (e.g., due to timing), retry after a short delay
+                setTimeout(() => {
+                    window.initializeURLHandling();
+                }, 100);
+            }
+        }
+        
         console.log('Application initialized successfully');
     } catch (error) {
         console.error('Error loading data:', error);
@@ -328,6 +339,69 @@ let currentRawMarkdown = null;
 let currentRenderedHTML = null;
 let isShowingSource = false;
 
+// URL sharing functionality
+function getItemIdFromFile(filename) {
+    // Remove file extension to create a unique ID
+    return filename.replace(/\.(prompt|instructions|chatmode)\.md$/, '');
+}
+
+function findItemById(itemId) {
+    // Ensure allData exists and has data
+    if (!allData || !itemId) {
+        return null;
+    }
+    
+    // Search through all data types to find item by ID
+    const allItems = [
+        ...(allData.prompts || []),
+        ...(allData.instructions || []),
+        ...(allData.chatmodes || [])
+    ];
+    
+    return allItems.find(item => getItemIdFromFile(item.file) === itemId);
+}
+
+function updateURLWithModal(item, section = null, viewMode = 'preview') {
+    const itemId = getItemIdFromFile(item.file);
+    let url = `#item=${encodeURIComponent(itemId)}`;
+    
+    // Always include view mode to indicate whether we're seeing preview or source
+    url += `&view=${encodeURIComponent(viewMode)}`;
+    
+    if (section) {
+        url += `&section=${encodeURIComponent(section)}`;
+    }
+    
+    // Update URL without triggering navigation
+    history.pushState({ modalOpen: true, itemId, section, viewMode }, '', url);
+}
+
+function clearURLModal() {
+    // Clear modal-related URL parameters
+    history.pushState({ modalOpen: false }, '', window.location.pathname);
+}
+
+function parseURLParams() {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    
+    return {
+        itemId: params.get('item'),
+        section: params.get('section'),
+        viewMode: params.get('view') || 'preview'  // Default to preview if not specified
+    };
+}
+
+function createSectionId(headerText) {
+    // Create a URL-friendly section ID from header text
+    return headerText
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
 // Simple markdown parser for fallback
 function parseMarkdown(text) {
     // First escape any HTML that's not markdown syntax
@@ -402,11 +476,11 @@ function parseMarkdown(text) {
     return text;
 }
 
-function openPreviewModal(item) {
+function openPreviewModal(item, section = null, viewMode = 'preview') {
     currentModalItem = item;
     currentRawMarkdown = null;
     currentRenderedHTML = null;
-    isShowingSource = false;
+    isShowingSource = (viewMode === 'source');
     
     const modal = document.getElementById('preview-modal');
     const modalTitle = document.getElementById('modal-title');
@@ -424,10 +498,29 @@ function openPreviewModal(item) {
     
     // Set up toggle source button
     toggleSourceBtn.onclick = toggleSourceView;
-    toggleSourceBtn.textContent = 'Show Source';
+    
+    // Update button text based on initial view mode
+    if (isShowingSource) {
+        toggleSourceBtn.innerHTML = `
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M1 14.5V1.5a.5.5 0 0 1 .5-.5h11.793a.25.25 0 0 1 .177.427L9.854 5.041a.25.25 0 0 0 0 .354l3.616 3.614a.25.25 0 0 1-.177.427H1.5a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+            Show Preview
+        `;
+    } else {
+        toggleSourceBtn.innerHTML = `
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/>
+            </svg>
+            Show Source
+        `;
+    }
     
     // Show loading state
     modalContent.innerHTML = '<div class="loading">Loading preview...</div>';
+    
+    // Update URL with modal information, including view mode
+    updateURLWithModal(item, section, viewMode);
     
     // Show modal
     modal.classList.add('show');
@@ -439,7 +532,7 @@ function openPreviewModal(item) {
     modalContent.focus();
     
     // Load and render markdown content
-    loadMarkdownContent(item);
+    loadMarkdownContent(item, section);
     
     trackEvent('Modal', 'open', item.type);
 }
@@ -453,6 +546,9 @@ function closePreviewModal() {
     currentRawMarkdown = null;
     currentRenderedHTML = null;
     isShowingSource = false;
+    
+    // Clear URL modal parameters
+    clearURLModal();
     
     trackEvent('Modal', 'close');
 }
@@ -470,6 +566,18 @@ function toggleSourceView() {
         // Switch to preview mode
         if (currentRenderedHTML) {
             modalContent.innerHTML = currentRenderedHTML;
+            
+            // Re-apply syntax highlighting and header handlers
+            if (typeof hljs !== 'undefined') {
+                modalContent.querySelectorAll('pre code').forEach((block) => {
+                    if (!block.classList.contains('hljs')) {
+                        hljs.highlightElement(block);
+                    }
+                });
+            }
+            
+            // Re-add header click handlers
+            addHeaderClickHandlers(currentModalItem);
         } else {
             modalContent.innerHTML = '<div class="loading">Preview not available</div>';
         }
@@ -480,6 +588,9 @@ function toggleSourceView() {
             Show Source
         `;
         isShowingSource = false;
+        // Update URL to reflect preview mode
+        const { section } = parseURLParams();
+        updateURLWithModal(currentModalItem, section, 'preview');
     } else {
         // Switch to source mode
         if (currentRawMarkdown) {
@@ -498,12 +609,15 @@ function toggleSourceView() {
             Show Preview
         `;
         isShowingSource = true;
+        // Update URL to reflect source mode
+        const { section } = parseURLParams();
+        updateURLWithModal(currentModalItem, section, 'source');
     }
     
     trackEvent('Modal', 'toggle-source', isShowingSource ? 'source' : 'preview');
 }
 
-async function loadMarkdownContent(item) {
+async function loadMarkdownContent(item, targetSection = null) {
     const modalContent = document.getElementById('modal-content');
     
     try {
@@ -547,28 +661,49 @@ async function loadMarkdownContent(item) {
             htmlContent = parseMarkdown(markdownText);
         }
         
-        modalContent.innerHTML = htmlContent;
-        
         // Store the rendered HTML
         currentRenderedHTML = htmlContent;
         
-        // Apply basic syntax highlighting if hljs is available
-        if (typeof hljs !== 'undefined') {
-            modalContent.querySelectorAll('pre code').forEach((block) => {
-                if (!block.classList.contains('hljs')) {
+        // Display content based on current view mode
+        if (isShowingSource) {
+            // Show source view
+            modalContent.innerHTML = `<pre class="source-view"><code class="language-markdown">${escapeHtml(currentRawMarkdown)}</code></pre>`;
+            // Apply syntax highlighting if available
+            if (typeof hljs !== 'undefined') {
+                modalContent.querySelectorAll('pre code').forEach((block) => {
                     hljs.highlightElement(block);
-                }
-            });
+                });
+            }
         } else {
-            // Add basic styling to code blocks
-            modalContent.querySelectorAll('pre code').forEach((block) => {
-                block.style.display = 'block';
-                block.style.padding = '0.5rem';
-                block.style.background = '#f6f8fa';
-                block.style.borderRadius = '3px';
-                block.style.fontSize = '0.875rem';
-                block.style.fontFamily = 'Consolas, Monaco, "Courier New", monospace';
-            });
+            // Show preview
+            modalContent.innerHTML = htmlContent;
+            
+            // Apply basic syntax highlighting if hljs is available
+            if (typeof hljs !== 'undefined') {
+                modalContent.querySelectorAll('pre code').forEach((block) => {
+                    if (!block.classList.contains('hljs')) {
+                        hljs.highlightElement(block);
+                    }
+                });
+            } else {
+                // Add basic styling to code blocks
+                modalContent.querySelectorAll('pre code').forEach((block) => {
+                    block.style.display = 'block';
+                    block.style.padding = '0.5rem';
+                    block.style.background = '#f6f8fa';
+                    block.style.borderRadius = '3px';
+                    block.style.fontSize = '0.875rem';
+                    block.style.fontFamily = 'Consolas, Monaco, "Courier New", monospace';
+                });
+            }
+            
+            // Add clickable header functionality and IDs (only in preview mode)
+            addHeaderClickHandlers(item);
+            
+            // Scroll to target section if specified (only in preview mode)
+            if (targetSection) {
+                scrollToSection(targetSection);
+            }
         }
         
     } catch (error) {
@@ -580,6 +715,85 @@ async function loadMarkdownContent(item) {
             </div>
         `;
     }
+}
+
+function addHeaderClickHandlers(item) {
+    const modalContent = document.getElementById('modal-content');
+    const headers = modalContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    
+    headers.forEach(header => {
+        const headerText = header.textContent.trim();
+        const sectionId = createSectionId(headerText);
+        
+        // Add ID to header for scrolling
+        header.id = sectionId;
+        
+        // Make header clickable
+        header.style.cursor = 'pointer';
+        header.title = 'Click to copy link to this section';
+        
+        // Add click handler
+        header.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Get current view mode
+            const currentViewMode = isShowingSource ? 'source' : 'preview';
+            
+            // Update URL with section, preserving current view mode
+            updateURLWithModal(item, sectionId, currentViewMode);
+            
+            // Visual feedback - briefly highlight the header
+            header.style.backgroundColor = '#fff3cd';
+            setTimeout(() => {
+                header.style.backgroundColor = '';
+            }, 1000);
+            
+            // Scroll to the header smoothly
+            header.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+            
+            // Optional: Copy URL to clipboard
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    console.log('Section URL copied to clipboard');
+                }).catch(err => {
+                    console.log('Failed to copy URL:', err);
+                });
+            }
+            
+            trackEvent('Modal', 'section-click', sectionId);
+        });
+        
+        // Add visual indicator that header is clickable
+        header.addEventListener('mouseenter', () => {
+            header.style.backgroundColor = '#f8f9fa';
+        });
+        
+        header.addEventListener('mouseleave', () => {
+            header.style.backgroundColor = '';
+        });
+    });
+}
+
+function scrollToSection(sectionId) {
+    // Small delay to ensure content is fully rendered
+    setTimeout(() => {
+        const targetElement = document.getElementById(sectionId);
+        if (targetElement) {
+            targetElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+            
+            // Briefly highlight the target section
+            targetElement.style.backgroundColor = '#fff3cd';
+            setTimeout(() => {
+                targetElement.style.backgroundColor = '';
+            }, 2000);
+        }
+    }, 100);
 }
 
 // Modal event listeners
@@ -628,4 +842,57 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+    
+    // Handle URL-based modal opening on page load
+    function handleURLParams() {
+        const { itemId, section, viewMode } = parseURLParams();
+        
+        if (itemId) {
+            // Ensure data is loaded before trying to find item
+            if (!allData) {
+                console.warn('Data not loaded yet, will retry URL handling');
+                return false; // Indicate that handling was not successful
+            }
+            
+            const item = findItemById(itemId);
+            if (item) {
+                openPreviewModal(item, section, viewMode);
+                return true; // Successfully handled
+            } else {
+                console.warn(`Item not found: ${itemId}`);
+                // Clear invalid URL
+                clearURLModal();
+                return false;
+            }
+        }
+        return true; // No URL parameters to handle
+    }
+    
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+        const modal = document.getElementById('preview-modal');
+        const isModalOpen = modal.classList.contains('show');
+        
+        if (e.state && e.state.modalOpen) {
+            // Should open modal
+            if (!isModalOpen) {
+                const { itemId, section, viewMode } = parseURLParams();
+                if (itemId) {
+                    const item = findItemById(itemId);
+                    if (item) {
+                        openPreviewModal(item, section, viewMode);
+                    }
+                }
+            }
+        } else {
+            // Should close modal
+            if (isModalOpen) {
+                closePreviewModal();
+            }
+        }
+    });
+    
+    // Initialize URL-based modal opening after data is loaded
+    // This will be called from the init() function after data is loaded
+    window.initializeURLHandling = handleURLParams;
 });
