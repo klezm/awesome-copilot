@@ -337,6 +337,7 @@ typeFilter.addEventListener('change', () => {
 let currentModalItem = null;
 let currentRawMarkdown = null;
 let currentRenderedHTML = null;
+let currentCompletePreview = null;
 let isShowingSource = false;
 
 // URL sharing functionality
@@ -502,6 +503,7 @@ function openPreviewModal(item, section = null, viewMode = 'preview') {
     currentModalItem = item;
     currentRawMarkdown = null;
     currentRenderedHTML = null;
+    currentCompletePreview = null;
     isShowingSource = (viewMode === 'source');
     
     const modal = document.getElementById('preview-modal');
@@ -567,6 +569,7 @@ function closePreviewModal() {
     currentModalItem = null;
     currentRawMarkdown = null;
     currentRenderedHTML = null;
+    currentCompletePreview = null;
     isShowingSource = false;
     
     // Clear URL modal parameters
@@ -579,15 +582,15 @@ function toggleSourceView() {
     const modalContent = document.getElementById('modal-content');
     const toggleSourceBtn = document.getElementById('toggle-source-btn');
     
-    if (!currentRawMarkdown && !currentRenderedHTML) {
+    if (!currentRawMarkdown && !currentCompletePreview) {
         // No content loaded yet
         return;
     }
     
     if (isShowingSource) {
         // Switch to preview mode
-        if (currentRenderedHTML) {
-            modalContent.innerHTML = currentRenderedHTML;
+        if (currentCompletePreview) {
+            modalContent.innerHTML = currentCompletePreview;
             
             // Re-apply syntax highlighting and header handlers
             if (typeof hljs !== 'undefined') {
@@ -701,7 +704,11 @@ async function loadMarkdownContent(item, targetSection = null) {
         } else {
             // Show preview
             const frontmatterHtml = createFrontmatterComponent(frontMatter);
-            modalContent.innerHTML = frontmatterHtml + htmlContent;
+            const completePreviewContent = frontmatterHtml + htmlContent;
+            modalContent.innerHTML = completePreviewContent;
+            
+            // Store the complete preview content for later use in toggleSourceView
+            currentCompletePreview = completePreviewContent;
             
             // Apply basic syntax highlighting if hljs is available
             if (typeof hljs !== 'undefined') {
