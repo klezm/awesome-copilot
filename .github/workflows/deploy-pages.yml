@@ -12,6 +12,10 @@ on:
         required: false
         default: false
         type: boolean
+      commit_sha:
+        description: Specific commit SHA to deploy (optional - will use current commit if not provided)
+        required: false
+        type: string
 
 permissions:
   contents: write # Changed from read to write for gh-pages branch management
@@ -28,9 +32,26 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should-deploy-pages: ${{ steps.check-deploy.outputs.should-deploy-pages }}
+      preview-sha: ${{ env.PREVIEW_SHA }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: ${{ github.event.inputs.commit_sha != '' && 0 || 1 }}
+
+      - name: Checkout specific commit SHA if provided
+        if: github.event.inputs.commit_sha != ''
+        run: |
+          git fetch origin
+          git checkout ${{ github.event.inputs.commit_sha }}
+
+      - name: Set preview SHA environment variable
+        run: |
+          if [ -n "${{ github.event.inputs.commit_sha }}" ]; then
+            echo "PREVIEW_SHA=${{ github.event.inputs.commit_sha }}" >> $GITHUB_ENV
+          else
+            echo "PREVIEW_SHA=${{ github.sha }}" >> $GITHUB_ENV
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -222,13 +243,23 @@ jobs:
   deploy-pages:
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    env:
+      PREVIEW_SHA: ${{ github.event.inputs.commit_sha || github.sha }}
     steps:
       # https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
       - name: Checkout
         uses: actions/checkout@v5
         with:
           path: repo
+          fetch-depth: ${{ github.event.inputs.commit_sha != '' && 0 || 1 }}
+
+      - name: Checkout specific commit SHA if provided
+        if: github.event.inputs.commit_sha != ''
+        working-directory: repo
+        run: |
+          git fetch origin
+          git checkout ${{ github.event.inputs.commit_sha }}
 
       - name: Ensure gh-pages branch exists
         working-directory: repo
@@ -300,9 +331,27 @@ jobs:
           mkdir -p "${PREVIEW_DIR}"
           cp -r ../repo/docs/* "${PREVIEW_DIR}/" || true
 
+      - name: Create manual SHA preview deployment
+        id: sha-preview
+        working-directory: gh-pages
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.commit_sha != ''
+        run: |
+          set -e
+          PREVIEW_DIR="previews/${{ env.PREVIEW_SHA }}"
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="$(echo "${{ github.repository }}" | sed "s|^$REPO_OWNER/||")"
+
+          PREVIEW_URL="https://$REPO_OWNER.github.io/$REPO_NAME/${PREVIEW_DIR}/"
+          echo "preview-dir=${PREVIEW_DIR}" >> $GITHUB_OUTPUT
+          echo "preview-url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
+
+          # Create/update the preview directory and copy built site from the repo checkout
+          mkdir -p "${PREVIEW_DIR}"
+          cp -r ../repo/docs/* "${PREVIEW_DIR}/" || true
+
       - name: Generate previews index
         working-directory: gh-pages
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.commit_sha != '')
         run: |
           set -e
           REPO_OWNER="${{ github.repository_owner }}"
@@ -319,6 +368,7 @@ jobs:
           FIRST=true
 
           if [ -d previews ]; then
+            # Include PR previews (pr*-* pattern)
             for preview_dir in previews/pr*-*; do
               if [ -d "$preview_dir" ] && [ "$preview_dir" != "previews/pr*-*" ]; then
                 folder_name=$(basename "$preview_dir")
@@ -331,6 +381,25 @@ jobs:
                 fi
                 
                 PREVIEW_DATA="$PREVIEW_DATA{\"name\":\"$folder_name\",\"url\":\"$preview_url\"}"
+              fi
+            done
+            
+            # Include SHA-based previews (40-character SHA pattern)
+            for preview_dir in previews/[a-f0-9]*; do
+              if [ -d "$preview_dir" ] && [ "$preview_dir" != "previews/[a-f0-9]*" ]; then
+                folder_name=$(basename "$preview_dir")
+                # Only include if it looks like a SHA (40 hex characters)
+                if [[ "$folder_name" =~ ^[a-f0-9]{40}$ ]]; then
+                  preview_url="https://$REPO_OWNER.github.io/$REPO_NAME/${preview_dir}/"
+                  
+                  if [ "$FIRST" = true ]; then
+                    FIRST=false
+                  else
+                    PREVIEW_DATA="$PREVIEW_DATA,"
+                  fi
+                  
+                  PREVIEW_DATA="$PREVIEW_DATA{\"name\":\"SHA: ${folder_name:0:8}\",\"url\":\"$preview_url\"}"
+                fi
               fi
             done
           fi
@@ -376,7 +445,13 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Add/update PR #${{ github.event.number }} preview deployment"
+            if [ "${{ github.event_name }}" == "pull_request" ]; then
+              git commit -m "Add/update PR #${{ github.event.number }} preview deployment"
+            elif [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ github.event.inputs.commit_sha }}" ]; then
+              git commit -m "Add/update manual SHA preview deployment: ${{ env.PREVIEW_SHA }}"
+            else
+              git commit -m "Update GitHub Pages deployment"
+            fi
             git push origin HEAD:gh-pages
           fi
 
@@ -417,6 +492,16 @@ jobs:
               body: body
             });
             // }
+
+      - name: Output manual SHA deployment info
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.commit_sha != ''
+        run: |
+          echo "## Manual SHA Preview Deployment Completed"
+          echo "✅ **Preview deployed at:** ${{ steps.sha-preview.outputs.preview-url }}"
+          echo "📝 **Commit SHA:** ${{ env.PREVIEW_SHA }}"
+          echo "🧹 **Cleanup:** Preview folders older than 30 days are automatically removed."
+          echo ""
+          echo "You can access your preview at: ${{ steps.sha-preview.outputs.preview-url }}"
 
   # deploy-pages:
   #   environment:
