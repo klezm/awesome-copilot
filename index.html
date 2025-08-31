@@ -98,7 +98,22 @@
                 </div>
             </div>
             <div class="modal-body">
-                <div id="modal-content" class="modal-content"></div>
+                <aside id="modal-toc" class="modal-toc" aria-label="Table of Contents">
+                    <div class="toc-header">
+                        <h3 class="toc-title">Contents</h3>
+                        <button id="toc-toggle" class="toc-toggle" aria-label="Toggle table of contents">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <nav class="toc-nav">
+                        <ol id="toc-list" class="toc-list"></ol>
+                    </nav>
+                </aside>
+                <main class="modal-main">
+                    <div id="modal-content" class="modal-content"></div>
+                </main>
             </div>
         </div>
     </div>
