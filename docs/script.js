@@ -1,8 +1,9 @@
 // Global variables
 let allData = { prompts: [], instructions: [], chatmodes: [] };
 let filteredData = [];
-let currentPage = 1;
+let loadedItemsCount = 0;
 const itemsPerPage = 10;
+let isLoading = false;
 
 // DOM elements
 const searchInput = document.getElementById('search');
@@ -53,51 +54,26 @@ function setupEventListeners() {
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-            currentPage = 1;
+            loadedItemsCount = 0;
             updateFilteredData();
         }, 300);
     });
 
     // Type filter
     typeFilter.addEventListener('change', () => {
-        currentPage = 1;
+        loadedItemsCount = 0;
         updateFilteredData();
     });
 
-    // Pagination
-    prevPageButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            updateFilteredData();
-            scrollToTop();
-        }
-    });
-
-    nextPageButton.addEventListener('click', () => {
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        if (currentPage < totalPages) {
-            currentPage++;
-            updateFilteredData();
-            scrollToTop();
-        }
-    });
-
-    // Keyboard navigation for pagination
-    document.addEventListener('keydown', (e) => {
-        if (e.target.matches('input, select, button, a')) return;
-        
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        if (e.key === 'ArrowLeft' && currentPage > 1) {
-            e.preventDefault();
-            currentPage--;
-            updateFilteredData();
-            scrollToTop();
-        } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
-            e.preventDefault();
-            currentPage++;
-            updateFilteredData();
-            scrollToTop();
-        }
+    // Infinite scroll
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            if (shouldLoadMore()) {
+                loadMoreItems();
+            }
+        }, 100);
     });
 }
 
@@ -137,18 +113,25 @@ function updateFilteredData() {
 
 // Update the display with current filtered data
 function updateDisplay() {
-    updateStats();
     renderItems();
-    updatePagination();
+    updateStats();
+    // Hide pagination controls for infinite scroll
+    paginationContainer.style.display = 'none';
 }
 
 // Update statistics display
 function updateStats() {
     const total = filteredData.length;
+    const loaded = loadedItemsCount;
     const searchTerm = searchInput.value.trim();
     const selectedType = typeFilter.value;
     
-    let statsText = `Showing ${total} item${total !== 1 ? 's' : ''}`;
+    let statsText;
+    if (loaded < total) {
+        statsText = `Showing ${loaded} of ${total} item${total !== 1 ? 's' : ''} (scroll for more)`;
+    } else {
+        statsText = `Showing ${total} item${total !== 1 ? 's' : ''}`;
+    }
     
     if (searchTerm || selectedType !== 'all') {
         const filters = [];
@@ -160,19 +143,20 @@ function updateStats() {
     totalCountElement.textContent = statsText;
 }
 
-// Render items for current page
+// Render items for current loaded count
 function renderItems() {
     if (filteredData.length === 0) {
         showEmptyState();
         return;
     }
     
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-    const pageItems = filteredData.slice(startIndex, endIndex);
-    
-    const itemsHtml = pageItems.map(item => createItemCard(item)).join('');
-    resultsContainer.innerHTML = itemsHtml;
+    // For initial load or when resetting (after search/filter change)
+    if (loadedItemsCount === 0) {
+        loadedItemsCount = Math.min(itemsPerPage, filteredData.length);
+        const initialItems = filteredData.slice(0, loadedItemsCount);
+        const itemsHtml = initialItems.map(item => createItemCard(item)).join('');
+        resultsContainer.innerHTML = itemsHtml;
+    }
 }
 
 // Create HTML for a single item card
@@ -290,6 +274,45 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Check if we should load more items
+function shouldLoadMore() {
+    if (isLoading || loadedItemsCount >= filteredData.length) {
+        return false;
+    }
+    
+    // Check if user has scrolled near the bottom
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    
+    // Load more when user is within 1000px of the bottom
+    return scrollTop + windowHeight >= documentHeight - 1000;
+}
+
+// Load more items when scrolling
+function loadMoreItems() {
+    if (isLoading || loadedItemsCount >= filteredData.length) {
+        return;
+    }
+    
+    isLoading = true;
+    
+    const nextBatchStart = loadedItemsCount;
+    const nextBatchEnd = Math.min(loadedItemsCount + itemsPerPage, filteredData.length);
+    const nextItems = filteredData.slice(nextBatchStart, nextBatchEnd);
+    
+    if (nextItems.length > 0) {
+        const itemsHtml = nextItems.map(item => createItemCard(item)).join('');
+        resultsContainer.insertAdjacentHTML('beforeend', itemsHtml);
+        loadedItemsCount = nextBatchEnd;
+        
+        // Update stats to reflect loaded items
+        updateStats();
+    }
+    
+    isLoading = false;
 }
 
 // Scroll to top of results
