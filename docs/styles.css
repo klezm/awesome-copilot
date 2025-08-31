@@ -1075,4 +1075,255 @@ footer a:hover {
         border-bottom-color: #30363d;
     }
 }
+
+/* Floating Help Button */
+.floating-help-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: #0366d6;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(3, 102, 214, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 1000;
+    font-size: 0;
+}
+
+.floating-help-btn:hover {
+    background: #0256cc;
+    box-shadow: 0 6px 20px rgba(3, 102, 214, 0.4);
+    transform: translateY(-2px);
+}
+
+.floating-help-btn:focus {
+    outline: 2px solid #0366d6;
+    outline-offset: 2px;
+}
+
+.floating-help-btn:active {
+    transform: translateY(0);
+}
+
+.floating-help-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Help Modal Styles */
+.help-modal {
+    z-index: 2000;
+}
+
+.help-modal-container {
+    max-width: 600px;
+    width: 90vw;
+    max-height: 80vh;
+    margin: 5vh auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.help-modal-header {
+    background: linear-gradient(135deg, #0366d6 0%, #2188ff 100%);
+    color: white;
+    padding: 1.5rem;
+    border-bottom: none;
+}
+
+.help-modal-header .modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.help-modal-header .btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.help-modal-header .btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.help-modal-body {
+    padding: 0;
+    overflow-y: auto;
+    max-height: calc(80vh - 120px);
+}
+
+.help-modal-content {
+    padding: 2rem;
+}
+
+.shortcuts-section {
+    margin-bottom: 2rem;
+}
+
+.shortcuts-section:last-child {
+    margin-bottom: 0;
+}
+
+.shortcuts-section h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #24292f;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e1e4e8;
+}
+
+.shortcut-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.shortcut-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f6f8fa;
+    border-radius: 6px;
+    border-left: 3px solid #0366d6;
+}
+
+.shortcut-item kbd {
+    background: #24292f;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: 'SF Mono', Monaco, 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+    min-width: 2rem;
+    text-align: center;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.shortcut-item span {
+    color: #24292f;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tips-list li {
+    padding: 0.75rem;
+    background: #fff8e1;
+    border-radius: 6px;
+    border-left: 3px solid #f59e0b;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.tips-list li:last-child {
+    margin-bottom: 0;
+}
+
+.tips-list li::before {
+    content: "💡";
+    margin-right: 0.5rem;
+}
+
+/* Help Modal Dark Mode */
+@media (prefers-color-scheme: dark) {
+    .help-modal-container {
+        background: #0d1117;
+        border: 1px solid #30363d;
+    }
+    
+    .shortcuts-section h3 {
+        color: #e6edf3;
+        border-bottom-color: #30363d;
+    }
+    
+    .shortcut-item {
+        background: #161b22;
+        border-left-color: #2188ff;
+    }
+    
+    .shortcut-item kbd {
+        background: #e6edf3;
+        color: #24292f;
+    }
+    
+    .shortcut-item span {
+        color: #e6edf3;
+    }
+    
+    .tips-list li {
+        background: #1e293b;
+        border-left-color: #fbbf24;
+        color: #e2e8f0;
+    }
+    
+    .floating-help-btn {
+        background: #2188ff;
+        box-shadow: 0 4px 12px rgba(33, 136, 255, 0.3);
+    }
+    
+    .floating-help-btn:hover {
+        background: #1f7aed;
+        box-shadow: 0 6px 20px rgba(33, 136, 255, 0.4);
+    }
+}
+
+/* Help Modal Responsive */
+@media (max-width: 768px) {
+    .floating-help-btn {
+        width: 3rem;
+        height: 3rem;
+        bottom: 1rem;
+        right: 1rem;
+    }
+    
+    .floating-help-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .help-modal-container {
+        width: 95vw;
+        margin: 2vh auto;
+        max-height: 90vh;
+    }
+    
+    .help-modal-content {
+        padding: 1.5rem;
+    }
+    
+    .help-modal-header {
+        padding: 1rem 1.5rem;
+    }
+    
+    .shortcut-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .shortcut-item kbd {
+        justify-self: center;
+    }
+}
 }

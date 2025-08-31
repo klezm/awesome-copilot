@@ -356,6 +356,129 @@ typeFilter.addEventListener('change', () => {
     trackEvent('Filter', 'type', typeFilter.value);
 });
 
+// Keyboard shortcuts and help modal functionality
+let isHelpModalOpen = false;
+let currentModalItemIndex = -1;
+
+// Help modal functions
+function openHelpModal() {
+    const helpModal = document.getElementById('help-modal');
+    isHelpModalOpen = true;
+    helpModal.classList.add('show');
+    helpModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus the close button for keyboard navigation
+    const closeBtn = document.getElementById('close-help-modal-btn');
+    closeBtn.focus();
+    
+    trackEvent('Help', 'open', 'keyboard-shortcuts');
+}
+
+function closeHelpModal() {
+    const helpModal = document.getElementById('help-modal');
+    isHelpModalOpen = false;
+    helpModal.classList.remove('show');
+    helpModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    
+    trackEvent('Help', 'close', 'keyboard-shortcuts');
+}
+
+// Get current item index in filtered data
+function getCurrentModalItemIndex() {
+    if (!currentModalItem || !filteredData.length) {
+        return -1;
+    }
+    return filteredData.findIndex(item => item === currentModalItem);
+}
+
+// Navigate to specific item by index
+function navigateToItem(newIndex) {
+    if (newIndex < 0 || newIndex >= filteredData.length) {
+        return false;
+    }
+    
+    const newItem = filteredData[newIndex];
+    if (newItem) {
+        currentModalItemIndex = newIndex;
+        openPreviewModal(newItem, null, isShowingSource ? 'source' : 'preview');
+        trackEvent('Modal', 'navigate', `index-${newIndex}`);
+        return true;
+    }
+    return false;
+}
+
+// Navigate to previous item
+function navigateToPreviousItem() {
+    const currentIndex = getCurrentModalItemIndex();
+    if (currentIndex > 0) {
+        navigateToItem(currentIndex - 1);
+    }
+}
+
+// Navigate to next item
+function navigateToNextItem() {
+    const currentIndex = getCurrentModalItemIndex();
+    if (currentIndex >= 0 && currentIndex < filteredData.length - 1) {
+        navigateToItem(currentIndex + 1);
+    }
+}
+
+// Global keyboard shortcuts handler
+function handleGlobalKeyboardShortcuts(e) {
+    // Don't interfere with form inputs
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+        return;
+    }
+    
+    const modal = document.getElementById('preview-modal');
+    const isModalOpen = modal.classList.contains('show');
+    
+    switch (e.key) {
+        case '?':
+            e.preventDefault();
+            if (isHelpModalOpen) {
+                closeHelpModal();
+            } else {
+                openHelpModal();
+            }
+            break;
+            
+        case 'Escape':
+            if (isHelpModalOpen) {
+                e.preventDefault();
+                closeHelpModal();
+            }
+            // The existing modal close handler will handle preview modal
+            break;
+            
+        case 's':
+        case 'S':
+        case 't':
+        case 'T':
+            if (isModalOpen && !isHelpModalOpen) {
+                e.preventDefault();
+                toggleSourceView();
+            }
+            break;
+            
+        case 'ArrowLeft':
+            if (isModalOpen && !isHelpModalOpen) {
+                e.preventDefault();
+                navigateToPreviousItem();
+            }
+            break;
+            
+        case 'ArrowRight':
+            if (isModalOpen && !isHelpModalOpen) {
+                e.preventDefault();
+                navigateToNextItem();
+            }
+            break;
+    }
+}
+
 // Modal functionality
 let currentModalItem = null;
 let currentRawMarkdown = null;
@@ -526,6 +649,7 @@ function parseMarkdown(text) {
 
 function openPreviewModal(item, section = null, viewMode = 'preview') {
     currentModalItem = item;
+    currentModalItemIndex = getCurrentModalItemIndex();
     currentRawMarkdown = null;
     currentRenderedHTML = null;
     currentCompletePreview = null;
@@ -592,6 +716,7 @@ function closePreviewModal() {
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     currentModalItem = null;
+    currentModalItemIndex = -1;
     currentRawMarkdown = null;
     currentRenderedHTML = null;
     currentCompletePreview = null;
@@ -1092,11 +1217,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close modal on backdrop click
     backdrop.addEventListener('click', closePreviewModal);
     
-    // Close modal on Escape key
+    // Close modal on Escape key (and other global shortcuts)
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('show')) {
+        // Handle the Escape key for preview modal specifically
+        if (e.key === 'Escape' && modal.classList.contains('show') && !isHelpModalOpen) {
             closePreviewModal();
         }
+        
+        // Handle all other global shortcuts
+        handleGlobalKeyboardShortcuts(e);
+    });
+    
+    // Help modal event listeners
+    const helpModal = document.getElementById('help-modal');
+    const closeHelpBtn = document.getElementById('close-help-modal-btn');
+    const helpBackdrop = helpModal.querySelector('.help-modal-backdrop');
+    const floatingHelpBtn = document.getElementById('floating-help-btn');
+    
+    // Close help modal on close button click
+    closeHelpBtn.addEventListener('click', closeHelpModal);
+    
+    // Close help modal on backdrop click
+    helpBackdrop.addEventListener('click', closeHelpModal);
+    
+    // Open help modal on floating button click
+    floatingHelpBtn.addEventListener('click', openHelpModal);
+    
+    // Prevent help modal content scrolling from closing modal
+    helpModal.querySelector('.help-modal-container').addEventListener('click', (e) => {
+        e.stopPropagation();
     });
     
     // Prevent modal content scrolling from closing modal
