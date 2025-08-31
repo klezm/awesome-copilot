@@ -2,7 +2,7 @@
 let allData = { prompts: [], instructions: [], chatmodes: [] };
 let filteredData = [];
 let currentPage = 1;
-const itemsPerPage = 20;
+const itemsPerPage = 24;
 
 // DOM elements
 const searchInput = document.getElementById('search');
