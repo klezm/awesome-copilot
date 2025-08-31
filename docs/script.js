@@ -2,11 +2,14 @@
 let allData = { prompts: [], instructions: [], chatmodes: [] };
 let filteredData = [];
 let currentPage = 1;
-const itemsPerPage = 10;
+let isCompactView = localStorage.getItem('compactView') === 'true';
+const itemsPerPageExpanded = 10;
+const itemsPerPageCompact = 20;
 
 // DOM elements
 const searchInput = document.getElementById('search');
 const typeFilter = document.getElementById('type-filter');
+const viewToggleButton = document.getElementById('view-toggle');
 const resultsContainer = document.getElementById('results');
 const totalCountElement = document.getElementById('total-count');
 const paginationContainer = document.getElementById('pagination');
@@ -23,6 +26,9 @@ async function init() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         allData = await response.json();
+        
+        // Initialize view state
+        initializeViewState();
         
         // Initialize display
         updateFilteredData();
@@ -46,6 +52,18 @@ async function init() {
     }
 }
 
+// Initialize view state and UI
+function initializeViewState() {
+    // Set initial view class
+    const container = document.querySelector('.container');
+    if (isCompactView) {
+        container.classList.add('compact-view');
+    }
+    
+    // Update button appearance
+    updateViewToggleButton();
+}
+
 // Set up event listeners
 function setupEventListeners() {
     // Search input with debounce
@@ -64,6 +82,11 @@ function setupEventListeners() {
         updateFilteredData();
     });
 
+    // View toggle
+    viewToggleButton.addEventListener('click', () => {
+        toggleView();
+    });
+
     // Pagination
     prevPageButton.addEventListener('click', () => {
         if (currentPage > 1) {
@@ -74,7 +97,7 @@ function setupEventListeners() {
     });
 
     nextPageButton.addEventListener('click', () => {
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        const totalPages = Math.ceil(filteredData.length / getItemsPerPage());
         if (currentPage < totalPages) {
             currentPage++;
             updateFilteredData();
@@ -86,7 +109,7 @@ function setupEventListeners() {
     document.addEventListener('keydown', (e) => {
         if (e.target.matches('input, select, button, a')) return;
         
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        const totalPages = Math.ceil(filteredData.length / getItemsPerPage());
         if (e.key === 'ArrowLeft' && currentPage > 1) {
             e.preventDefault();
             currentPage--;
@@ -99,6 +122,50 @@ function setupEventListeners() {
             scrollToTop();
         }
     });
+}
+
+// Helper function to get current items per page
+function getItemsPerPage() {
+    return isCompactView ? itemsPerPageCompact : itemsPerPageExpanded;
+}
+
+// Toggle between compact and expanded view
+function toggleView() {
+    isCompactView = !isCompactView;
+    localStorage.setItem('compactView', isCompactView);
+    
+    // Update UI classes
+    const container = document.querySelector('.container');
+    if (isCompactView) {
+        container.classList.add('compact-view');
+    } else {
+        container.classList.remove('compact-view');
+    }
+    
+    // Update button text and icon
+    updateViewToggleButton();
+    
+    // Reset to first page and re-render
+    currentPage = 1;
+    updateDisplay();
+}
+
+// Update view toggle button appearance
+function updateViewToggleButton() {
+    const toggleText = viewToggleButton.querySelector('.view-toggle-text');
+    const icon = viewToggleButton.querySelector('svg path');
+    
+    if (isCompactView) {
+        toggleText.textContent = 'Expanded';
+        viewToggleButton.setAttribute('title', 'Switch to expanded view');
+        // Grid icon for compact view (current state)
+        icon.setAttribute('d', 'M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3A1.5 1.5 0 0 1 15 10.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3A1.5 1.5 0 0 1 15 10.5v3A1.5 1.5 0 0 1 13.5 15h-3A1.5 1.5 0 0 1 9 13.5v-3z');
+    } else {
+        toggleText.textContent = 'Compact';
+        viewToggleButton.setAttribute('title', 'Switch to compact view');
+        // List icon for expanded view (current state)  
+        icon.setAttribute('d', 'M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z');
+    }
 }
 
 // Update filtered data based on search and filter criteria
@@ -167,8 +234,8 @@ function renderItems() {
         return;
     }
     
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+    const startIndex = (currentPage - 1) * getItemsPerPage();
+    const endIndex = Math.min(startIndex + getItemsPerPage(), filteredData.length);
     const pageItems = filteredData.slice(startIndex, endIndex);
     
     const itemsHtml = pageItems.map(item => createItemCard(item)).join('');
@@ -262,7 +329,7 @@ function showError(message) {
 
 // Update pagination controls
 function updatePagination() {
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredData.length / getItemsPerPage());
     
     if (totalPages <= 1) {
         paginationContainer.style.display = 'none';
@@ -276,8 +343,8 @@ function updatePagination() {
     nextPageButton.disabled = currentPage === totalPages;
     
     // Update page info
-    const startItem = (currentPage - 1) * itemsPerPage + 1;
-    const endItem = Math.min(currentPage * itemsPerPage, filteredData.length);
+    const startItem = (currentPage - 1) * getItemsPerPage() + 1;
+    const endItem = Math.min(currentPage * getItemsPerPage(), filteredData.length);
     pageInfoElement.textContent = `${startItem}-${endItem} of ${filteredData.length}`;
     
     // Update ARIA labels
