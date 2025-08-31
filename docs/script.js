@@ -82,6 +82,9 @@ function updateFilteredData() {
     const searchTerm = searchInput.value.toLowerCase().trim();
     const selectedType = typeFilter.value;
     
+    // Reset focused card index when data changes
+    currentFocusedCardIndex = -1;
+    
     // Combine all data
     let combinedData = [];
     if (selectedType === 'all' || selectedType === 'prompts') {
@@ -359,6 +362,7 @@ typeFilter.addEventListener('change', () => {
 // Keyboard shortcuts and help modal functionality
 let isHelpModalOpen = false;
 let currentModalItemIndex = -1;
+let currentFocusedCardIndex = -1;
 
 // Help modal functions
 function openHelpModal() {
@@ -417,6 +421,44 @@ function navigateToPreviousItem() {
     }
 }
 
+// Focus search input
+function focusSearchInput() {
+    const searchInput = document.getElementById('search');
+    if (searchInput) {
+        searchInput.focus();
+        searchInput.select(); // Select all text for easy replacement
+    }
+}
+
+// Navigate between cards in main view
+function navigateCards(direction) {
+    const cards = document.querySelectorAll('.item-card');
+    if (cards.length === 0) return;
+    
+    if (direction === 'down') {
+        currentFocusedCardIndex = Math.min(currentFocusedCardIndex + 1, cards.length - 1);
+    } else if (direction === 'up') {
+        currentFocusedCardIndex = Math.max(currentFocusedCardIndex - 1, 0);
+    }
+    
+    // Ensure index is within bounds
+    if (currentFocusedCardIndex < 0) {
+        currentFocusedCardIndex = 0;
+    } else if (currentFocusedCardIndex >= cards.length) {
+        currentFocusedCardIndex = cards.length - 1;
+    }
+    
+    // Focus the card
+    const targetCard = cards[currentFocusedCardIndex];
+    if (targetCard) {
+        targetCard.focus();
+        targetCard.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'nearest' 
+        });
+    }
+}
+
 // Navigate to next item
 function navigateToNextItem() {
     const currentIndex = getCurrentModalItemIndex();
@@ -455,11 +497,27 @@ function handleGlobalKeyboardShortcuts(e) {
             
         case 's':
         case 'S':
-        case 't':
-        case 'T':
+            e.preventDefault();
             if (isModalOpen && !isHelpModalOpen) {
-                e.preventDefault();
+                // In modal: toggle source view
                 toggleSourceView();
+            } else if (!isHelpModalOpen) {
+                // Not in modal: focus search
+                focusSearchInput();
+            }
+            break;
+            
+        case 'ArrowUp':
+            if (!isModalOpen && !isHelpModalOpen) {
+                e.preventDefault();
+                navigateCards('up');
+            }
+            break;
+            
+        case 'ArrowDown':
+            if (!isModalOpen && !isHelpModalOpen) {
+                e.preventDefault();
+                navigateCards('down');
             }
             break;
             
