@@ -1,10 +1,12 @@
 # PR Preview Deployments
 
-This document explains how pull request preview deployments work in this repository using GitHub Actions with multiple deployment targets.
+This document explains how pull request preview deployments and manual commit deployments work in this repository using GitHub Actions with multiple deployment targets.
 
 ## Overview
 
 When you create a pull request, a unified GitHub Actions workflow automatically builds your changes and conditionally deploys them to GitHub Pages (for production), Vercel (for preview deployments), and Netlify (for additional preview deployments). This approach provides multiple preview URLs for reviewers while maintaining the existing GitHub Pages deployment for the main site.
+
+Additionally, maintainers can manually deploy any commit SHA to a preview environment for testing and review purposes.
 
 ## How It Works
 
@@ -35,6 +37,38 @@ This unified approach with separate build and deployment jobs provides several a
 - **Flexibility**: Vercel and Netlify previews are optional - workflow works even without their secrets
 - **Maintainability**: Clear separation between build and deployment responsibilities
 - **Multiple Preview Options**: Provides both Vercel and Netlify preview deployments for comprehensive testing
+
+### Manual Commit SHA Deployments
+
+Maintainers can manually deploy any commit SHA to GitHub Pages for testing and review purposes. This feature is useful for:
+
+- **Testing Historical Commits**: Deploy and test any specific commit from the repository history
+- **Hotfix Validation**: Deploy and validate hotfix commits before merging
+- **Rollback Testing**: Test reverting to a previous known-good state
+- **Feature Branch Testing**: Deploy specific commits from feature branches for stakeholder review
+
+#### How to Use Manual Deployments
+
+1. **Navigate to Actions**: Go to the repository's Actions tab
+2. **Select Workflow**: Click on the "Deploy Website" workflow
+3. **Run Workflow**: Click "Run workflow" button on the right side
+4. **Provide Commit SHA**: 
+   - Enter the full 40-character commit SHA in the `commit_sha` input field
+   - Leave the field empty to deploy the current commit
+   - Optionally enable `force-deploy` if deploying from a non-main branch
+5. **Deploy**: Click "Run workflow" to start the deployment
+
+#### Preview URLs
+
+Manual deployments are published to: `https://klezm.github.io/awesome-copilot/previews/<sha>/`
+
+Where `<sha>` is the full 40-character commit SHA. For example:
+- `https://klezm.github.io/awesome-copilot/previews/abc123def456789012345678901234567890abcd/`
+
+#### Cleanup
+
+- Manual preview deployments are automatically cleaned up after 30 days
+- All preview deployments (both PR and manual) are listed at: `https://klezm.github.io/awesome-copilot/previews/`
 
 ### Vercel Configuration
 
@@ -218,6 +252,9 @@ The workflow can be customized by editing `.github/workflows/deploy-pages.yml`:
 - **Deployment Conditions**: Adjust when deployments are triggered
 - **Comment Format**: Customize the preview URL comment format
 - **Platform Configuration**: Enable/disable GitHub Pages, Vercel, or Netlify deployments
+- **Manual Deployment Inputs**: The workflow supports these manual trigger inputs:
+  - `commit_sha`: Specific commit SHA to deploy (optional)
+  - `force-deploy`: Deploy to GitHub Pages even if not on main branch
 
 ## Security Considerations
 
