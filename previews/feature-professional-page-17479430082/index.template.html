@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome GitHub Copilot - Interactive Explorer</title>
+    <meta name="description" content="Explore and discover GitHub Copilot prompts, instructions, and chat modes">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg" type="image/svg+xml">
+    <!-- Syntax highlighting CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+    <header>
+        <a href="#main" class="sr-only">Skip to main content</a>
+        <div class="container">
+            <h1>🤖 Awesome GitHub Copilot</h1>
+            <p class="subtitle">Interactive Explorer for Prompts, Instructions & Chat Modes</p>
+        </div>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <div class="container">
+            <div class="nav-controls">
+                <div class="search-container">
+                    <label for="search" class="sr-only">Search prompts, instructions, and chat modes</label>
+                    <input type="search" id="search" placeholder="Search..." aria-describedby="search-help">
+                    <span id="search-help" class="sr-only">Search across titles and descriptions</span>
+                </div>
+                <div class="filter-container">
+                    <label for="type-filter" class="sr-only">Filter by type</label>
+                    <select id="type-filter" aria-describedby="filter-help">
+                        <option value="all">All Types</option>
+                        <option value="prompts">Prompts</option>
+                        <option value="instructions">Instructions</option>
+                        <option value="chatmodes">Chat Modes</option>
+                    </select>
+                    <span id="filter-help" class="sr-only">Filter content by type</span>
+                </div>
+                <div class="view-toggle-container">
+                    <button id="compact-view-toggle" class="btn btn-secondary" title="Toggle compact view">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-task" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H2zM3 3H2v1h1V3z"/>
+                            <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9z"/>
+                            <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zM2 7h1v1H2V7zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5H2zm1 .5H2v1h1v-1z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="compare-container">
+                    <button id="compare-btn" class="btn btn-primary" style="display: none;">Compare Selected</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main" class="container">
+        <div class="stats">
+            <span id="total-count">Loading...</span>
+        </div>
+
+        <div class="content-grid">
+            <section id="results" aria-live="polite" aria-label="Search results">
+                <div class="loading">Loading awesome content...</div>
+            </section>
+        </div>
+
+        <div id="pagination" class="pagination" style="display: none;">
+            <button id="prev-page" class="btn btn-secondary" disabled>Previous</button>
+            <span id="page-info"></span>
+            <button id="next-page" class="btn btn-secondary" disabled>Next</button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                <a href="https://github.com/github/awesome-copilot">View on GitHub</a> |
+                <a href="https://github.com/github/awesome-copilot/blob/main/CONTRIBUTING.md">Contributing</a> |
+                <a href="https://github.com/github/awesome-copilot/blob/main/LICENSE">License</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-content">
+        <div class="modal-backdrop" aria-label="Close modal"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title"></h2>
+                <div class="modal-actions">
+                    <button id="toggle-source-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/>
+                        </svg>
+                        Show Source
+                    </button>
+                    <button id="show-source-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                        View on GitHub
+                    </button>
+                    <button id="close-modal-btn" class="btn btn-secondary" aria-label="Close modal">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                        </svg>
+                        Close
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <aside id="modal-toc" class="modal-toc" aria-label="Table of Contents">
+                    <div class="toc-header">
+                        <h3 class="toc-title">Contents</h3>
+                        <button id="toc-toggle" class="toc-toggle" aria-label="Toggle table of contents">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <nav class="toc-nav">
+                        <ol id="toc-list" class="toc-list"></ol>
+                    </nav>
+                </aside>
+                <main class="modal-main">
+                    <div id="modal-content" class="modal-content"></div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Help Modal -->
+    <div id="help-modal" class="modal help-modal" aria-hidden="true" role="dialog" aria-labelledby="help-modal-title" aria-describedby="help-modal-content">
+        <div class="modal-backdrop help-modal-backdrop" aria-label="Close help modal"></div>
+        <div class="modal-container help-modal-container">
+            <div class="modal-header help-modal-header">
+                <h2 id="help-modal-title" class="modal-title">Keyboard Shortcuts</h2>
+                <button id="close-help-modal-btn" class="btn btn-secondary" aria-label="Close help modal">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                    </svg>
+                    Close
+                </button>
+            </div>
+            <div class="help-modal-body">
+                <div id="help-modal-content" class="help-modal-content">
+                    <div class="shortcuts-section">
+                        <h3>General Navigation</h3>
+                        <div class="shortcut-grid">
+                            <div class="shortcut-item">
+                                <kbd>?</kbd>
+                                <span>Show/hide this help modal</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Esc</kbd>
+                                <span>Close any open modal</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>S</kbd>
+                                <span>Focus the search input</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>↑</kbd>
+                                <span>Navigate to previous card</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>↓</kbd>
+                                <span>Navigate to next card</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Enter</kbd>
+                                <span>Open preview for focused card</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Space</kbd>
+                                <span>Open preview for focused card</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="shortcuts-section">
+                        <h3>Preview Modal</h3>
+                        <div class="shortcut-grid">
+                            <div class="shortcut-item">
+                                <kbd>S</kbd>
+                                <span>Toggle between preview and source view</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>←</kbd>
+                                <span>Navigate to previous item</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>→</kbd>
+                                <span>Navigate to next item</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="shortcuts-section">
+                        <h3>Tips</h3>
+                        <ul class="tips-list">
+                            <li>Use up/down arrow keys to navigate through cards on the main page</li>
+                            <li>Use left/right arrow keys to quickly browse through filtered items in the preview modal</li>
+                            <li>Press 'S' to focus search input or toggle source view when in modal</li>
+                            <li>All shortcuts work immediately when the modal opens</li>
+                            <li>Use search and filters to narrow down items before browsing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Help Button -->
+    <button id="floating-help-btn" class="floating-help-btn" aria-label="Show keyboard shortcuts" title="Keyboard shortcuts (?)">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+        </svg>
+    </button>
+
+    <!-- Comparison Modal -->
+    <div id="compare-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="compare-modal-title">
+        <div class="modal-backdrop" aria-label="Close modal"></div>
+        <div class="modal-container compare-modal-container">
+            <div class="modal-header">
+                <h2 id="compare-modal-title" class="modal-title">Compare Items</h2>
+                <button id="close-compare-modal-btn" class="btn btn-secondary" aria-label="Close modal">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                    </svg>
+                    Close
+                </button>
+            </div>
+            <div id="compare-modal-body" class="modal-body compare-modal-body">
+                <!-- Comparison content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Markdown parsing and syntax highlighting libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@5.1.1/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
