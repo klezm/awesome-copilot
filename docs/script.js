@@ -1,6 +1,7 @@
 // Global variables
 let allData = { prompts: [], instructions: [], chatmodes: [] };
 let filteredData = [];
+let itemsToCompare = [];
 let loadedItemsCount = 0;
 const itemsPerPage = 10;
 let isLoading = false;
@@ -9,6 +10,12 @@ let isLoading = false;
 const searchInput = document.getElementById('search');
 const typeFilter = document.getElementById('type-filter');
 const resultsContainer = document.getElementById('results');
+const contentGrid = document.querySelector('.content-grid');
+const compactViewToggle = document.getElementById('compact-view-toggle');
+const compareBtn = document.getElementById('compare-btn');
+const compareModal = document.getElementById('compare-modal');
+const compareModalBody = document.getElementById('compare-modal-body');
+const closeCompareModalBtn = document.getElementById('close-compare-modal-btn');
 const totalCountElement = document.getElementById('total-count');
 const paginationContainer = document.getElementById('pagination');
 const prevPageButton = document.getElementById('prev-page');
@@ -28,6 +35,7 @@ async function init() {
         // Initialize display
         updateFilteredData();
         setupEventListeners();
+        initCompactView();
         
         // Handle URL-based modal opening after data is loaded
         if (window.initializeURLHandling) {
@@ -45,6 +53,22 @@ async function init() {
         console.error('Error loading data:', error);
         showError('Failed to load content. Please refresh the page and try again.');
     }
+}
+
+// Compact View
+function toggleCompactView() {
+    contentGrid.classList.toggle('compact-view');
+    compactViewToggle.classList.toggle('active');
+    const isCompact = contentGrid.classList.contains('compact-view');
+    localStorage.setItem('compactView', isCompact);
+}
+
+function initCompactView() {
+    if (localStorage.getItem('compactView') === 'true') {
+        contentGrid.classList.add('compact-view');
+        compactViewToggle.classList.add('active');
+    }
+    compactViewToggle.addEventListener('click', toggleCompactView);
 }
 
 // Set up event listeners
@@ -75,6 +99,81 @@ function setupEventListeners() {
             }
         }, 100);
     });
+
+    // Compare feature
+    resultsContainer.addEventListener('change', (e) => {
+        if (e.target.classList.contains('compare-checkbox')) {
+            const itemIndex = parseInt(e.target.dataset.itemIndex, 10);
+            const item = filteredData[itemIndex];
+            if (e.target.checked) {
+                if (!itemsToCompare.includes(item)) {
+                    itemsToCompare.push(item);
+                }
+            } else {
+                itemsToCompare = itemsToCompare.filter(i => i !== item);
+            }
+            updateCompareButton();
+        }
+    });
+
+    compareBtn.addEventListener('click', openCompareModal);
+    closeCompareModalBtn.addEventListener('click', closeCompareModal);
+    compareModal.addEventListener('click', (e) => {
+        if (e.target === compareModal) {
+            closeCompareModal();
+        }
+    });
+}
+
+function updateCompareButton() {
+    const count = itemsToCompare.length;
+    if (count >= 2) {
+        compareBtn.style.display = 'inline-flex';
+        compareBtn.textContent = `Compare ${count} items`;
+    } else {
+        compareBtn.style.display = 'none';
+    }
+}
+
+async function openCompareModal() {
+    compareModalBody.innerHTML = '<div class="loading">Loading comparison...</div>';
+    compareModal.classList.add('show');
+    compareModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    const contentPromises = itemsToCompare.map(item => fetch(`https://raw.githubusercontent.com/github/awesome-copilot/main/${item.link}`).then(res => res.text()));
+    const contents = await Promise.all(contentPromises);
+
+    let columnsHtml = '';
+    for (let i = 0; i < itemsToCompare.length; i++) {
+        const item = itemsToCompare[i];
+        const markdownText = contents[i];
+        const htmlContent = typeof marked !== 'undefined' ? marked.parse(markdownText) : parseMarkdown(markdownText);
+
+        columnsHtml += `
+            <div class="compare-item-column">
+                <div class="compare-item-header">
+                    <h3 class="compare-item-title">${escapeHtml(item.title)}</h3>
+                </div>
+                <div class="compare-item-content">
+                    ${htmlContent}
+                </div>
+            </div>
+        `;
+    }
+
+    compareModalBody.innerHTML = columnsHtml;
+    compareModalBody.querySelectorAll('pre code').forEach((block) => {
+        if (typeof hljs !== 'undefined') {
+            hljs.highlightElement(block);
+        }
+    });
+}
+
+function closeCompareModal() {
+    compareModal.classList.remove('show');
+    compareModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
 }
 
 // Update filtered data based on search and filter criteria
@@ -183,7 +282,10 @@ function createItemCard(item) {
     return `
         <div class="item-card" role="button" tabindex="0" aria-label="Preview ${escapeHtml(item.title)}" data-item-index="${itemIndex}">
             <div class="item-header">
-                <h3 class="item-title">${escapeHtml(item.title)}</h3>
+                <div class="item-header-content">
+                    <input type="checkbox" class="compare-checkbox" data-item-index="${itemIndex}" onclick="event.stopPropagation()">
+                    <h3 class="item-title">${escapeHtml(item.title)}</h3>
+                </div>
                 <span class="item-type">${emoji} ${label}</span>
             </div>
             ${descriptionHtml}
