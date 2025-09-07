@@ -1,0 +1,337 @@
+[
+  {
+    "title": "Instructions for accessibility",
+    "description": "Guidance for creating more accessible code",
+    "path": "instructions/a11y.instructions.md"
+  },
+  {
+    "title": "AI Prompt Engineering & Safety Best Practices",
+    "description": "Comprehensive best practices for AI prompt engineering, safety frameworks, bias mitigation, and responsible AI usage for Copilot and LLMs.",
+    "path": "instructions/ai-prompt-engineering-safety-best-practices.instructions.md"
+  },
+  {
+    "title": "Angular Development Instructions",
+    "description": "Angular-specific coding standards and best practices",
+    "path": "instructions/angular.instructions.md"
+  },
+  {
+    "title": "ASP.NET REST API Development",
+    "description": "Guidelines for building REST APIs with ASP.NET",
+    "path": "instructions/aspnet-rest-apis.instructions.md"
+  },
+  {
+    "title": "Azure DevOps Pipeline YAML Best Practices",
+    "description": "Best practices for Azure DevOps Pipeline YAML files",
+    "path": "instructions/azure-devops-pipelines.instructions.md"
+  },
+  {
+    "title": "Azure Functions Typescript",
+    "description": "TypeScript patterns for Azure Functions",
+    "path": "instructions/azure-functions-typescript.instructions.md"
+  },
+  {
+    "title": "Azure Logic Apps and Power Automate Instructions",
+    "description": "Guidelines for developing Azure Logic Apps and Power Automate workflows with best practices for Workflow Definition Language (WDL), integration patterns, and enterprise automation",
+    "path": "instructions/azure-logic-apps-power-automate.instructions.md"
+  },
+  {
+    "title": "Azure Verified Modules (AVM) Terraform",
+    "description": " Azure Verified Modules (AVM) and Terraform",
+    "path": "instructions/azure-verified-modules-terraform.instructions.md"
+  },
+  {
+    "title": "Bicep Code Best Practices",
+    "description": "Infrastructure as Code with Bicep",
+    "path": "instructions/bicep-code-best-practices.instructions.md"
+  },
+  {
+    "title": "Blazor",
+    "description": "Blazor component and application patterns",
+    "path": "instructions/blazor.instructions.md"
+  },
+  {
+    "title": "Clojure Memory",
+    "description": "Things agents tend to forget or get wrong when they are working with Clojure projects.",
+    "path": "instructions/clojure-memory.instructions.md"
+  },
+  {
+    "title": "Cmake Vcpkg",
+    "description": "C++ project configuration and package management",
+    "path": "instructions/cmake-vcpkg.instructions.md"
+  },
+  {
+    "title": "Containerization & Docker Best Practices",
+    "description": "Comprehensive best practices for creating optimized, secure, and efficient Docker images and managing containers. Covers multi-stage builds, image layer optimization, security scanning, and runtime best practices.",
+    "path": "instructions/containerization-docker-best-practices.instructions.md"
+  },
+  {
+    "title": "Conventional Commit",
+    "description": "Prompt and workflow for generating conventional commit messages using a structured XML format. Guides users to create standardized, descriptive commit messages in line with the Conventional Commits specification, including instructions, examples, and validation.",
+    "path": "instructions/conventional-commit.prompt.md"
+  },
+  {
+    "title": "Convert Spring JPA project to Spring Data Cosmos",
+    "description": "Step-by-step guide for converting Spring Boot JPA applications to use Azure Cosmos DB with Spring Data Cosmos",
+    "path": "instructions/convert-jpa-to-spring-data-cosmos.instructions.md"
+  },
+  {
+    "title": "Copilot Process tracking Instructions",
+    "description": "See process Copilot is following where you can edit this to reshape the interaction or save when follow up may be needed",
+    "path": "instructions/copilot-thought-logging.instructions.md"
+  },
+  {
+    "title": "C# 코드 작성 규칙",
+    "description": "C# 애플리케이션 개발을 위한 코드 작성 규칙 by @jgkim999",
+    "path": "instructions/csharp-ko.instructions.md"
+  },
+  {
+    "title": "C# Development",
+    "description": "Guidelines for building C# applications",
+    "path": "instructions/csharp.instructions.md"
+  },
+  {
+    "title": "Dart and Flutter",
+    "description": "Instructions for writing Dart and Flutter code following the official recommendations.",
+    "path": "instructions/dart-n-flutter.instructions.md"
+  },
+  {
+    "title": "Dev Box image definitions",
+    "description": "Authoring recommendations for creating YAML based image definition files for use with Microsoft Dev Box Team Customizations",
+    "path": "instructions/devbox-image-definition.instructions.md"
+  },
+  {
+    "title": "DevOps Core Principles",
+    "description": "Foundational instructions covering core DevOps principles, culture (CALMS), and key metrics (DORA) to guide GitHub Copilot in understanding and promoting effective software delivery.",
+    "path": "instructions/devops-core-principles.instructions.md"
+  },
+  {
+    "title": "DDD Systems & .NET Guidelines",
+    "description": "DDD and .NET architecture guidelines",
+    "path": "instructions/dotnet-architecture-good-practices.instructions.md"
+  },
+  {
+    "title": ".NET Framework Development",
+    "description": "Guidance for working with .NET Framework projects. Includes project structure, C# language version, NuGet management, and best practices.",
+    "path": "instructions/dotnet-framework.instructions.md"
+  },
+  {
+    "title": ".NET MAUI",
+    "description": ".NET MAUI component and application patterns",
+    "path": "instructions/dotnet-maui.instructions.md"
+  },
+  {
+    "title": "Dotnet Wpf",
+    "description": ".NET WPF component and application patterns",
+    "path": "instructions/dotnet-wpf.instructions.md"
+  },
+  {
+    "title": "Genaiscript",
+    "description": "AI-powered script generation guidelines",
+    "path": "instructions/genaiscript.instructions.md"
+  },
+  {
+    "title": "Generate Modern Terraform Code For Azure",
+    "description": "Guidelines for generating modern Terraform code for Azure",
+    "path": "instructions/generate-modern-terraform-code-for-azure.instructions.md"
+  },
+  {
+    "title": "Gilfoyle Code Review Instructions",
+    "description": "Gilfoyle-style code review instructions that channel the sardonic technical supremacy of Silicon Valley's most arrogant systems architect.",
+    "path": "instructions/gilfoyle-code-review.instructions.md"
+  },
+  {
+    "title": "GitHub Actions CI/CD Best Practices",
+    "description": "Comprehensive guide for building robust, secure, and efficient CI/CD pipelines using GitHub Actions. Covers workflow structure, jobs, steps, environment variables, secret management, caching, matrix strategies, testing, and deployment strategies.",
+    "path": "instructions/github-actions-ci-cd-best-practices.instructions.md"
+  },
+  {
+    "title": "Go Development Instructions",
+    "description": "Instructions for writing Go code following idiomatic Go practices and community standards",
+    "path": "instructions/go.instructions.md"
+  },
+  {
+    "title": "Java Development",
+    "description": "Guidelines for building Java base applications",
+    "path": "instructions/java.instructions.md"
+  },
+  {
+    "title": "Joyride User Script Project Assistant",
+    "description": "Expert assistance for Joyride User Script projects - REPL-driven ClojureScript and user space automation of VS Code",
+    "path": "instructions/joyride-user-project.instructions.md"
+  },
+  {
+    "title": "Joyride Workspace Automation Assistant",
+    "description": "Expert assistance for Joyride Workspace automation - REPL-driven and user space ClojureScript automation within specific VS Code workspaces",
+    "path": "instructions/joyride-workspace-automation.instructions.md"
+  },
+  {
+    "title": "Kubernetes Deployment Best Practices",
+    "description": "Comprehensive best practices for deploying and managing applications on Kubernetes. Covers Pods, Deployments, Services, Ingress, ConfigMaps, Secrets, health checks, resource limits, scaling, and security contexts.",
+    "path": "instructions/kubernetes-deployment-best-practices.instructions.md"
+  },
+  {
+    "title": "Guidance for Localization",
+    "description": "Guidelines for localizing markdown documents",
+    "path": "instructions/localization.instructions.md"
+  },
+  {
+    "title": "Markdown",
+    "description": "Documentation and content creation standards",
+    "path": "instructions/markdown.instructions.md"
+  },
+  {
+    "title": "Memory Bank",
+    "description": null,
+    "path": "instructions/memory-bank.instructions.md"
+  },
+  {
+    "title": "MS-SQL DBA Chat Mode Instructions",
+    "description": "Instructions for customizing GitHub Copilot behavior for MS-SQL DBA chat mode.",
+    "path": "instructions/ms-sql-dba.instructions.md"
+  },
+  {
+    "title": "NestJS Development Best Practices",
+    "description": "NestJS development standards and best practices for building scalable Node.js server-side applications",
+    "path": "instructions/nestjs.instructions.md"
+  },
+  {
+    "title": "Next.js + Tailwind Development Instructions",
+    "description": "Next.js + Tailwind development standards and instructions",
+    "path": "instructions/nextjs-tailwind.instructions.md"
+  },
+  {
+    "title": "Next.js Best Practices for LLMs (2025)",
+    "description": null,
+    "path": "instructions/nextjs.instructions.md"
+  },
+  {
+    "title": "Code Generation Guidelines",
+    "description": "Guidelines for writing Node.js and JavaScript code with Vitest testing",
+    "path": "instructions/nodejs-javascript-vitest.instructions.md"
+  },
+  {
+    "title": "Object Calisthenics Rules",
+    "description": "Enforces Object Calisthenics principles for business domain code to ensure clean, maintainable, and robust code",
+    "path": "instructions/object-calisthenics.instructions.md"
+  },
+  {
+    "title": "Performance Optimization Best Practices",
+    "description": "The most comprehensive, practical, and engineer-authored performance optimization instructions for all languages, frameworks, and stacks. Covers frontend, backend, and database best practices with actionable guidance, scenario-based checklists, troubleshooting, and pro tips.",
+    "path": "instructions/performance-optimization.instructions.md"
+  },
+  {
+    "title": "Playwright Python Test Generation Instructions",
+    "description": "Playwright Python AI test generation instructions based on official documentation.",
+    "path": "instructions/playwright-python.instructions.md"
+  },
+  {
+    "title": "Playwright Typescript",
+    "description": "Playwright test generation instructions",
+    "path": "instructions/playwright-typescript.instructions.md"
+  },
+  {
+    "title": "Power Apps Canvas Apps YAML Structure Guide",
+    "description": "Comprehensive guide for working with Power Apps Canvas Apps YAML structure based on Microsoft Power Apps YAML schema v3.0. Covers Power Fx formulas, control structures, data types, and source control best practices.",
+    "path": "instructions/power-apps-canvas-yaml.instructions.md"
+  },
+  {
+    "title": "Power Platform Connectors Schema Development Instructions",
+    "description": "Comprehensive development guidelines for Power Platform Custom Connectors using JSON Schema definitions. Covers API definitions (Swagger 2.0), API properties, and settings configuration with Microsoft extensions.",
+    "path": "instructions/power-platform-connector.instructions.md"
+  },
+  {
+    "title": "PowerShell Pester v5 Testing Guidelines",
+    "description": "PowerShell Pester testing best practices based on Pester v5 conventions",
+    "path": "instructions/powershell-pester-5.instructions.md"
+  },
+  {
+    "title": "PowerShell Cmdlet Development Guidelines",
+    "description": "PowerShell cmdlet and scripting best practices based on Microsoft guidelines",
+    "path": "instructions/powershell.instructions.md"
+  },
+  {
+    "title": "Python Coding Conventions",
+    "description": "Python coding conventions and guidelines",
+    "path": "instructions/python.instructions.md"
+  },
+  {
+    "title": "Quarkus MCP Server",
+    "description": "Quarkus and MCP Server with HTTP SSE transport development standards and instructions",
+    "path": "instructions/quarkus-mcp-server-sse.instructions.md"
+  },
+  {
+    "title": "Quarkus",
+    "description": "Quarkus development standards and instructions",
+    "path": "instructions/quarkus.instructions.md"
+  },
+  {
+    "title": "ReactJS Development Instructions",
+    "description": "ReactJS development standards and best practices",
+    "path": "instructions/reactjs.instructions.md"
+  },
+  {
+    "title": "Ruby on Rails",
+    "description": "Ruby on Rails coding conventions and guidelines",
+    "path": "instructions/ruby-on-rails.instructions.md"
+  },
+  {
+    "title": "Rust Coding Conventions and Best Practices",
+    "description": "Rust programming language coding conventions and best practices",
+    "path": "instructions/rust.instructions.md"
+  },
+  {
+    "title": "Secure Coding and OWASP Guidelines",
+    "description": "Comprehensive secure coding instructions for all languages and frameworks, based on OWASP Top 10 and industry best practices.",
+    "path": "instructions/security-and-owasp.instructions.md"
+  },
+  {
+    "title": "Self-explanatory Code Commenting Instructions",
+    "description": "Guidelines for GitHub Copilot to write comments to achieve self-explanatory code with less comments. Examples are in JavaScript but it should work on any language that has comments.",
+    "path": "instructions/self-explanatory-code-commenting.instructions.md"
+  },
+  {
+    "title": "Spec Driven Workflow v1",
+    "description": "Specification-Driven Workflow v1 provides a structured approach to software development, ensuring that requirements are clearly defined, designs are meticulously planned, and implementations are thoroughly documented and validated.",
+    "path": "instructions/spec-driven-workflow-v1.instructions.md"
+  },
+  {
+    "title": "Spring Boot Development",
+    "description": "Guidelines for building Spring Boot base applications",
+    "path": "instructions/springboot.instructions.md"
+  },
+  {
+    "title": "SQL Development",
+    "description": "Guidelines for generating SQL statements and stored procedures",
+    "path": "instructions/sql-sp-generation.instructions.md"
+  },
+  {
+    "title": "Taming Copilot",
+    "description": "Prevent Copilot from wreaking havoc across your codebase, keeping it under control.",
+    "path": "instructions/taming-copilot.instructions.md"
+  },
+  {
+    "title": "TanStack Start with Shadcn/ui Development Guide",
+    "description": "Guidelines for building TanStack Start applications",
+    "path": "instructions/tanstack-start-shadcn-tailwind.instructions.md"
+  },
+  {
+    "title": "Task Plan Implementation Instructions",
+    "description": "Instructions for implementing task plans with progressive tracking and change record - Brought to you by microsoft/edge-ai",
+    "path": "instructions/task-implementation.instructions.md"
+  },
+  {
+    "title": "TaskSync V4 Protocol",
+    "description": "TaskSync V4 - Allows you to give the agent new instructions or feedback after completing a task using terminal while agent is running.",
+    "path": "instructions/tasksync.instructions.md"
+  },
+  {
+    "title": "Terraform Conventions",
+    "description": "Terraform Conventions and Guidelines",
+    "path": "instructions/terraform.instructions.md"
+  },
+  {
+    "title": "VueJS 3 Development Instructions",
+    "description": "VueJS 3 development standards and best practices with Composition API and TypeScript",
+    "path": "instructions/vuejs3.instructions.md"
+  }
+]
