@@ -1,9 +1,9 @@
 // Global variables
 let allData = { prompts: [], instructions: [], chatmodes: [] };
 let filteredData = [];
-let loadedItemsCount = 0;
-const itemsPerPage = 10;
-let isLoading = false;
+let currentPage = 1;
+const itemsPerPage = 24;
+
 
 // DOM elements
 const searchInput = document.getElementById('search');
