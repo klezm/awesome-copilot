@@ -1,6 +1,7 @@
 // Global variables
 let allData = { prompts: [], instructions: [], chatmodes: [] };
 let filteredData = [];
+let selectedItems = [];
 let loadedItemsCount = 0;
 const itemsPerPage = 10;
 let isLoading = false;
@@ -75,6 +76,59 @@ function setupEventListeners() {
             }
         }, 100);
     });
+
+    // Checkbox click handler using event delegation
+    resultsContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('compare-checkbox')) {
+            e.stopPropagation(); // Prevent card from opening
+            handleCheckboxChange(e.target);
+        }
+    });
+
+    // Compare button click handler
+    const compareBtn = document.getElementById('compare-btn');
+    if (compareBtn) {
+        compareBtn.addEventListener('click', () => {
+            if (selectedItems.length === 2) {
+                const url = `compare.html?files=${selectedItems.join(',')}`;
+                window.location.href = url;
+            }
+        });
+    }
+}
+
+function handleCheckboxChange(checkbox) {
+    const link = checkbox.dataset.link;
+    if (checkbox.checked) {
+        if (selectedItems.length < 2) {
+            selectedItems.push(link);
+        }
+    } else {
+        selectedItems = selectedItems.filter(item => item !== link);
+    }
+    updateCompareButtonState();
+}
+
+function updateCompareButtonState() {
+    const compareBtn = document.getElementById('compare-btn');
+    if (compareBtn) {
+        const selectedCount = selectedItems.length;
+        compareBtn.disabled = selectedCount !== 2;
+        compareBtn.textContent = `Compare (${selectedCount}/2)`;
+    }
+
+    const checkboxes = document.querySelectorAll('.compare-checkbox');
+    if (selectedItems.length >= 2) {
+        checkboxes.forEach(checkbox => {
+            if (!checkbox.checked) {
+                checkbox.disabled = true;
+            }
+        });
+    } else {
+        checkboxes.forEach(checkbox => {
+            checkbox.disabled = false;
+        });
+    }
 }
 
 // Update filtered data based on search and filter criteria
@@ -112,6 +166,7 @@ function updateFilteredData() {
     filteredData.sort((a, b) => a.title.localeCompare(b.title));
     
     updateDisplay();
+    updateCompareButtonState();
 }
 
 // Update the display with current filtered data
@@ -179,12 +234,17 @@ function createItemCard(item) {
     
     // Store item data on the card element for click handlers
     const itemIndex = filteredData.indexOf(item);
+    const isChecked = selectedItems.includes(item.link);
+    const isDisabled = !isChecked && selectedItems.length >= 2;
     
     return `
         <div class="item-card" role="button" tabindex="0" aria-label="Preview ${escapeHtml(item.title)}" data-item-index="${itemIndex}">
             <div class="item-header">
                 <h3 class="item-title">${escapeHtml(item.title)}</h3>
-                <span class="item-type">${emoji} ${label}</span>
+                <div class="item-controls">
+                    <span class="item-type">${emoji} ${label}</span>
+                    <input type="checkbox" class="compare-checkbox" data-link="${item.link}" title="Select for comparison" ${isChecked ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
+                </div>
             </div>
             ${descriptionHtml}
             <div class="item-actions">
