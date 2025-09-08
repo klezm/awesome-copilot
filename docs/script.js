@@ -4,6 +4,7 @@ let filteredData = [];
 let currentPage = 1;
 const itemsPerPage = 24;
 
+
 // DOM elements
 const searchInput = document.getElementById('search');
 const typeFilter = document.getElementById('type-filter');
@@ -53,51 +54,26 @@ function setupEventListeners() {
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-            currentPage = 1;
+            loadedItemsCount = 0;
             updateFilteredData();
         }, 300);
     });
 
     // Type filter
     typeFilter.addEventListener('change', () => {
-        currentPage = 1;
+        loadedItemsCount = 0;
         updateFilteredData();
     });
 
-    // Pagination
-    prevPageButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            updateFilteredData();
-            scrollToTop();
-        }
-    });
-
-    nextPageButton.addEventListener('click', () => {
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        if (currentPage < totalPages) {
-            currentPage++;
-            updateFilteredData();
-            scrollToTop();
-        }
-    });
-
-    // Keyboard navigation for pagination
-    document.addEventListener('keydown', (e) => {
-        if (e.target.matches('input, select, button, a')) return;
-        
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        if (e.key === 'ArrowLeft' && currentPage > 1) {
-            e.preventDefault();
-            currentPage--;
-            updateFilteredData();
-            scrollToTop();
-        } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
-            e.preventDefault();
-            currentPage++;
-            updateFilteredData();
-            scrollToTop();
-        }
+    // Infinite scroll
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            if (shouldLoadMore()) {
+                loadMoreItems();
+            }
+        }, 100);
     });
 }
 
@@ -105,6 +81,9 @@ function setupEventListeners() {
 function updateFilteredData() {
     const searchTerm = searchInput.value.toLowerCase().trim();
     const selectedType = typeFilter.value;
+    
+    // Reset focused card index when data changes
+    currentFocusedCardIndex = -1;
     
     // Combine all data
     let combinedData = [];
@@ -137,18 +116,25 @@ function updateFilteredData() {
 
 // Update the display with current filtered data
 function updateDisplay() {
-    updateStats();
     renderItems();
-    updatePagination();
+    updateStats();
+    // Hide pagination controls for infinite scroll
+    paginationContainer.style.display = 'none';
 }
 
 // Update statistics display
 function updateStats() {
     const total = filteredData.length;
+    const loaded = loadedItemsCount;
     const searchTerm = searchInput.value.trim();
     const selectedType = typeFilter.value;
     
-    let statsText = `Showing ${total} item${total !== 1 ? 's' : ''}`;
+    let statsText;
+    if (loaded < total) {
+        statsText = `Showing ${loaded} of ${total} item${total !== 1 ? 's' : ''} (scroll for more)`;
+    } else {
+        statsText = `Showing ${total} item${total !== 1 ? 's' : ''}`;
+    }
     
     if (searchTerm || selectedType !== 'all') {
         const filters = [];
@@ -160,19 +146,20 @@ function updateStats() {
     totalCountElement.textContent = statsText;
 }
 
-// Render items for current page
+// Render items for current loaded count
 function renderItems() {
     if (filteredData.length === 0) {
         showEmptyState();
         return;
     }
     
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-    const pageItems = filteredData.slice(startIndex, endIndex);
-    
-    const itemsHtml = pageItems.map(item => createItemCard(item)).join('');
-    resultsContainer.innerHTML = itemsHtml;
+    // For initial load or when resetting (after search/filter change)
+    if (loadedItemsCount === 0) {
+        loadedItemsCount = Math.min(itemsPerPage, filteredData.length);
+        const initialItems = filteredData.slice(0, loadedItemsCount);
+        const itemsHtml = initialItems.map(item => createItemCard(item)).join('');
+        resultsContainer.innerHTML = itemsHtml;
+    }
 }
 
 // Create HTML for a single item card
@@ -292,6 +279,45 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Check if we should load more items
+function shouldLoadMore() {
+    if (isLoading || loadedItemsCount >= filteredData.length) {
+        return false;
+    }
+    
+    // Check if user has scrolled near the bottom
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    
+    // Load more when user is within 1000px of the bottom
+    return scrollTop + windowHeight >= documentHeight - 1000;
+}
+
+// Load more items when scrolling
+function loadMoreItems() {
+    if (isLoading || loadedItemsCount >= filteredData.length) {
+        return;
+    }
+    
+    isLoading = true;
+    
+    const nextBatchStart = loadedItemsCount;
+    const nextBatchEnd = Math.min(loadedItemsCount + itemsPerPage, filteredData.length);
+    const nextItems = filteredData.slice(nextBatchStart, nextBatchEnd);
+    
+    if (nextItems.length > 0) {
+        const itemsHtml = nextItems.map(item => createItemCard(item)).join('');
+        resultsContainer.insertAdjacentHTML('beforeend', itemsHtml);
+        loadedItemsCount = nextBatchEnd;
+        
+        // Update stats to reflect loaded items
+        updateStats();
+    }
+    
+    isLoading = false;
+}
+
 // Scroll to top of results
 function scrollToTop() {
     const mainElement = document.getElementById('main');
@@ -332,6 +358,184 @@ searchInput.addEventListener('input', () => {
 typeFilter.addEventListener('change', () => {
     trackEvent('Filter', 'type', typeFilter.value);
 });
+
+// Keyboard shortcuts and help modal functionality
+let isHelpModalOpen = false;
+let currentModalItemIndex = -1;
+let currentFocusedCardIndex = -1;
+
+// Help modal functions
+function openHelpModal() {
+    const helpModal = document.getElementById('help-modal');
+    isHelpModalOpen = true;
+    helpModal.classList.add('show');
+    helpModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus the close button for keyboard navigation
+    const closeBtn = document.getElementById('close-help-modal-btn');
+    closeBtn.focus();
+    
+    trackEvent('Help', 'open', 'keyboard-shortcuts');
+}
+
+function closeHelpModal() {
+    const helpModal = document.getElementById('help-modal');
+    isHelpModalOpen = false;
+    helpModal.classList.remove('show');
+    helpModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    
+    trackEvent('Help', 'close', 'keyboard-shortcuts');
+}
+
+// Get current item index in filtered data
+function getCurrentModalItemIndex() {
+    if (!currentModalItem || !filteredData.length) {
+        return -1;
+    }
+    return filteredData.findIndex(item => item === currentModalItem);
+}
+
+// Navigate to specific item by index
+function navigateToItem(newIndex) {
+    if (newIndex < 0 || newIndex >= filteredData.length) {
+        return false;
+    }
+    
+    const newItem = filteredData[newIndex];
+    if (newItem) {
+        currentModalItemIndex = newIndex;
+        openPreviewModal(newItem, null, isShowingSource ? 'source' : 'preview');
+        trackEvent('Modal', 'navigate', `index-${newIndex}`);
+        return true;
+    }
+    return false;
+}
+
+// Navigate to previous item
+function navigateToPreviousItem() {
+    const currentIndex = getCurrentModalItemIndex();
+    if (currentIndex > 0) {
+        navigateToItem(currentIndex - 1);
+    }
+}
+
+// Focus search input
+function focusSearchInput() {
+    const searchInput = document.getElementById('search');
+    if (searchInput) {
+        searchInput.focus();
+        searchInput.select(); // Select all text for easy replacement
+    }
+}
+
+// Navigate between cards in main view
+function navigateCards(direction) {
+    const cards = document.querySelectorAll('.item-card');
+    if (cards.length === 0) return;
+    
+    if (direction === 'down') {
+        currentFocusedCardIndex = Math.min(currentFocusedCardIndex + 1, cards.length - 1);
+    } else if (direction === 'up') {
+        currentFocusedCardIndex = Math.max(currentFocusedCardIndex - 1, 0);
+    }
+    
+    // Ensure index is within bounds
+    if (currentFocusedCardIndex < 0) {
+        currentFocusedCardIndex = 0;
+    } else if (currentFocusedCardIndex >= cards.length) {
+        currentFocusedCardIndex = cards.length - 1;
+    }
+    
+    // Focus the card
+    const targetCard = cards[currentFocusedCardIndex];
+    if (targetCard) {
+        targetCard.focus();
+        targetCard.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'nearest' 
+        });
+    }
+}
+
+// Navigate to next item
+function navigateToNextItem() {
+    const currentIndex = getCurrentModalItemIndex();
+    if (currentIndex >= 0 && currentIndex < filteredData.length - 1) {
+        navigateToItem(currentIndex + 1);
+    }
+}
+
+// Global keyboard shortcuts handler
+function handleGlobalKeyboardShortcuts(e) {
+    // Don't interfere with form inputs
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+        return;
+    }
+    
+    const modal = document.getElementById('preview-modal');
+    const isModalOpen = modal.classList.contains('show');
+    
+    switch (e.key) {
+        case '?':
+            e.preventDefault();
+            if (isHelpModalOpen) {
+                closeHelpModal();
+            } else {
+                openHelpModal();
+            }
+            break;
+            
+        case 'Escape':
+            if (isHelpModalOpen) {
+                e.preventDefault();
+                closeHelpModal();
+            }
+            // The existing modal close handler will handle preview modal
+            break;
+            
+        case 's':
+        case 'S':
+            e.preventDefault();
+            if (isModalOpen && !isHelpModalOpen) {
+                // In modal: toggle source view
+                toggleSourceView();
+            } else if (!isHelpModalOpen) {
+                // Not in modal: focus search
+                focusSearchInput();
+            }
+            break;
+            
+        case 'ArrowUp':
+            if (!isModalOpen && !isHelpModalOpen) {
+                e.preventDefault();
+                navigateCards('up');
+            }
+            break;
+            
+        case 'ArrowDown':
+            if (!isModalOpen && !isHelpModalOpen) {
+                e.preventDefault();
+                navigateCards('down');
+            }
+            break;
+            
+        case 'ArrowLeft':
+            if (isModalOpen && !isHelpModalOpen) {
+                e.preventDefault();
+                navigateToPreviousItem();
+            }
+            break;
+            
+        case 'ArrowRight':
+            if (isModalOpen && !isHelpModalOpen) {
+                e.preventDefault();
+                navigateToNextItem();
+            }
+            break;
+    }
+}
 
 // Modal functionality
 let currentModalItem = null;
@@ -503,6 +707,7 @@ function parseMarkdown(text) {
 
 function openPreviewModal(item, section = null, viewMode = 'preview') {
     currentModalItem = item;
+    currentModalItemIndex = getCurrentModalItemIndex();
     currentRawMarkdown = null;
     currentRenderedHTML = null;
     currentCompletePreview = null;
@@ -569,6 +774,7 @@ function closePreviewModal() {
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     currentModalItem = null;
+    currentModalItemIndex = -1;
     currentRawMarkdown = null;
     currentRenderedHTML = null;
     currentCompletePreview = null;
@@ -1069,11 +1275,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close modal on backdrop click
     backdrop.addEventListener('click', closePreviewModal);
     
-    // Close modal on Escape key
+    // Close modal on Escape key (and other global shortcuts)
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('show')) {
+        // Handle the Escape key for preview modal specifically
+        if (e.key === 'Escape' && modal.classList.contains('show') && !isHelpModalOpen) {
             closePreviewModal();
         }
+        
+        // Handle all other global shortcuts
+        handleGlobalKeyboardShortcuts(e);
+    });
+    
+    // Help modal event listeners
+    const helpModal = document.getElementById('help-modal');
+    const closeHelpBtn = document.getElementById('close-help-modal-btn');
+    const helpBackdrop = helpModal.querySelector('.help-modal-backdrop');
+    const floatingHelpBtn = document.getElementById('floating-help-btn');
+    
+    // Close help modal on close button click
+    closeHelpBtn.addEventListener('click', closeHelpModal);
+    
+    // Close help modal on backdrop click
+    helpBackdrop.addEventListener('click', closeHelpModal);
+    
+    // Open help modal on floating button click
+    floatingHelpBtn.addEventListener('click', openHelpModal);
+    
+    // Prevent help modal content scrolling from closing modal
+    helpModal.querySelector('.help-modal-container').addEventListener('click', (e) => {
+        e.stopPropagation();
     });
     
     // Prevent modal content scrolling from closing modal
