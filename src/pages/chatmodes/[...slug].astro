@@ -1,0 +1,45 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+import ContentDisplay from '../../components/ContentDisplay';
+import TableOfContents from '../../components/TableOfContents';
+
+export async function getStaticPaths() {
+  const chatmodes = await getCollection('chatmodes');
+  return chatmodes.map(chatmode => ({
+    params: { slug: chatmode.slug },
+    props: chatmode,
+  }));
+}
+
+const { slug, data, body, render } = Astro.props;
+const { Content, headings } = await render();
+
+function formatTitle(slug: string) {
+    const withoutExt = slug.replace(/\.chatmode\.md$/, '');
+    return withoutExt
+        .replace(/[-_]/g, ' ')
+        .replace(/\b\w/g, (l) => l.toUpperCase());
+}
+
+const title = data.title || formatTitle(slug);
+---
+
+<MainLayout title={title}>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-9">
+            <p class="mb-4"><a href="/" class="text-blue-500 hover:underline">&larr; Back to list</a></p>
+            <article>
+                <h1 class="text-3xl font-bold mb-4">{title}</h1>
+                <ContentDisplay client:load rawContent={body}>
+                <Content />
+                </ContentDisplay>
+            </article>
+        </div>
+        <aside class="lg:col-span-3">
+            <div class="sticky top-4">
+                <TableOfContents headings={headings} />
+            </div>
+        </aside>
+    </div>
+</MainLayout>

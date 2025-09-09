@@ -4,7 +4,12 @@
   "description": "Enhance your GitHub Copilot experience with community-contributed instructions, prompts, and chat modes",
   "main": "update-readme.js",
   "scripts": {
-    "build": "node update-readme.js",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "build:readme": "node update-readme.js",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "contributors:check": "all-contributors check"
@@ -23,6 +28,10 @@
   "author": "GitHub",
   "license": "MIT",
   "devDependencies": {
-    "all-contributors-cli": "^6.26.1"
+    "@astrojs/preact": "^4.1.0",
+    "@astrojs/tailwind": "^6.0.2",
+    "all-contributors-cli": "^6.26.1",
+    "astro": "^5.13.5",
+    "preact": "^10.27.1"
   }
 }

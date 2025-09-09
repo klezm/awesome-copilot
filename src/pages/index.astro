@@ -1,0 +1,23 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import MainView from '../components/MainView';
+import { getCollection } from 'astro:content';
+
+const prompts = await getCollection('prompts');
+const instructions = await getCollection('instructions');
+const chatmodes = await getCollection('chatmodes');
+
+const allItems = [
+  ...prompts.map(p => ({ ...p, collection: 'prompts' })),
+  ...instructions.map(i => ({ ...i, collection: 'instructions' })),
+  ...chatmodes.map(c => ({ ...c, collection: 'chatmodes' })),
+].sort((a, b) => {
+    const titleA = a.data.title || a.slug;
+    const titleB = b.data.title || b.slug;
+    return titleA.localeCompare(titleB);
+});
+---
+
+<MainLayout title="Awesome Copilot - Home">
+  <MainView client:load items={allItems} />
+</MainLayout>

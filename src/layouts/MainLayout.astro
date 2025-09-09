@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+        <script is:inline>
+            const theme = (() => {
+                if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+                    return localStorage.getItem('theme');
+                }
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    return 'dark';
+                }
+                return 'light';
+            })();
+
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        </script>
+	</head>
+	<body class="bg-white dark:bg-gray-900 text-black dark:text-white">
+        <header class="flex justify-end p-4">
+            <ThemeToggle client:load />
+        </header>
+		<main class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <slot />
+        </main>
+        <script src="/scripts/copy-code.js"></script>
+        <script src="/scripts/shortcuts.js"></script>
+	</body>
+</html>
