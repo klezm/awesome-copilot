@@ -15,75 +15,32 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<link rel="stylesheet" href="/src/styles/global.css" />
 	</head>
 	<body>
-		<header>
-			<nav>
-				<a href="/">Home</a>
-				<a href="/chatmodes">Chatmodes</a>
-				<a href="/instructions">Instructions</a>
-				<a href="/prompts">Prompts</a>
-				<a href="/search">Search</a>
-			</nav>
+		<header class="site-header">
+			<div class="container">
+				<a href="/" class="logo">Awesome Copilot</a>
+				<nav>
+					<a href="/chatmodes">Chatmodes</a>
+					<a href="/instructions">Instructions</a>
+					<a href="/prompts">Prompts</a>
+					<a href="/search">Search</a>
+				</nav>
+				<div class="theme-switcher">
+					<input type="checkbox" id="theme-toggle" />
+					<label for="theme-toggle" class="theme-toggle-label"></label>
+				</div>
+			</div>
 		</header>
-		<main>
+		<main class="container">
 			<slot />
 		</main>
+		<footer class="site-footer">
+			<div class="container">
+				<p>&copy; {new Date().getFullYear()} Awesome Copilot. All rights reserved.</p>
+			</div>
+		</footer>
+		<script src="/src/scripts/theme-toggle.js"></script>
 	</body>
 </html>
-
-<style>
-	body {
-		margin: 0;
-		padding: 0;
-		font-family: system-ui, sans-serif;
-		line-height: 1.6;
-		color: #333;
-	}
-
-	header {
-		background: #f8f9fa;
-		padding: 1rem;
-		border-bottom: 1px solid #ddd;
-	}
-
-	nav {
-		display: flex;
-		gap: 1rem;
-		flex-wrap: wrap;
-	}
-
-	nav a {
-		text-decoration: none;
-		color: #007acc;
-		padding: 0.5rem;
-		border-radius: 0.25rem;
-		transition: background-color 0.2s;
-	}
-
-	nav a:hover {
-		text-decoration: underline;
-		background-color: #e9ecef;
-	}
-
-	main {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 2rem 1rem;
-	}
-
-	@media (max-width: 768px) {
-		nav {
-			flex-direction: column;
-			gap: 0.5rem;
-		}
-
-		nav a {
-			padding: 0.5rem 1rem;
-		}
-
-		main {
-			padding: 1rem 0.5rem;
-		}
-	}
-</style>
