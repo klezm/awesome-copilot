@@ -1,0 +1,145 @@
+---
+import { getEntry, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const { getCollection } = await import('astro:content');
+  const instructions = await getCollection('instructions');
+  return instructions.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entryId: entry.id },
+  }));
+}
+
+const { entryId } = Astro.props;
+const entry = await getEntry('instructions', entryId);
+
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const { Content } = await render(entry);
+---
+
+<Layout title={`${entry.data.title || entry.id} - Instructions`}>
+  <nav class="breadcrumb">
+    <a href="/instructions">Instructions</a> / {entry.data.title || entry.id}
+  </nav>
+
+  <article>
+    <header>
+      <h1>{entry.data.title || entry.id}</h1>
+      {entry.data.description && (
+        <p class="description">{entry.data.description}</p>
+      )}
+      <div class="metadata">
+        {entry.data.applyTo && (
+          <span><strong>Applies to:</strong> {Array.isArray(entry.data.applyTo) ? entry.data.applyTo.join(', ') : entry.data.applyTo}</span>
+        )}
+      </div>
+    </header>
+
+    <div class="content">
+      <Content />
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .breadcrumb a {
+    color: #666;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .description {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0.5rem 0;
+  }
+
+  .metadata {
+    margin: 1rem 0;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 0.25rem;
+  }
+
+  .content {
+    line-height: 1.6;
+  }
+
+  .content h1,
+  .content h2,
+  .content h3,
+  .content h4,
+  .content h5,
+  .content h6 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .content p {
+    margin-bottom: 1rem;
+  }
+
+  .content pre {
+    background: #f4f4f4;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .content code {
+    background: #f4f4f4;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: 'Monaco', 'Menlo', monospace;
+  }
+
+  .content pre code {
+    background: none;
+    padding: 0;
+  }
+
+  .content ul,
+  .content ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+  }
+
+  .content li {
+    margin-bottom: 0.5rem;
+  }
+
+  .content blockquote {
+    border-left: 4px solid #ddd;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: #666;
+  }
+
+  @media (max-width: 768px) {
+    .content pre {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .content h1 {
+      font-size: 1.5rem;
+    }
+
+    .content h2 {
+      font-size: 1.3rem;
+    }
+  }
+</style>

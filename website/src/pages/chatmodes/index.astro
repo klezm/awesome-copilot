@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const chatmodes = await getCollection('chatmodes');
+---
+
+<Layout title="Chatmodes">
+  <h1>Chatmodes</h1>
+  <p>Explore available chatmode configurations for AI assistants.</p>
+
+  <div class="file-list">
+    {chatmodes.map((entry) => (
+      <article class="file-item">
+        <h2>
+          <a href={`/chatmodes/${entry.id}`}>
+            {entry.data.title || entry.id}
+          </a>
+        </h2>
+        {entry.data.description && (
+          <p>{entry.data.description}</p>
+        )}
+        {entry.data.model && (
+          <p><strong>Model:</strong> {entry.data.model}</p>
+        )}
+      </article>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  .file-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .file-item {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    transition: box-shadow 0.2s;
+  }
+
+  .file-item:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .file-item h2 {
+    margin-top: 0;
+  }
+
+  .file-item a {
+    text-decoration: none;
+    color: #007acc;
+  }
+
+  .file-item a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .file-list {
+      grid-template-columns: 1fr;
+    }
+
+    .file-item {
+      padding: 0.75rem;
+    }
+  }
+</style>
