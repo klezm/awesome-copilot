@@ -1,8 +1,8 @@
-import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
 
 const chatmodes = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: '../chatmodes' }),
+  loader: glob({ pattern: "**/*.md", base: "../chatmodes" }),
   schema: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
@@ -11,7 +11,7 @@ const chatmodes = defineCollection({
 });
 
 const instructions = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: '../instructions' }),
+  loader: glob({ pattern: "**/*.md", base: "../instructions" }),
   schema: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
@@ -20,7 +20,7 @@ const instructions = defineCollection({
 });
 
 const prompts = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: '../prompts' }),
+  loader: glob({ pattern: "**/*.md", base: "../prompts" }),
   schema: z.object({
     title: z.string().optional(),
     description: z.string().optional(),

@@ -1,71 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import CollectionGrid from '../../components/CollectionGrid.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
 
 const instructions = await getCollection('instructions');
 ---
 
 <Layout title="Instructions">
-  <h1>Instructions</h1>
-  <p>Explore development guidelines and best practices for AI and software development.</p>
+  <SectionHeader title="Instructions" description="Explore development guidelines and best practices for AI and software development." />
 
-  <div class="file-list">
-    {instructions.map((entry) => (
-      <article class="file-item">
-        <h2>
-          <a href={`/instructions/${entry.id}`}>
-            {entry.data.title || entry.id}
-          </a>
-        </h2>
-        {entry.data.description && (
-          <p>{entry.data.description}</p>
-        )}
-        {entry.data.applyTo && (
-          <p><strong>Applies to:</strong> {Array.isArray(entry.data.applyTo) ? entry.data.applyTo.join(', ') : entry.data.applyTo}</p>
-        )}
-      </article>
-    ))}
-  </div>
+  <CollectionGrid items={instructions} hrefPrefix="/instructions" metaFields={["applyTo"]} emptyMessage="No instructions found." />
 </Layout>
-
-<style>
-  .file-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
-  }
-
-  .file-item {
-    border: 1px solid #ddd;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    transition: box-shadow 0.2s;
-  }
-
-  .file-item:hover {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .file-item h2 {
-    margin-top: 0;
-  }
-
-  .file-item a {
-    text-decoration: none;
-    color: #007acc;
-  }
-
-  .file-item a:hover {
-    text-decoration: underline;
-  }
-
-  @media (max-width: 768px) {
-    .file-list {
-      grid-template-columns: 1fr;
-    }
-
-    .file-item {
-      padding: 0.75rem;
-    }
-  }
-</style>

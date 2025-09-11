@@ -22,5 +22,10 @@
     "*.chatmode.md": "markdown",
     "*.instructions.md": "markdown",
     "*.prompt.md": "markdown"
+  },
+  "[astro][css][html][javascript][javascriptreact][less][php][scss][typescript][typescriptreact][vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
   }
 }

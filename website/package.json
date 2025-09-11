@@ -6,10 +6,15 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "npx prettier --write . && npx eslint . --fix",
+    "update": "npx npm-check-updates -i"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.13",
     "astro": "^5.13.7",
-    "astro-pagefind": "^1.8.5"
+    "astro-pagefind": "^1.8.5",
+    "daisyui": "^5.1.10",
+    "tailwindcss": "^4.1.13"
   }
 }

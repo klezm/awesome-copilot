@@ -3,61 +3,32 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Awesome Copilot - Markdown Explorer">
-	<h1>Welcome to Awesome Copilot</h1>
-	<p>Explore chatmodes, instructions, and prompts for AI development.</p>
-
-	<div class="categories">
-		<a href="/chatmodes" class="category-card">
-			<h2>Chatmodes</h2>
-			<p>AI assistant configurations and modes</p>
-		</a>
-		<a href="/instructions" class="category-card">
-			<h2>Instructions</h2>
-			<p>Development guidelines and best practices</p>
-		</a>
-		<a href="/prompts" class="category-card">
-			<h2>Prompts</h2>
-			<p>AI prompt templates and examples</p>
-		</a>
+	<div class="hero bg-base-200 rounded-lg p-6">
+		<div class="hero-content text-center">
+			<div class="">
+				<h1 class="text-4xl font-bold">Welcome to Awesome Copilot</h1>
+				<p class="py-4">Explore chatmodes, instructions, and prompts for AI development.</p>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 text-left">
+					<a href="/chatmodes" class="card card-compact bg-base-100 shadow hover:shadow-lg">
+						<div class="card-body">
+							<h2 class="card-title">💭 Chatmodes</h2>
+							<p>AI assistant configurations and modes</p>
+						</div>
+					</a>
+					<a href="/instructions" class="card card-compact bg-base-100 shadow hover:shadow-lg">
+						<div class="card-body">
+							<h2 class="card-title">📋 Instructions</h2>
+							<p>Development guidelines and best practices</p>
+						</div>
+					</a>
+					<a href="/prompts" class="card card-compact bg-base-100 shadow hover:shadow-lg">
+						<div class="card-body">
+							<h2 class="card-title">🎯 Prompts</h2>
+							<p>AI prompt templates and examples</p>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
 	</div>
 </Layout>
-
-<style>
-	.categories {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-		gap: 1rem;
-		margin-top: 2rem;
-	}
-
-	.category-card {
-		display: block;
-		padding: 1.5rem;
-		border: 1px solid #ddd;
-		border-radius: 0.5rem;
-		text-decoration: none;
-		color: inherit;
-		transition: box-shadow 0.2s, transform 0.2s;
-	}
-
-	.category-card:hover {
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		transform: translateY(-2px);
-	}
-
-	.category-card h2 {
-		margin-top: 0;
-		color: #007acc;
-	}
-
-	@media (max-width: 768px) {
-		.categories {
-			grid-template-columns: 1fr;
-			gap: 0.5rem;
-		}
-
-		.category-card {
-			padding: 1rem;
-		}
-	}
-</style>

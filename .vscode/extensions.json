@@ -1,7 +1,11 @@
 {
   "recommendations": [
     "astro-build.astro-vscode",
+    "bradlc.vscode-tailwindcss",
+    "davidanson.vscode-markdownlint",
+    "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
-    "davidanson.vscode-markdownlint"
+    "esbenp.prettier-vscode",
+    "yoavbls.pretty-ts-errors"
   ]
 }

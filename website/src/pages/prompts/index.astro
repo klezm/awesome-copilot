@@ -1,74 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import CollectionGrid from '../../components/CollectionGrid.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
 
 const prompts = await getCollection('prompts');
 ---
 
 <Layout title="Prompts">
-  <h1>Prompts</h1>
-  <p>Explore AI prompt templates and examples for various use cases.</p>
+  <SectionHeader title="Prompts" description="Explore AI prompt templates and examples for various use cases." />
 
-  <div class="file-list">
-    {prompts.map((entry) => (
-      <article class="file-item">
-        <h2>
-          <a href={`/prompts/${entry.id}`}>
-            {entry.data.title || entry.id}
-          </a>
-        </h2>
-        {entry.data.description && (
-          <p>{entry.data.description}</p>
-        )}
-        {entry.data.model && (
-          <p><strong>Model:</strong> {entry.data.model}</p>
-        )}
-        {entry.data.mode && (
-          <p><strong>Mode:</strong> {entry.data.mode}</p>
-        )}
-      </article>
-    ))}
-  </div>
+  <CollectionGrid items={prompts} hrefPrefix="/prompts" metaFields={["model","mode"]} emptyMessage="No prompts found." />
 </Layout>
-
-<style>
-  .file-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
-  }
-
-  .file-item {
-    border: 1px solid #ddd;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    transition: box-shadow 0.2s;
-  }
-
-  .file-item:hover {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .file-item h2 {
-    margin-top: 0;
-  }
-
-  .file-item a {
-    text-decoration: none;
-    color: #007acc;
-  }
-
-  .file-item a:hover {
-    text-decoration: underline;
-  }
-
-  @media (max-width: 768px) {
-    .file-list {
-      grid-template-columns: 1fr;
-    }
-
-    .file-item {
-      padding: 0.75rem;
-    }
-  }
-</style>

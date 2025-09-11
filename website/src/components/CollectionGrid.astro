@@ -1,0 +1,38 @@
+---
+// @ts-nocheck
+// Reusable grid for content collections
+// Props:
+// - items: array of collection entries (id, data)
+// - hrefPrefix: string prefix for item links (e.g., '/prompts')
+// - metaFields: array of field names to render as small meta text
+// - emptyMessage: message when items.length === 0
+// Provide types to satisfy TS checks in Astro components
+/** @typedef {{ id: string, data: Record<string, any> }} CollectionEntry */
+/** @type {Array<CollectionEntry>} */
+const { items = [], hrefPrefix = '', metaFields = [], emptyMessage = 'No items found.' } = Astro.props;
+---
+
+{items.length === 0 ? (
+  <p class="py-4 text-sm opacity-70">{emptyMessage}</p>
+) : (
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+  {items.map((/** @type {{id:string,data:Record<string,any>}} */ entry) => (
+      <a href={`${hrefPrefix}/${entry.id}`} class="card bg-base-100 shadow hover:shadow-lg">
+        <div class="card-body">
+          <h2 class="card-title">{entry.data.title || entry.id}</h2>
+          {entry.data.description && (
+            <p class="truncate">{entry.data.description}</p>
+          )}
+
+          {metaFields.length > 0 && (
+            <div class="mt-2 text-sm opacity-70">
+              {metaFields.map((/** @type {string} */ field) => (
+                entry.data[field] && <span class={field !== metaFields[0] ? 'ml-2' : ''}><strong>{field[0].toUpperCase() + field.slice(1)}:</strong> {Array.isArray(entry.data[field]) ? entry.data[field].join(', ') : entry.data[field]}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </a>
+    ))}
+  </div>
+)}
