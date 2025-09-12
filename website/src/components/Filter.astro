@@ -1,0 +1,44 @@
+---
+import type { Filter } from '../utils/data';
+
+interface Props {
+  filters: Filter[];
+}
+
+const { filters } = Astro.props;
+---
+
+<div class="filter-controls p-4 border rounded-lg bg-base-200/50 sticky top-4">
+    <h3 class="text-xl font-bold mb-4">Filters</h3>
+    <form id="filter-form" class="space-y-4">
+        <!-- Text Search for description -->
+        <div class="form-control">
+            <label class="label" for="search-description">
+                <span class="label-text font-semibold">Search Description</span>
+            </label>
+            <input type="text" id="search-description" name="description" placeholder="Search in description..." class="input input-bordered w-full" />
+        </div>
+
+        <!-- Dynamic Filters -->
+        {filters.filter(f => f.id !== 'description').map(filter => (
+            <div class="form-control">
+                <h4 class="font-semibold mb-2">{filter.name}</h4>
+                <div class="flex flex-col">
+                    {filter.options.map(option => (
+                        <label class="label cursor-pointer justify-start gap-2">
+                            <input type="checkbox" name={filter.id} value={option} class="checkbox checkbox-sm" />
+                            <span class="label-text">{option}</span>
+                        </label>
+                    ))}
+                </div>
+            </div>
+        ))}
+
+        <div class="pt-4 border-t border-base-content/20">
+            <button type="reset" class="btn btn-secondary w-full">Reset Filters</button>
+        </div>
+    </form>
+</div>
+<script>
+  // Client-side script for filtering will go here
+</script>

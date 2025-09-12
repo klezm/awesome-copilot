@@ -1,0 +1,24 @@
+---
+import type { Item } from '../utils/data';
+
+interface Props {
+  item: Item;
+}
+
+const { item } = Astro.props;
+
+// Create a slug for the URL. Starlight expects slugs without the collection folder.
+const starlightSlug = item.slug.substring(item.slug.indexOf('/') + 1);
+---
+
+<a href={`/${starlightSlug}`} class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow h-full">
+  <div class="card-body">
+    <h2 class="card-title text-lg">{item.title}</h2>
+    <p class="text-sm text-base-content/70">{item.description || 'No description provided.'}</p>
+    <div class="card-actions justify-start mt-2">
+      <div class="badge badge-primary badge-outline">{item.category}</div>
+      {item.mode && <div class="badge badge-secondary badge-outline">{item.mode}</div>}
+      {item.model && <div class="badge badge-accent badge-outline">{item.model}</div>}
+    </div>
+  </div>
+</a>

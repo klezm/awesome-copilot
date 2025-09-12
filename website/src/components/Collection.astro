@@ -1,0 +1,117 @@
+---
+import { getAllItems, type Item, type Filter } from '../utils/data';
+import FilterComponent from './Filter.astro';
+import ItemCard from './ItemCard.astro';
+
+const { items, filters } = await getAllItems();
+---
+
+<div class="collection-layout md:grid md:grid-cols-4 md:gap-8">
+    <aside class="md:col-span-1">
+        <FilterComponent filters={filters} />
+    </aside>
+    <main class="md:col-span-3 mt-8 md:mt-0">
+        <div class="mb-4 flex justify-between items-center">
+            <p id="item-count" class="text-lg">
+                {items.length} items found
+            </p>
+            <div class="form-control">
+                <select id="sort-by" class="select select-bordered">
+                    <option value="title-asc">Sort by Title (A-Z)</option>
+                    <option value="title-desc">Sort by Title (Z-A)</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {items.map(item => <ItemCard item={item} />)}
+        </div>
+    </main>
+</div>
+
+<script define:vars={{ initialItems: items }}>
+    document.addEventListener('astro:page-load', () => {
+        const form = document.getElementById('filter-form');
+        const grid = document.getElementById('item-grid');
+        const itemCountEl = document.getElementById('item-count');
+        const sortSelect = document.getElementById('sort-by');
+
+        // The initial render is done by Astro. We just need to handle updates.
+        const allItems = initialItems;
+
+        function renderItems(itemsToRender) {
+            grid.innerHTML = ''; // Clear existing items
+            if (itemsToRender.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-center text-lg">No items match your criteria.</p>`;
+            } else {
+                for (const item of itemsToRender) {
+                    // This is a simplified re-creation of the ItemCard component in JS.
+                    // A more advanced approach might use a library like Preact or Svelte for this part.
+                    const starlightSlug = item.slug.substring(item.slug.indexOf('/') + 1);
+                    const card = `
+                        <a href="/${starlightSlug}" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow h-full">
+                          <div class="card-body">
+                            <h2 class="card-title text-lg">${item.title}</h2>
+                            <p class="text-sm text-base-content/70">${item.description || 'No description provided.'}</p>
+                            <div class="card-actions justify-start mt-2">
+                              <div class="badge badge-primary badge-outline">${item.category}</div>
+                              ${item.mode ? `<div class="badge badge-secondary badge-outline">${item.mode}</div>` : ''}
+                              ${item.model ? `<div class="badge badge-accent badge-outline">${item.model}</div>` : ''}
+                            </div>
+                          </div>
+                        </a>
+                    `;
+                    grid.insertAdjacentHTML('beforeend', card);
+                }
+            }
+            itemCountEl.textContent = `${itemsToRender.length} items found`;
+        }
+
+        function update() {
+            const formData = new FormData(form);
+            const searchDesc = formData.get('description')?.toString().toLowerCase() || '';
+
+            const activeFilters = {};
+            for (const [key, value] of formData.entries()) {
+                if (key !== 'description') {
+                    if (!activeFilters[key]) activeFilters[key] = [];
+                    activeFilters[key].push(value.toString());
+                }
+            }
+
+            let filtered = allItems.filter(item => {
+                const searchMatch = !searchDesc || (item.description && item.description.toLowerCase().includes(searchDesc));
+                if (!searchMatch) return false;
+
+                for (const key in activeFilters) {
+                    if (activeFilters[key].length > 0) {
+                        const itemValue = item[key];
+                        if (Array.isArray(itemValue)) {
+                            if (!itemValue.some(v => activeFilters[key].includes(v.toString()))) return false;
+                        } else {
+                            if (!activeFilters[key].includes(itemValue?.toString())) return false;
+                        }
+                    }
+                }
+                return true;
+            });
+
+            const sortValue = sortSelect.value;
+            if (sortValue === 'title-asc') {
+                filtered.sort((a, b) => a.title.localeCompare(b.title));
+            } else if (sortValue === 'title-desc') {
+                filtered.sort((a, b) => b.title.localeCompare(a.title));
+            }
+
+            renderItems(filtered);
+        }
+
+        form.addEventListener('input', update);
+        sortSelect.addEventListener('change', update);
+
+        form.addEventListener('reset', () => {
+            // Use a short timeout to allow the form to reset before updating
+            setTimeout(update, 0);
+        });
+    });
+</script>
