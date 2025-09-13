@@ -1,0 +1,14 @@
+---
+// src/components/SortControls.astro
+---
+<div class="form-control">
+    <label for="sort-select" class="label">
+        <span class="label-text text-xl font-bold">Sort by</span>
+    </label>
+    <select id="sort-select" class="select select-bordered w-full max-w-xs shadow-sm">
+        <option value="title:asc">Title (A-Z)</option>
+        <option value="title:desc">Title (Z-A)</option>
+        <option value="date:desc">Date (Newest First)</option>
+        <option value="date:asc">Date (Oldest First)</option>
+    </select>
+</div>

@@ -1,0 +1,155 @@
+---
+// src/components/CollectionExplorer.astro
+import { getCollectionData } from '../utils/content';
+import Card from './Card.astro';
+import FilterPanel from './FilterPanel.astro';
+import SearchBar from './SearchBar.astro';
+import SortControls from './SortControls.astro';
+
+const { items, filters } = await getCollectionData();
+
+// Prepare a JSON-serializable version of the items for the client-side script
+const clientItems = items.map(item => {
+    const { ...data } = item;
+    // The slug is needed to construct the href
+    return { ...data, slug: item.slug };
+});
+---
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+  <aside class="md:col-span-1">
+    <div class="sticky top-20">
+      <FilterPanel filters={filters} />
+    </div>
+  </aside>
+
+  <main class="md:col-span-3">
+    <div class="flex flex-col md:flex-row gap-4 mb-8">
+      <div class="flex-grow">
+        <SearchBar />
+      </div>
+      <div class="flex-shrink-0">
+        <SortControls />
+      </div>
+    </div>
+
+    <div id="results-grid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <!-- Initial render on the server -->
+      {items.map(item => {
+        const { title, description, slug, ...tags } = item;
+        return <Card title={title} description={description} href={`/docs/${slug}`} tags={tags} />;
+      })}
+    </div>
+    <div id="no-results" class="text-center py-16 hidden">
+      <h3 class="text-2xl font-bold">No Results Found</h3>
+      <p class="opacity-80 mt-2">Try adjusting your search or filter criteria.</p>
+    </div>
+  </main>
+</div>
+
+<script define:vars={{ allItems: clientItems }}>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search-input');
+    const sortSelect = document.getElementById('sort-select');
+    const filterForm = document.getElementById('filter-form');
+    const resultsGrid = document.getElementById('results-grid');
+    const noResultsMessage = document.getElementById('no-results');
+
+    let currentSearch = '';
+    let currentSort = 'title:asc';
+    let currentFilters = {};
+
+    function renderResults() {
+      // 1. Filter by search query
+      let filteredItems = allItems.filter(item => {
+        const searchContent = `${item.title?.toLowerCase() || ''} ${item.description?.toLowerCase() || ''}`;
+        return searchContent.includes(currentSearch.toLowerCase());
+      });
+
+      // 2. Filter by checkboxes
+      Object.entries(currentFilters).forEach(([key, values]) => {
+        if (values.length > 0) {
+          filteredItems = filteredItems.filter(item => values.includes(item[key]));
+        }
+      });
+
+      // 3. Sort items
+      const [sortKey, sortDir] = currentSort.split(':');
+      filteredItems.sort((a, b) => {
+        let valA = a[sortKey];
+        let valB = b[sortKey];
+
+        // Special handling for date sorting
+        if (sortKey === 'date') {
+          // Use a very old date for items without a date to sort them last/first
+          valA = valA ? new Date(valA) : new Date(0);
+          valB = valB ? new Date(valB) : new Date(0);
+        }
+
+        if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      // 4. Render HTML
+      resultsGrid.innerHTML = ''; // Clear existing results
+
+      if (filteredItems.length === 0) {
+        noResultsMessage.classList.remove('hidden');
+      } else {
+        noResultsMessage.classList.add('hidden');
+        filteredItems.forEach(item => {
+          const { title, description, slug, ...tags } = item;
+          // This is a simplified card structure.
+          // A more robust solution would use a template literal or a client-side templating library.
+          const cardHTML = `
+            <a href="/docs/${slug}" class="card w-full bg-base-200 shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out block">
+              <div class="card-body">
+                <h2 class="card-title text-lg font-bold">${title}</h2>
+                <p class="text-sm opacity-80 mt-1">${description || ''}</p>
+                <div class="card-actions justify-start mt-4 flex flex-wrap gap-2">
+                  ${Object.entries(tags).filter(([key, value]) => typeof value === 'string' || typeof value === 'number').map(([key, value]) => `
+                    <div class="badge badge-outline">
+                      <span class="font-semibold mr-1 capitalize">${key}:</span>
+                      <span>${value}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </a>
+          `;
+          resultsGrid.innerHTML += cardHTML;
+        });
+      }
+    }
+
+    searchInput.addEventListener('input', e => {
+      currentSearch = e.target.value;
+      renderResults();
+    });
+
+    sortSelect.addEventListener('change', e => {
+      currentSort = e.target.value;
+      renderResults();
+    });
+
+    filterForm.addEventListener('change', e => {
+      const formData = new FormData(filterForm);
+      currentFilters = {};
+      for (const [key, value] of formData.entries()) {
+        if (!currentFilters[key]) {
+          currentFilters[key] = [];
+        }
+        currentFilters[key].push(value);
+      }
+      renderResults();
+    });
+
+    filterForm.addEventListener('reset', () => {
+      currentFilters = {};
+      // The DOM reset happens automatically. We need a brief delay to let it finish before re-rendering.
+      setTimeout(renderResults, 0);
+    });
+
+    // Initial render is done on the server, so no need to call renderResults() on load.
+  });
+</script>

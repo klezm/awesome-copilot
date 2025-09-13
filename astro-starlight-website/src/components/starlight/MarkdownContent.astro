@@ -1,0 +1,18 @@
+---
+// src/components/starlight/MarkdownContent.astro
+// This component overrides Starlight's default MarkdownContent component.
+
+import CopyToClipboard from '../../components/CopyToClipboard.astro';
+import OriginalMarkdownContent from '@astrojs/starlight/components/MarkdownContent.astro';
+---
+<div class="relative">
+    <!-- Position the button in the top-right corner of the content area -->
+    <div class="absolute top-0 right-0 z-10">
+        <CopyToClipboard />
+    </div>
+
+    <!-- Render the original Starlight component, passing through all props and slots -->
+    <OriginalMarkdownContent {...Astro.props}>
+        <slot />
+    </OriginalMarkdownContent>
+</div>
