@@ -1,0 +1,16 @@
+# Netlify configuration for the Astro site located in the `website/` folder.
+
+[build]
+# Base directory for the site on Netlify. Netlify will run install/build inside `website/`.
+base = "website"
+
+# Build command. Use the script from `website/package.json`. Common defaults are
+# "npm run build" or "pnpm run build" depending on your package manager.
+command = "npm run build"
+
+# The directory Astro outputs after `astro build` is `dist` by default.
+publish = "dist"
+
+[[plugins]]
+  # Installs the Lighthouse Build Plugin for all deploy contexts
+  package = "@netlify/plugin-lighthouse"
