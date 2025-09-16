@@ -29,6 +29,9 @@ export default defineConfig({
 				},
 			],
 			customCss: ['./src/styles/global.css'],
+			components: {
+				Sidebar: './src/components/Sidebar.astro',
+			},
 		}),
 	],
 	vite: {

@@ -1,0 +1,10 @@
+---
+import type { Props } from "@astrojs/starlight/props";
+import DefaultSidebar from "@astrojs/starlight/components/Sidebar.astro";
+import SidebarFilters from "./SidebarFilters.astro";
+---
+
+<DefaultSidebar {...Astro.props}>
+  <slot />
+</DefaultSidebar>
+<SidebarFilters />

@@ -14,14 +14,8 @@ const allDocs = await getCollection('docs');
       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-500"
     />
   </div>
-  <div class="flex space-x-2 mb-8">
-    <button id="filter-all" class="px-4 py-2 rounded-md bg-accent-500 text-white">All</button>
-    <button id="filter-chatmodes" class="px-4 py-2 rounded-md bg-blue-200 text-blue-800">Chatmodes</button>
-    <button id="filter-instructions" class="px-4 py-2 rounded-md bg-green-200 text-green-800">Instructions</button>
-    <button id="filter-prompts" class="px-4 py-2 rounded-md bg-red-200 text-red-800">Prompts</button>
-  </div>
 
-  <div id="template-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div id="template-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
     {/*
       This is the main rendering logic for the template collection.
       We map over the `allDocs` array fetched in the frontmatter script.
@@ -48,12 +42,17 @@ const allDocs = await getCollection('docs');
   const searchInput = document.getElementById('search-input');
   const templateGrid = document.getElementById('template-grid');
   const templateCards = Array.from(templateGrid.children);
+  const filterCheckboxes = document.querySelectorAll('#sidebar-filters input[type="checkbox"]');
 
-  let activeFilter = 'all';
-  const filterButtons = document.querySelectorAll('button[id^="filter-"]');
+  let activeCategoryFilters = [];
 
   function filterTemplates() {
     const searchTerm = searchInput.value.toLowerCase();
+
+    // Update the active category filters
+    activeCategoryFilters = Array.from(filterCheckboxes)
+      .filter(checkbox => checkbox.checked)
+      .map(checkbox => checkbox.value);
 
     templateCards.forEach(card => {
       const title = card.dataset.title.toLowerCase();
@@ -61,7 +60,9 @@ const allDocs = await getCollection('docs');
       const category = card.dataset.category;
 
       const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
-      const matchesFilter = activeFilter === 'all' || category.startsWith(activeFilter);
+
+      // Show card if no categories are selected, or if its category is in the active list
+      const matchesFilter = activeCategoryFilters.length === 0 || activeCategoryFilters.includes(category);
 
       if (matchesSearch && matchesFilter) {
         card.style.display = 'flex';
@@ -73,15 +74,11 @@ const allDocs = await getCollection('docs');
 
   searchInput.addEventListener('input', filterTemplates);
 
-  filterButtons.forEach(button => {
-    button.addEventListener('click', (e) => {
-      filterButtons.forEach(btn => {
-        btn.classList.remove('bg-accent-500', 'text-white');
-      });
-      e.currentTarget.classList.add('bg-accent-500', 'text-white');
-      activeFilter = e.currentTarget.id.replace('filter-', '');
-      filterTemplates();
-    });
+  filterCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', filterTemplates);
   });
+
+  // Initial filter on page load
+  filterTemplates();
 </script>
 </StarlightPage>
