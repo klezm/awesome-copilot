@@ -1,14 +1,11 @@
 ---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { getCollection } from 'astro:content';
 
-// Fetch all documents from the 'docs' collection using Astro's Content Collections API.
-// This is the main data source for the template collection page.
-// We filter out the index page itself to avoid it appearing in the collection.
-const allDocs = await getCollection('docs', ({ id }) => {
-  return id !== 'index.astro';
-});
+const allDocs = await getCollection('docs');
 ---
-<div class="w-full">
+<StarlightPage frontmatter={{ title: 'Template Collection' }}>
+  <div class="w-full">
   <div class="mb-8">
     <input
       type="search"
@@ -86,3 +83,4 @@ const allDocs = await getCollection('docs', ({ id }) => {
     });
   });
 </script>
+</StarlightPage>
