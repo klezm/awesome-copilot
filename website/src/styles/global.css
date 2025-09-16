@@ -1,0 +1,60 @@
+@layer base, starlight, theme, components, utilities;
+
+@import '@astrojs/starlight-tailwind';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@theme {
+	/*
+	Configure your Tailwind theme that will be used by Starlight.
+	https://starlight.astro.build/guides/css-and-tailwind/#styling-starlight-with-tailwind
+	*/
+}
+
+/*
+Add additional Tailwind styles to this file:
+https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
+*/
+
+.template-card {
+  border: 1px solid theme('colors.gray.200');
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  transition: all 0.2s ease-in-out;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.template-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.template-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+.template-card p {
+  flex-grow: 1;
+  margin-bottom: 1rem;
+  color: theme('colors.gray.600');
+}
+.template-card a {
+  text-decoration: none;
+  color: inherit;
+}
+.template-card a:hover h3 {
+  text-decoration: underline;
+}
+.category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+.chatmodes-badge { background-color: theme('colors.blue.100'); color: theme('colors.blue.800'); }
+.instructions-badge { background-color: theme('colors.green.100'); color: theme('colors.green.800'); }
+.prompts-badge { background-color: theme('colors.red.100'); color: theme('colors.red.800'); }
