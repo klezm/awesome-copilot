@@ -8,13 +8,12 @@ interface Props {
 const { item } = Astro.props;
 // Note: The client-side rendering in Collection.astro will need to handle this slug generation.
 // This server-side rendered card is now primarily a fallback or for non-JS users.
-const starlightSlug = item.slug.substring(item.slug.indexOf('/') + 1);
 ---
 
 <div class="card bg-base-200 shadow-lg hover:shadow-primary/50 transition-all duration-300 h-full flex flex-col group">
   <div class="card-body flex-grow">
     <h2 class="card-title text-base-content/90">
-      <a href={`/${starlightSlug}`} class="link link-hover">
+      <a href={`/${item.slug}`} class="link link-hover">
         {item.title}
       </a>
     </h2>
