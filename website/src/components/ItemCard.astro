@@ -6,19 +6,32 @@ interface Props {
 }
 
 const { item } = Astro.props;
-
-// Create a slug for the URL. Starlight expects slugs without the collection folder.
+// Note: The client-side rendering in Collection.astro will need to handle this slug generation.
+// This server-side rendered card is now primarily a fallback or for non-JS users.
 const starlightSlug = item.slug.substring(item.slug.indexOf('/') + 1);
 ---
 
-<a href={`/${starlightSlug}`} class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow h-full">
-  <div class="card-body">
-    <h2 class="card-title text-lg">{item.title}</h2>
-    <p class="text-sm text-base-content/70">{item.description || 'No description provided.'}</p>
-    <div class="card-actions justify-start mt-2">
-      <div class="badge badge-primary badge-outline">{item.category}</div>
-      {item.mode && <div class="badge badge-secondary badge-outline">{item.mode}</div>}
-      {item.model && <div class="badge badge-accent badge-outline">{item.model}</div>}
+<div class="card bg-base-200 shadow-lg hover:shadow-primary/50 transition-all duration-300 h-full flex flex-col group">
+  <div class="card-body flex-grow">
+    <h2 class="card-title text-base-content/90">
+      <a href={`/${starlightSlug}`} class="link link-hover">
+        {item.title}
+      </a>
+    </h2>
+    <p class="text-sm text-base-content/60 flex-grow mt-2">{item.description || 'No description provided.'}</p>
+    <div class="card-actions justify-start pt-4 mt-auto">
+      <div class="badge badge-neutral">{item.category}</div>
+      {item.mode && <div class="badge badge-outline">{item.mode}</div>}
+      {item.model && <div class="badge badge-outline">{item.model}</div>}
     </div>
   </div>
-</a>
+  <div class="p-4 bg-base-300/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <button
+        class="btn btn-sm btn-primary w-full copy-btn"
+        data-content={item.content.replace(/"/g, '&quot;')}
+        aria-label={`Copy content of ${item.title}`}
+      >
+        Copy Content
+      </button>
+  </div>
+</div>

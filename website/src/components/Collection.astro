@@ -11,20 +11,22 @@ const { items, filters } = await getAllItems();
         <FilterComponent filters={filters} />
     </aside>
     <main class="md:col-span-3 mt-8 md:mt-0">
-        <div class="mb-4 flex justify-between items-center">
-            <p id="item-count" class="text-lg">
-                {items.length} items found
+        <div class="mb-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p id="item-count" class="text-lg text-base-content/70">
+                Showing {items.length} items
             </p>
-            <div class="form-control">
-                <select id="sort-by" class="select select-bordered">
+            <div class="form-control w-full sm:w-auto">
+                <select id="sort-by" class="select select-bordered w-full">
+                    <option value="lastModified-desc">Sort by Newest</option>
+                    <option value="lastModified-asc">Sort by Oldest</option>
                     <option value="title-asc">Sort by Title (A-Z)</option>
                     <option value="title-desc">Sort by Title (Z-A)</option>
                 </select>
             </div>
         </div>
 
-        <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {items.map(item => <ItemCard item={item} />)}
+        <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- This will be populated by the client-side script -->
         </div>
     </main>
 </div>
@@ -36,35 +38,70 @@ const { items, filters } = await getAllItems();
         const itemCountEl = document.getElementById('item-count');
         const sortSelect = document.getElementById('sort-by');
 
-        // The initial render is done by Astro. We just need to handle updates.
         const allItems = initialItems;
+        let currentItems = [...allItems];
 
-        function renderItems(itemsToRender) {
-            grid.innerHTML = ''; // Clear existing items
+        function attachCopyListeners() {
+            grid.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = e.currentTarget as HTMLElement;
+                    const content = target.dataset.content;
+                    if (content) {
+                        navigator.clipboard.writeText(content).then(() => {
+                            const originalText = target.innerHTML;
+                            target.innerHTML = 'Copied!';
+                            target.classList.add('btn-success');
+                            setTimeout(() => {
+                                target.innerHTML = originalText;
+                                target.classList.remove('btn-success');
+                            }, 2000);
+                        }).catch(err => {
+                            console.error('Failed to copy text: ', err);
+                        });
+                    }
+                });
+            });
+        }
+
+        function renderItems(itemsToRender, searchTerm = '') {
+            grid.innerHTML = '';
             if (itemsToRender.length === 0) {
-                grid.innerHTML = `<p class="col-span-full text-center text-lg">No items match your criteria.</p>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-16"><h3 class="text-2xl font-bold">No items match your criteria.</h3><p class="text-base-content/60">Try adjusting your filters.</p></div>`;
             } else {
                 for (const item of itemsToRender) {
-                    // This is a simplified re-creation of the ItemCard component in JS.
-                    // A more advanced approach might use a library like Preact or Svelte for this part.
                     const starlightSlug = item.slug.substring(item.slug.indexOf('/') + 1);
+                    let description = item.description || 'No description provided.';
+                    if (searchTerm && description) {
+                        const regex = new RegExp(searchTerm, 'gi');
+                        description = description.replace(regex, (match) => `<mark class="bg-primary/50">${match}</mark>`);
+                    }
+
                     const card = `
-                        <a href="/${starlightSlug}" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow h-full">
-                          <div class="card-body">
-                            <h2 class="card-title text-lg">${item.title}</h2>
-                            <p class="text-sm text-base-content/70">${item.description || 'No description provided.'}</p>
-                            <div class="card-actions justify-start mt-2">
-                              <div class="badge badge-primary badge-outline">${item.category}</div>
-                              ${item.mode ? `<div class="badge badge-secondary badge-outline">${item.mode}</div>` : ''}
-                              ${item.model ? `<div class="badge badge-accent badge-outline">${item.model}</div>` : ''}
+                        <div class="card bg-base-200 shadow-lg hover:shadow-primary/50 transition-all duration-300 h-full flex flex-col group">
+                            <div class="card-body flex-grow">
+                                <h2 class="card-title text-base-content/90">
+                                <a href="/${starlightSlug}" class="link link-hover">${item.title}</a>
+                                </h2>
+                                <p class="text-sm text-base-content/60 flex-grow mt-2">${description}</p>
+                                <div class="card-actions justify-start pt-4 mt-auto">
+                                <div class="badge badge-neutral">${item.category}</div>
+                                ${item.mode ? `<div class="badge badge-outline">${item.mode}</div>` : ''}
+                                ${item.model ? `<div class="badge badge-outline">${item.model}</div>` : ''}
+                                </div>
                             </div>
-                          </div>
-                        </a>
+                            <div class="p-4 bg-base-300/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <button class="btn btn-sm btn-primary w-full copy-btn" data-content="${item.content.replace(/"/g, '&quot;')}" aria-label="Copy content of ${item.title}">
+                                    Copy Content
+                                </button>
+                            </div>
+                        </div>
                     `;
                     grid.insertAdjacentHTML('beforeend', card);
                 }
             }
-            itemCountEl.textContent = `${itemsToRender.length} items found`;
+            itemCountEl.textContent = `Showing ${itemsToRender.length} of ${allItems.length} items`;
+            attachCopyListeners();
         }
 
         function update() {
@@ -72,12 +109,12 @@ const { items, filters } = await getAllItems();
             const searchDesc = formData.get('description')?.toString().toLowerCase() || '';
 
             const activeFilters = {};
-            for (const [key, value] of formData.entries()) {
+            formData.forEach((value, key) => {
                 if (key !== 'description') {
                     if (!activeFilters[key]) activeFilters[key] = [];
                     activeFilters[key].push(value.toString());
                 }
-            }
+            });
 
             let filtered = allItems.filter(item => {
                 const searchMatch = !searchDesc || (item.description && item.description.toLowerCase().includes(searchDesc));
@@ -101,17 +138,23 @@ const { items, filters } = await getAllItems();
                 filtered.sort((a, b) => a.title.localeCompare(b.title));
             } else if (sortValue === 'title-desc') {
                 filtered.sort((a, b) => b.title.localeCompare(a.title));
+            } else if (sortValue === 'lastModified-asc') {
+                filtered.sort((a, b) => a.lastModified - b.lastModified);
+            } else if (sortValue === 'lastModified-desc') {
+                filtered.sort((a, b) => b.lastModified - a.lastModified);
             }
 
-            renderItems(filtered);
+            currentItems = filtered;
+            renderItems(currentItems, searchDesc);
         }
 
         form.addEventListener('input', update);
         sortSelect.addEventListener('change', update);
-
         form.addEventListener('reset', () => {
-            // Use a short timeout to allow the form to reset before updating
             setTimeout(update, 0);
         });
+
+        // Initial render
+        update();
     });
 </script>

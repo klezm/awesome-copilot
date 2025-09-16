@@ -2,8 +2,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 
-// Note: In Astro, `process.cwd()` is the root of the project (`/website`),
-// so we go up one level to find the data directories.
 const dataDir = path.join(process.cwd(), '..');
 const contentDirs = ['chatmodes', 'instructions', 'prompts'];
 
@@ -11,19 +9,25 @@ export interface Item {
   slug: string;
   title: string;
   content: string;
-  category: string; // 'chatmodes', 'instructions', or 'prompts'
-  [key: string]: any;
+  category: string;
+  lastModified: number;
+  [key:string]: any;
+}
+
+export interface FilterOption {
+    value: string;
+    count: number;
 }
 
 export interface Filter {
   id: string;
   name: string;
-  options: string[];
+  options: FilterOption[];
 }
 
 export async function getAllItems(): Promise<{ items: Item[]; filters: Filter[] }> {
   const items: Item[] = [];
-  const filterableFields: { [key: string]: Set<string> } = {};
+  const filterableFields: { [key: string]: { [value: string]: number } } = {};
 
   for (const dir of contentDirs) {
     const fullPath = path.join(dataDir, dir);
@@ -33,6 +37,7 @@ export async function getAllItems(): Promise<{ items: Item[]; filters: Filter[] 
       for (const file of files) {
         if (path.extname(file).match(/\.(md|mdx)$/)) {
           const filePath = path.join(fullPath, file);
+          const fileStat = await fs.stat(filePath);
           const fileContent = await fs.readFile(filePath, 'utf-8');
           const { data, content } = matter(fileContent);
 
@@ -44,42 +49,42 @@ export async function getAllItems(): Promise<{ items: Item[]; filters: Filter[] 
             title,
             content,
             category: dir,
+            lastModified: fileStat.mtime.getTime(),
             ...data,
           };
           items.push(item);
 
           // Collect filterable fields from frontmatter
-          for (const key in data) {
-            // Let's create filters for these common fields, and any other non-standard ones.
-            if (key !== 'title') {
+          const allData = { ...data, category: dir };
+          for (const key in allData) {
+            if (key !== 'title' && key !== 'description' && allData[key]) {
               if (!filterableFields[key]) {
-                filterableFields[key] = new Set();
+                filterableFields[key] = {};
               }
-              const value = data[key];
-              // Handle both single values and arrays of values
-              if (Array.isArray(value)) {
-                value.forEach(v => filterableFields[key].add(String(v)));
-              } else {
-                filterableFields[key].add(String(value));
-              }
+              const values = Array.isArray(allData[key]) ? allData[key] : [allData[key]];
+              values.forEach(value => {
+                const v = String(value);
+                filterableFields[key][v] = (filterableFields[key][v] || 0) + 1;
+              });
             }
           }
         }
       }
     } catch (error) {
-      // If a directory doesn't exist, we'll log it but continue.
       console.error(`Error reading directory ${fullPath}:`, error);
     }
   }
 
-  // Add category as a filter
-  filterableFields['category'] = new Set(contentDirs);
-
-  const filters: Filter[] = Object.entries(filterableFields).map(([id, optionsSet]) => ({
+  const filters: Filter[] = Object.entries(filterableFields).map(([id, optionsObj]) => ({
     id,
     name: id.charAt(0).toUpperCase() + id.slice(1),
-    options: [...optionsSet].sort(),
+    options: Object.entries(optionsObj)
+      .map(([value, count]) => ({ value, count }))
+      .sort((a, b) => a.value.localeCompare(b.value)),
   }));
+
+  // Sort items by last modified date by default
+  items.sort((a, b) => b.lastModified - a.lastModified);
 
   return { items, filters };
 }
