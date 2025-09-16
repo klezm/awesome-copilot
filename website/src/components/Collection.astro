@@ -6,146 +6,150 @@ import ItemCard from './ItemCard.astro';
 const { items, filters } = await getAllItems();
 ---
 
-<div class="collection-layout md:grid md:grid-cols-4 md:gap-8">
-    <aside class="md:col-span-1">
-        <FilterComponent filters={filters} />
-    </aside>
-    <main class="md:col-span-3 mt-8 md:mt-0">
-        <div class="mb-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p id="item-count" class="text-lg text-base-content/70">
-                Showing {items.length} items
-            </p>
-            <div class="form-control w-full sm:w-auto">
-                <select id="sort-by" class="select select-bordered w-full">
-                    <option value="lastModified-desc">Sort by Newest</option>
-                    <option value="lastModified-asc">Sort by Oldest</option>
-                    <option value="title-asc">Sort by Title (A-Z)</option>
-                    <option value="title-desc">Sort by Title (Z-A)</option>
-                </select>
+<div class="collection-container" id="collection-root">
+    <div class="collection-layout md:grid md:grid-cols-4 md:gap-8">
+        <aside class="md:col-span-1">
+            <FilterComponent filters={filters} />
+        </aside>
+        <main class="md:col-span-3 mt-8 md:mt-0">
+            <div class="mb-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p id="item-count" class="text-lg text-base-content/70">
+                    Showing {items.length} items
+                </p>
+                <div class="form-control w-full sm:w-auto">
+                    <select id="sort-by" class="select select-bordered w-full">
+                        <option value="lastModified-desc">Sort by Newest</option>
+                        <option value="lastModified-asc">Sort by Oldest</option>
+                        <option value="title-asc">Sort by Title (A-Z)</option>
+                        <option value="title-desc">Sort by Title (Z-A)</option>
+                    </select>
+                </div>
             </div>
-        </div>
 
-        <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-            <!-- This will be populated by the client-side script -->
-        </div>
-    </main>
+            <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {items.map(item => (
+                    <div class="item-card-wrapper" data-slug={item.slug} data-last-modified={item.lastModified} data-title={item.title}>
+                        <ItemCard item={item} />
+                    </div>
+                ))}
+            </div>
+            <div id="no-results" class="col-span-full text-center py-16 hidden">
+                <h3 class="text-2xl font-bold">No items match your criteria.</h3>
+                <p class="text-base-content/60">Try adjusting your filters.</p>
+            </div>
+        </main>
+    </div>
 </div>
 
-<script define:vars={{ initialItems: items }}>
+<script define:vars={{ allItems: items }}>
     document.addEventListener('astro:page-load', () => {
+        const root = document.getElementById('collection-root');
+        if (root.dataset.initialized) return;
+        root.dataset.initialized = 'true';
+
         const form = document.getElementById('filter-form');
         const grid = document.getElementById('item-grid');
         const itemCountEl = document.getElementById('item-count');
         const sortSelect = document.getElementById('sort-by');
+        const noResultsEl = document.getElementById('no-results');
+        const allItemData = allItems;
+        const allItemElements = Array.from(grid.querySelectorAll('.item-card-wrapper'));
 
-        const allItems = initialItems;
-        let currentItems = [...allItems];
+        // Attach copy listeners to the whole grid, using event delegation
+        grid.addEventListener('click', (e) => {
+            const button = (e.target as HTMLElement).closest('.copy-btn');
+            if (!button) return;
 
-        function attachCopyListeners() {
-            grid.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const target = e.currentTarget as HTMLElement;
-                    const content = target.dataset.content;
-                    if (content) {
-                        navigator.clipboard.writeText(content).then(() => {
-                            const originalText = target.innerHTML;
-                            target.innerHTML = 'Copied!';
-                            target.classList.add('btn-success');
-                            setTimeout(() => {
-                                target.innerHTML = originalText;
-                                target.classList.remove('btn-success');
-                            }, 2000);
-                        }).catch(err => {
-                            console.error('Failed to copy text: ', err);
-                        });
-                    }
-                });
-            });
-        }
-
-        function renderItems(itemsToRender, searchTerm = '') {
-            grid.innerHTML = '';
-            if (itemsToRender.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-16"><h3 class="text-2xl font-bold">No items match your criteria.</h3><p class="text-base-content/60">Try adjusting your filters.</p></div>`;
-            } else {
-                for (const item of itemsToRender) {
-                    const starlightSlug = item.slug.substring(item.slug.indexOf('/') + 1);
-                    let description = item.description || 'No description provided.';
-                    if (searchTerm && description) {
-                        const regex = new RegExp(searchTerm, 'gi');
-                        description = description.replace(regex, (match) => `<mark class="bg-primary/50">${match}</mark>`);
-                    }
-
-                    const card = `
-                        <div class="card bg-base-200 shadow-lg hover:shadow-primary/50 transition-all duration-300 h-full flex flex-col group">
-                            <div class="card-body flex-grow">
-                                <h2 class="card-title text-base-content/90">
-                                <a href="/${starlightSlug}" class="link link-hover">${item.title}</a>
-                                </h2>
-                                <p class="text-sm text-base-content/60 flex-grow mt-2">${description}</p>
-                                <div class="card-actions justify-start pt-4 mt-auto">
-                                <div class="badge badge-neutral">${item.category}</div>
-                                ${item.mode ? `<div class="badge badge-outline">${item.mode}</div>` : ''}
-                                ${item.model ? `<div class="badge badge-outline">${item.model}</div>` : ''}
-                                </div>
-                            </div>
-                            <div class="p-4 bg-base-300/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <button class="btn btn-sm btn-primary w-full copy-btn" data-content="${item.content.replace(/"/g, '&quot;')}" aria-label="Copy content of ${item.title}">
-                                    Copy Content
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    grid.insertAdjacentHTML('beforeend', card);
-                }
+            e.preventDefault();
+            const content = (button as HTMLElement).dataset.content;
+            if (content) {
+                navigator.clipboard.writeText(content).then(() => {
+                    const originalText = button.innerHTML;
+                    button.innerHTML = 'Copied!';
+                    button.classList.add('btn-success');
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.classList.remove('btn-success');
+                    }, 2000);
+                }).catch(err => console.error('Failed to copy text: ', err));
             }
-            itemCountEl.textContent = `Showing ${itemsToRender.length} of ${allItems.length} items`;
-            attachCopyListeners();
-        }
+        });
 
         function update() {
             const formData = new FormData(form);
             const searchDesc = formData.get('description')?.toString().toLowerCase() || '';
 
-            const activeFilters = {};
+            const activeFilters = new Map();
             formData.forEach((value, key) => {
                 if (key !== 'description') {
-                    if (!activeFilters[key]) activeFilters[key] = [];
-                    activeFilters[key].push(value.toString());
+                    if (!activeFilters.has(key)) activeFilters.set(key, []);
+                    activeFilters.get(key).push(value.toString());
                 }
             });
 
-            let filtered = allItems.filter(item => {
-                const searchMatch = !searchDesc || (item.description && item.description.toLowerCase().includes(searchDesc));
-                if (!searchMatch) return false;
+            const visibleSlugs = new Set();
 
-                for (const key in activeFilters) {
-                    if (activeFilters[key].length > 0) {
+            allItemData.forEach(item => {
+                const searchMatch = !searchDesc || (item.description && item.description.toLowerCase().includes(searchDesc));
+                let filtersMatch = true;
+                for (const [key, selectedOptions] of activeFilters.entries()) {
+                    if (selectedOptions.length > 0) {
                         const itemValue = item[key];
                         if (Array.isArray(itemValue)) {
-                            if (!itemValue.some(v => activeFilters[key].includes(v.toString()))) return false;
+                            if (!itemValue.some(v => selectedOptions.includes(v.toString()))) {
+                                filtersMatch = false;
+                                break;
+                            }
                         } else {
-                            if (!activeFilters[key].includes(itemValue?.toString())) return false;
+                            if (!selectedOptions.includes(itemValue?.toString())) {
+                                filtersMatch = false;
+                                break;
+                            }
                         }
                     }
                 }
-                return true;
+
+                if (searchMatch && filtersMatch) {
+                    visibleSlugs.add(item.slug);
+                }
             });
 
-            const sortValue = sortSelect.value;
-            if (sortValue === 'title-asc') {
-                filtered.sort((a, b) => a.title.localeCompare(b.title));
-            } else if (sortValue === 'title-desc') {
-                filtered.sort((a, b) => b.title.localeCompare(a.title));
-            } else if (sortValue === 'lastModified-asc') {
-                filtered.sort((a, b) => a.lastModified - b.lastModified);
-            } else if (sortValue === 'lastModified-desc') {
-                filtered.sort((a, b) => b.lastModified - a.lastModified);
-            }
+            let visibleCount = 0;
+            allItemElements.forEach(el => {
+                const slug = (el as HTMLElement).dataset.slug;
+                const descriptionEl = el.querySelector('p');
+                if (visibleSlugs.has(slug)) {
+                    el.classList.remove('hidden');
+                    visibleCount++;
+                    // Highlight search term
+                    if (searchDesc && descriptionEl) {
+                        const originalText = allItemData.find(i => i.slug === slug)?.description || '';
+                        const regex = new RegExp(searchDesc, 'gi');
+                        descriptionEl.innerHTML = originalText.replace(regex, (match) => `<mark class="bg-primary/50 rounded-sm">${match}</mark>`);
+                    } else if (descriptionEl) {
+                        descriptionEl.innerHTML = allItemData.find(i => i.slug === slug)?.description || 'No description provided.';
+                    }
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
 
-            currentItems = filtered;
-            renderItems(currentItems, searchDesc);
+            // Sorting
+            const sortValue = sortSelect.value;
+            const sortedElements = allItemElements.sort((a, b) => {
+                const aData = (a as HTMLElement).dataset;
+                const bData = (b as HTMLElement).dataset;
+                if (sortValue === 'title-asc') return aData.title.localeCompare(bData.title);
+                if (sortValue === 'title-desc') return bData.title.localeCompare(aData.title);
+                if (sortValue === 'lastModified-asc') return Number(aData.lastModified) - Number(bData.lastModified);
+                if (sortValue === 'lastModified-desc') return Number(bData.lastModified) - Number(aData.lastModified);
+                return 0;
+            });
+
+            sortedElements.forEach(el => grid.appendChild(el));
+
+            itemCountEl.textContent = `Showing ${visibleCount} of ${allItemData.length} items`;
+            noResultsEl.classList.toggle('hidden', visibleCount > 0);
         }
 
         form.addEventListener('input', update);
@@ -153,8 +157,5 @@ const { items, filters } = await getAllItems();
         form.addEventListener('reset', () => {
             setTimeout(update, 0);
         });
-
-        // Initial render
-        update();
     });
 </script>
