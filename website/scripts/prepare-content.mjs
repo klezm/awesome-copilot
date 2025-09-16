@@ -2,8 +2,8 @@ import fs from 'fs-extra';
 import path from 'path';
 import matter from 'gray-matter';
 
-const sourceBaseDir = path.resolve(process.cwd(), '..');
-const destBaseDir = path.resolve(process.cwd(), 'src/content/docs');
+const sourceBaseDir = process.cwd();
+const destBaseDir = path.resolve(process.cwd(), 'website', 'src/content/docs');
 
 const targetDir = process.argv[2];
 
@@ -43,14 +43,17 @@ async function processFiles() {
         const sourceDir = path.join(sourceBaseDir, dir);
         const destDir = path.join(destBaseDir, dir);
 
+        // Clean the destination directory before processing
+        await fs.remove(destDir);
         await fs.ensureDir(destDir);
 
         const files = await fs.readdir(sourceDir);
 
         for (const file of files) {
-            if (path.extname(file) === '.md') {
+            if (file.endsWith('.md')) {
+                const sanitizedFilename = file.replace(/\.(chatmode|instructions|prompt)\.md$/, '.md');
                 const sourceFilePath = path.join(sourceDir, file);
-                const destFilePath = path.join(destDir, file);
+                const destFilePath = path.join(destDir, sanitizedFilename);
 
                 const fileContent = await fs.readFile(sourceFilePath, 'utf8');
                 const { data, content } = matter(fileContent);
