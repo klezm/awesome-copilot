@@ -30,9 +30,10 @@ const allDocs = await getCollection('docs');
     */}
     {allDocs.map(doc => {
       const category = doc.id.split('/')[0];
+        const slug = doc.id.replace(/\.md$/, '');
       return (
         <div class="template-card" data-title={doc.data.title} data-description={doc.data.description} data-category={category}>
-          <a href={`/${doc.slug}`}>
+            <a href={`/${slug}`}>
             <span class={`category-badge ${category}-badge`}>{category}</span>
             <h3>{doc.data.title}</h3>
             <p>{doc.data.description}</p>
